@@ -4,28 +4,29 @@ import { categories, serviceItems, type ServiceCategory } from '../data/siteData
 export default function ServicesPage() {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | 'All'>('All')
   const [query, setQuery] = useState('')
-  const [activeCard, setActiveCard] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     return serviceItems.filter((item) => {
       const categoryMatch = selectedCategory === 'All' || item.category === selectedCategory
-      const queryMatch = `${item.name} ${item.description} ${item.category}`.toLowerCase().includes(query.trim().toLowerCase())
+      const queryMatch = `${item.name} ${item.description} ${item.specs.join(' ')}`.toLowerCase().includes(query.trim().toLowerCase())
       return categoryMatch && queryMatch
     })
   }, [query, selectedCategory])
 
+  const featured = filtered[0]
+
   return (
     <main>
       <section className="section-headline">
-        <h2>Interactive Service Explorer</h2>
-        <p>Filter by category, search by requirement, and open any card for details.</p>
+        <h2>Complete Services Catalog</h2>
+        <p>Explore every service with proper details, sizes, and use-cases. Select a category or search directly.</p>
       </section>
 
       <section className="controls">
         <input
           type="search"
           value={query}
-          placeholder="Search services, products, machines..."
+          placeholder="Search by service, size, machine, gift..."
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="chip-row">
@@ -42,24 +43,36 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="service-grid">
-        {filtered.map((item) => {
-          const open = activeCard === item.name
-          return (
-            <article key={item.name} className={open ? 'service-item open' : 'service-item'}>
-              <img src={item.image} alt={item.name} loading="lazy" />
-              <div className="service-body">
-                <p className="tag">{item.category}</p>
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <button type="button" onClick={() => setActiveCard(open ? null : item.name)}>
-                  {open ? 'Hide details' : 'View details'}
-                </button>
-                {open ? <div className="detail">Best for premium finishing, fast turnaround, and professional presentation quality.</div> : null}
-              </div>
-            </article>
-          )
-        })}
+      {featured ? (
+        <section className="service-feature">
+          <img src={featured.image} alt={featured.name} />
+          <div>
+            <p className="tag">{featured.category}</p>
+            <h3>{featured.name}</h3>
+            <p>{featured.description}</p>
+            <ul>
+              {featured.specs.map((spec) => <li key={spec}>{spec}</li>)}
+            </ul>
+            <p><strong>Best for:</strong> {featured.idealFor}</p>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="service-grid detailed-grid">
+        {filtered.map((item) => (
+          <article key={item.name} className='service-item'>
+            <img src={item.image} alt={item.name} loading="lazy" />
+            <div className="service-body">
+              <p className="tag">{item.category}</p>
+              <h3>{item.name}</h3>
+              <p>{item.description}</p>
+              <ul>
+                {item.specs.map((spec) => <li key={spec}>{spec}</li>)}
+              </ul>
+              <p className="ideal"><strong>Ideal for:</strong> {item.idealFor}</p>
+            </div>
+          </article>
+        ))}
       </section>
     </main>
   )

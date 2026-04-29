@@ -11,7 +11,7 @@ describe('Interactive pages', () => {
 
     await user.click(screen.getByRole('button', { name: 'Custom Gifts' }))
 
-    expect(screen.getByText('Mug Printing')).toBeInTheDocument()
+    expect(screen.getAllByText('Mug Printing').length).toBeGreaterThan(0)
     expect(screen.queryByText('All Types of Photo Printing')).not.toBeInTheDocument()
   })
 
@@ -19,9 +19,9 @@ describe('Interactive pages', () => {
     const user = userEvent.setup()
     render(<ServicesPage />)
 
-    await user.type(screen.getByPlaceholderText(/search services/i), 'restoration')
+    await user.type(screen.getByPlaceholderText(/search by service/i), 'restoration')
 
-    expect(screen.getByText('Black & White to Color Restoration')).toBeInTheDocument()
+    expect(screen.getAllByText(/Black & White to Color Restoration/i).length).toBeGreaterThan(0)
   })
 
   it('submits inquiry form and shows confirmation alert', async () => {

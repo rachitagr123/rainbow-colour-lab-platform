@@ -1,9 +1,12 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { business } from '../data/siteData'
 
 export default function Layout() {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+
   return (
-    <div className="shell">
+    <div className={isHome ? 'shell' : 'shell inner-shell'}>
       <header className="site-header">
         <div>
           <p className="firm">{business.firmName}</p>
@@ -13,7 +16,7 @@ export default function Layout() {
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/services">Services</NavLink>
           <NavLink to="/gallery">Gallery</NavLink>
-          <NavLink to="/industrial">Industrial</NavLink>
+          <NavLink to="/industrial">Machine Sales</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/contact">Contact</NavLink>
         </nav>
