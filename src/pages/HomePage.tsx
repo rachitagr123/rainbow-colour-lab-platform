@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ZoomableImage } from '../components/ImageLightbox'
 import { business, homeHeroCollage, homeHighlights, homeSplitImage } from '../data/siteData'
 
 export default function HomePage() {
@@ -29,7 +30,7 @@ export default function HomePage() {
         </div>
         <div className="hero-collage hero-collage--six" aria-hidden="true">
           {homeHeroCollage.map((src) => (
-            <img key={src} src={src} alt="" loading="lazy" />
+            <ZoomableImage key={src} src={src} alt="" loading="lazy" />
           ))}
         </div>
       </section>
@@ -38,7 +39,7 @@ export default function HomePage() {
         {homeHighlights.map((item) => (
           <Link key={item.title} to={item.to} className="quick-card">
             <article>
-              <img src={item.image} alt="" loading="lazy" />
+              <ZoomableImage src={item.image} alt="" loading="lazy" />
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
@@ -49,7 +50,7 @@ export default function HomePage() {
       </section>
 
       <section className="split">
-        <img src={homeSplitImage} alt="Album and packaging from our lab" loading="lazy" />
+        <ZoomableImage src={homeSplitImage} alt="Album and packaging from our lab" loading="lazy" />
         <div>
           <h3>Retail, weddings, and print businesses</h3>
           <p>

@@ -1,3 +1,4 @@
+import { ZoomableImage } from '../components/ImageLightbox'
 import { galleryAssets } from '../data/galleryAssets'
 import { visitingCardImage } from '../data/siteData'
 
@@ -12,7 +13,7 @@ export default function GalleryPage() {
       </section>
       <section className="gallery-grid">
         {allImages.map((image) => (
-          <img key={image} src={image} alt="Rainbow Colour Lab work sample" loading="lazy" />
+          <ZoomableImage key={image} src={image} alt="Rainbow Colour Lab work sample" loading="lazy" />
         ))}
       </section>
     </main>

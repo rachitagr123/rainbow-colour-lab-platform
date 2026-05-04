@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ZoomableImage } from '../components/ImageLightbox'
 import { images2 } from '../lib/mediaPath'
 import { machineCatalog } from '../data/siteData'
 
@@ -72,7 +73,7 @@ export default function IndustrialPage() {
             Request machine quote
           </a>
         </div>
-        <img src={selected.image} alt={selected.model} />
+        <ZoomableImage src={selected.image} alt={selected.model} />
       </section>
     </main>
   )

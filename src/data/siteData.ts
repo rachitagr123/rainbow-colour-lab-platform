@@ -6,7 +6,7 @@ export const business = {
   brand: 'Rainbow Colour Lab',
   firmName: 'RAINBOW COLOUR LAB',
   proprietor: 'Sushil Kumar Agrawal',
-  coProprietor: 'Rashmi Agrwal',
+  coProprietor: 'Rashmi Agrawal',
   established: '1980s',
   legacy: '40+ years',
   address: '21 Naya Bazar, Malviya Chowk, Jabalpur, Madhya Pradesh, India, 482001',
@@ -24,7 +24,7 @@ export const homeHeroCollage = [
   images2('T-shirt printing', '03238bb92dc8e81dd60dd9eb2049446c.jpg'),
   images2('Keyring', 'IMG-20260428-WA0047.jpg'),
   images2('Calendar', 'IMG-20260428-WA0041.jpg'),
-  images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0039.jpg'),
+  images2('2 peace box', 'IMG-20260428-WA0039.jpg'),
   images2('PhotoBookAlbum Printing ', 'IMG-20260428-WA0025.jpg'),
   images2('Lather bag cover', 'IMG-20260428-WA0006.jpg'),
 ]

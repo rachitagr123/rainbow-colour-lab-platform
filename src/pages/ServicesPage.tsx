@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ZoomableImage } from '../components/ImageLightbox'
 import {
   sectionSearchBlob,
   serviceCategories,
@@ -22,7 +23,7 @@ function MediaGrid({
   return (
     <div className="media-grid">
       {images?.map((src) => (
-        <img key={src} src={src} alt="" loading="lazy" />
+        <ZoomableImage key={src} src={src} alt="" loading="lazy" />
       ))}
       {videos?.map((src, i) => {
         const poster = videoPosters?.[i] ?? videoPosters?.[0] ?? fallbackPoster

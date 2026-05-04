@@ -14,7 +14,7 @@ export const galleryAssets: string[] = [
   images2('Lather bag cover', 'IMG-20260428-WA0021.jpg'),
   images2('Keyring', '218a72c4a23114ce896210679c8f5c99.jpg'),
   images2('Heart Cushion', 'f40cd67e851099b2a3e44b5f4ca577c4.jpg'),
-  images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0019.jpg'),
+  images2('2 peace box', 'IMG-20260428-WA0019.jpg'),
   images2(PB, '195cc4be6f0d1346f758c9c2d11d7864.jpg'),
   images2('Calendar', 'IMG-20260428-WA0041.jpg'),
   images2(PB, '11dd80f990af41468692b5a49d2e20eb.jpg'),

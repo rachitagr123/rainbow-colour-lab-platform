@@ -1,3 +1,4 @@
+import { ZoomableImage } from '../components/ImageLightbox'
 import { business, visitingCardImage } from '../data/siteData'
 
 export default function AboutPage() {
@@ -9,7 +10,7 @@ export default function AboutPage() {
       </section>
       <section className="split about-split">
         <figure className="about-card-figure">
-          <img src={visitingCardImage} alt={`${business.brand} visiting card`} loading="lazy" />
+          <ZoomableImage src={visitingCardImage} alt={`${business.brand} visiting card`} loading="lazy" />
         </figure>
         <div className="about-copy">
           <p>
@@ -23,7 +24,7 @@ export default function AboutPage() {
             every order left the counter with pride—whether it was a single passport set or a studio&apos;s entire season of deliveries.
           </p>
           <p>
-            The next chapter is led by <strong>Swarit Agrwal</strong> and <strong>Rachit Agrwal</strong>. Together they are refreshing the
+            The next chapter is led by <strong>Swarit Agrawal</strong> and <strong>Rachit Agrawal</strong>. Together they are refreshing the
             business for today&apos;s customers: clearer service menus, stronger digital presence, upgraded workflows for albums and
             enlargements, and closer coordination with photographers and corporate clients. The goal is simple—keep the warmth of a
             traditional lab while delivering the speed, variety, and polish people expect in 2026 and beyond.

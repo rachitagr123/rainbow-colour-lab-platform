@@ -1,11 +1,15 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { LightboxProvider } from './ImageLightbox'
 import { business } from '../data/siteData'
+
+const year = new Date().getFullYear()
 
 export default function Layout() {
   const location = useLocation()
   const isHome = location.pathname === '/'
 
   return (
+    <LightboxProvider>
     <div className={isHome ? 'shell' : 'shell inner-shell'}>
       <header className="site-header">
         <div>
@@ -26,8 +30,18 @@ export default function Layout() {
 
       <Outlet />
 
-      <footer className="site-footer">
-        <p>Developed by Rachit Agrwal</p>
+      <footer className="site-footer" role="contentinfo">
+        <div className="site-footer-inner">
+          <p className="footer-copy">
+            © {year} {business.brand}. All rights reserved.
+          </p>
+          <p className="footer-credit">
+            <span className="footer-credit-label">Website</span>
+            <a href="mailto:rachitagr123@gmail.com" className="footer-credit-link">
+              Rachit Agrawal
+            </a>
+          </p>
+        </div>
       </footer>
 
       <div className="sticky-actions">
@@ -37,5 +51,6 @@ export default function Layout() {
         </a>
       </div>
     </div>
+    </LightboxProvider>
   )
 }

@@ -243,13 +243,13 @@ export const serviceSections: ServiceSection[] = [
         description:
           'Sleek two-part acrylic presentation for large spreads—showcase album covers and hero prints with a luxury feel.',
         images: [
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260314-WA0004.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260314-WA0010.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0015.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0019.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0038.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0039.jpg'),
-          images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0052.jpg'),
+          images2('2 peace box', 'IMG-20260314-WA0004.jpg'),
+          images2('2 peace box', 'IMG-20260314-WA0010.jpg'),
+          images2('2 peace box', 'IMG-20260428-WA0015.jpg'),
+          images2('2 peace box', 'IMG-20260428-WA0019.jpg'),
+          images2('2 peace box', 'IMG-20260428-WA0038.jpg'),
+          images2('2 peace box', 'IMG-20260428-WA0039.jpg'),
+          images2('2 peace box', 'IMG-20260428-WA0052.jpg'),
         ],
       },
       {
