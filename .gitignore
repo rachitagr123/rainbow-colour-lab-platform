@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Exceeds GitHub 100MB limit — keep locally for dev if needed; not tracked in git
+public/images 2/Album video/VID_20260214_130057.mp4

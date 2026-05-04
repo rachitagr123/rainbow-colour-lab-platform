@@ -13,10 +13,12 @@ export default function Layout() {
           <h1>{business.brand}</h1>
         </div>
         <nav>
-          <NavLink to="/" end>Home</NavLink>
+          <NavLink to="/" end>
+            Home
+          </NavLink>
           <NavLink to="/services">Services</NavLink>
           <NavLink to="/gallery">Gallery</NavLink>
-          <NavLink to="/industrial">Machine Sales</NavLink>
+          <NavLink to="/industrial">Machine sales</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/contact">Contact</NavLink>
         </nav>
@@ -24,8 +26,12 @@ export default function Layout() {
 
       <Outlet />
 
+      <footer className="site-footer">
+        <p>Developed by Rachit Agrwal</p>
+      </footer>
+
       <div className="sticky-actions">
-        <a href="tel:+919425324286">Call Now</a>
+        <a href="tel:+919425324286">Call now</a>
         <a href="https://wa.me/919425324286" target="_blank" rel="noreferrer">
           WhatsApp
         </a>

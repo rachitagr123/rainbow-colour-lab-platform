@@ -1,132 +1,68 @@
-export type ServiceCategory =
-  | 'Printing'
-  | 'Custom Gifts'
-  | 'Lamination & Framing'
-  | 'Digital Restoration'
-  | 'Album Products'
-  | 'Industrial B2B'
+import { images2 } from '../lib/mediaPath'
 
-export type ServiceItem = {
-  name: string
-  category: ServiceCategory
-  description: string
-  image: string
-  specs: string[]
-  idealFor: string
-}
+export const visitingCardImage = '/images/IMG-20250911-WA0021.jpg'
 
 export const business = {
   brand: 'Rainbow Colour Lab',
   firmName: 'RAINBOW COLOUR LAB',
   proprietor: 'Sushil Kumar Agrawal',
+  coProprietor: 'Rashmi Agrwal',
   established: '1980s',
   legacy: '40+ years',
   address: '21 Naya Bazar, Malviya Chowk, Jabalpur, Madhya Pradesh, India, 482001',
-  phones: ['+91-9425324286', '+91-9425324287', '+91-9425801886'],
+  phones: ['+91-9425324286', '+91-7987627054', '+91-9425801886'],
   landline: '07614082458',
-  emails: ['rcolourlab123@gmail.com', 'rachitagr123@gmail.com'],
+  /** Primary inbox for website inquiries (Web3Forms + mailto fallback). */
+  inquiryEmail: 'rachitagr123@gmail.com',
+  emails: ['rachitagr123@gmail.com', 'rcolourlab123@gmail.com'],
   gst: '23ACIPA1110D1ZS',
   iec: '1100000101',
 }
 
-export const categories: Array<ServiceCategory | 'All'> = ['All', 'Printing', 'Custom Gifts', 'Lamination & Framing', 'Digital Restoration', 'Album Products', 'Industrial B2B']
+/** Home hero mosaic — refreshed product photography from `images 2`. */
+export const homeHeroCollage = [
+  images2('T-shirt printing', '03238bb92dc8e81dd60dd9eb2049446c.jpg'),
+  images2('Keyring', 'IMG-20260428-WA0047.jpg'),
+  images2('Calendar', 'IMG-20260428-WA0041.jpg'),
+  images2('2 peace box, full size acrylic (12x18)', 'IMG-20260428-WA0039.jpg'),
+  images2('PhotoBookAlbum Printing ', 'IMG-20260428-WA0025.jpg'),
+  images2('Lather bag cover', 'IMG-20260428-WA0006.jpg'),
+]
 
-export const serviceItems: ServiceItem[] = [
+/** Split / secondary band (single strong image). */
+export const homeSplitImage = images2('3 peace box cover', 'IMG_20251001_171528.jpg')
+
+export type HomeHighlight = {
+  title: string
+  description: string
+  image: string
+  to: string
+}
+
+export const homeHighlights: HomeHighlight[] = [
   {
-    name: 'All Types of Photo Printing',
-    category: 'Printing',
-    description: 'High-quality photo printing with color-accurate output and premium paper options.',
-    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Sizes from 4x6 to 30x90', 'Glossy, matte, and texture finish options', 'Fast turnaround for studio and event jobs'],
-    idealFor: 'Everyday photo orders, professional studios, and event photographers.',
+    title: 'Photo printing — 4×6 to 30×90',
+    description: 'Accurate colour, premium papers, and sizes for wallets to wall statements.',
+    image: images2('Calendar', 'IMG-20260428-WA0024.jpg'),
+    to: '/services#photo-printing',
   },
   {
-    name: 'Marriage Album Printing',
-    category: 'Printing',
-    description: 'Premium wedding album print production with luxury finish and durable binding.',
-    image: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Premium page quality', 'Wedding-grade lamination', 'Custom design and cover options'],
-    idealFor: 'Wedding photographers and premium wedding packages.',
+    title: 'Custom gifts',
+    description: 'Mugs, magic mugs, tees, cushions, and keyrings with your artwork.',
+    image: images2('Heart Cushion', 'ab966dae3975faae9db9a3cbbb9f0f25.jpg'),
+    to: '/services#custom-gifts',
   },
   {
-    name: 'Photobook + HP Indigo Photobook Printing & Binding',
-    category: 'Printing',
-    description: 'Commercial-grade photobook and album quality with precise tones and fine detail.',
-    image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1400&q=80',
-    specs: ['HP Indigo quality workflow', 'Professional binding', 'Retail and bulk order support'],
-    idealFor: 'Professional photographers and high-end photo studios.',
+    title: 'Photobook & album kits',
+    description: '5-in-1 combos, acrylic boxes, wedding-ready packaging.',
+    image: images2('5 in 1 combo', 'IMG-20260428-WA0028.jpg'),
+    to: '/services#photobook-album',
   },
   {
-    name: 'Mini Albums + Collage Printing',
-    category: 'Printing',
-    description: 'Creative compact album sets and collage products for gift and event use.',
-    image: 'https://images.unsplash.com/photo-1473186578172-c141e6798cf4?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Pocket and mini formats', 'Custom collage layouts', 'Budget to premium options'],
-    idealFor: 'Gift packages, birthdays, and quick event memories.',
-  },
-  {
-    name: 'Corporate Printing',
-    category: 'Printing',
-    description: 'Professional brochures and marketing material printing for business clients.',
-    image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Brochure and catalog printing', 'Brand color consistency', 'Bulk corporate pricing'],
-    idealFor: 'Businesses, schools, institutions, and agencies.',
-  },
-  {
-    name: 'Enlargement, Backlight, Flex, Glass, Acrylic, LED Frame Printing',
-    category: 'Printing',
-    description: 'Large-format display and decor printing solutions for retail and events.',
-    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Enlargement sizes 16x20 to 30x100', 'Indoor and outdoor media support', 'Display-ready framing options'],
-    idealFor: 'Studios, showrooms, event setups, and premium home decor.',
-  },
-  {
-    name: 'Mug Printing',
-    category: 'Custom Gifts',
-    description: 'Personalized mugs with durable print quality and premium gift finish.',
-    image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Single or bulk orders', 'Photo and logo printing', 'Gift-ready output'],
-    idealFor: 'Birthdays, anniversaries, and corporate gifting.',
-  },
-  {
-    name: 'T-Shirt, Cap, Keyring, Pillow, Magic Cushion Printing',
-    category: 'Custom Gifts',
-    description: 'Custom gift product range with vivid and long-lasting print results.',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Multiple gift product types', 'Branding and personal use support', 'Single to bulk order handling'],
-    idealFor: 'Events, teams, gifting businesses, and personal celebrations.',
-  },
-  {
-    name: 'All Lamination Types + Custom Framing',
-    category: 'Lamination & Framing',
-    description: 'Complete lamination and frame solutions to protect and elevate printed products.',
-    image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Frame width from 1/2 inch to 8 inch', 'Framing sizes 8x12 to 20x24', 'Premium designer frame collection'],
-    idealFor: 'Portraits, certificates, decor pieces, and studio displays.',
-  },
-  {
-    name: 'Black & White to Color Restoration + Photo Mixing + Editing',
-    category: 'Digital Restoration',
-    description: 'Advanced restoration, recoloring, and creative edits for precious old memories.',
-    image: 'https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Old photo repair', 'Colorization for heritage images', 'Creative photo compositing and retouching'],
-    idealFor: 'Family archives, legacy photos, and tribute projects.',
-  },
-  {
-    name: 'Album Products and Combo Kits',
-    category: 'Album Products',
-    description: 'Premium album packaging portfolio for high-end event delivery.',
-    image: 'https://images.unsplash.com/photo-1510070009289-b5bc34383727?auto=format&fit=crop&w=1400&q=80',
-    specs: ['2-piece acrylic box, 3-piece box', '5-in-1 combo, piano box, leather boxes', 'Wedding combo kit options'],
-    idealFor: 'Wedding album businesses and premium client deliveries.',
-  },
-  {
-    name: 'HP Indigo Machine Sales + Spares + Consumables + Imetto',
-    category: 'Industrial B2B',
-    description: 'Business-focused machine sales and ongoing support for print labs.',
-    image: 'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1400&q=80',
-    specs: ['Models: 5500, 5600, 7500, 7600, 10000, 12000', 'Spares, ink, blankets, PIP, machine parts', 'Imetto enlargement machine sales'],
-    idealFor: 'Commercial print units and industrial photo labs.',
+    title: 'Lamination & framing',
+    description: 'Protect prints and finish them with designer-ready frames.',
+    image: images2('Photo frame', '363e638ed0734d399180d944309d4612.jpg'),
+    to: '/services#lamination-framing',
   },
 ]
 
@@ -144,7 +80,7 @@ export const machineCatalog = [
   {
     model: 'HP Indigo 7500',
     image: 'https://images.unsplash.com/photo-1581093804475-577d72e13c89?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'High-volume premium print output with improved color consistency.',
+    useCase: 'High-volume premium print output with improved colour consistency.',
   },
   {
     model: 'HP Indigo 7600',
@@ -161,13 +97,4 @@ export const machineCatalog = [
     image: 'https://images.unsplash.com/photo-1581092446327-9f89b8f8f64d?auto=format&fit=crop&w=1400&q=80',
     useCase: 'Top-tier production solution for enterprise print businesses.',
   },
-]
-
-export const featuredLocalImages = [
-  '/images/IMG-20250911-WA0021.jpg',
-  '/images/IMG-20260108-WA0014.jpg',
-  '/images/IMG-20260428-WA0011.jpg',
-  '/images/IMG-20260428-WA0014.jpg',
-  '/images/IMG-20260428-WA0020.jpg',
-  '/images/IMG_20251001_171326.jpg',
 ]
