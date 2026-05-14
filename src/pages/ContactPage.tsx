@@ -25,7 +25,7 @@ export default function ContactPage() {
       const body = encodeURIComponent(
         `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nType: ${inquiryType}\n\n${message}`,
       )
-      window.location.href = `mailto:${business.inquiryEmail}?subject=${encodeURIComponent('Rainbow Colour Lab — inquiry')}&body=${body}`
+      window.location.href = `mailto:${business.inquiryEmail}?subject=${encodeURIComponent('Rainbow Colour Lab inquiry')}&body=${body}`
       return
     }
 
@@ -36,7 +36,7 @@ export default function ContactPage() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: web3AccessKey,
-          subject: 'Rainbow Colour Lab — website inquiry',
+          subject: 'Rainbow Colour Lab website inquiry',
           from_name: name,
           name,
           ...(email ? { email, replyto: email } : {}),
@@ -105,7 +105,7 @@ export default function ContactPage() {
           ) : null}
           {status === 'ok' ? (
             <p className="form-note ok" role="status">
-              Thank you — your message was sent. We will reply soon.
+              Thank you, your message was sent. We will reply soon.
             </p>
           ) : null}
           {status === 'err' ? (

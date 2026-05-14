@@ -1,6 +1,19 @@
 import { Link } from 'react-router-dom'
 import { ZoomableImage } from '../components/ImageLightbox'
-import { business, homeHeroCollage, homeHighlights, homeSplitImage } from '../data/siteData'
+import {
+  business,
+  homeAboutImage,
+  homeAdvertisementImages,
+  homeAdvertisementVideoPosters,
+  homeAdvertisementVideos,
+  homeHeroCollage,
+  homeHeroLogo,
+  homeHighlights,
+  homeSplitImage,
+  homeStoryImages,
+} from '../data/siteData'
+
+const adVideoLabels = ['LED frame promotion', 'Booklet frame promotion']
 
 export default function HomePage() {
   return (
@@ -13,7 +26,7 @@ export default function HomePage() {
             <span className="hero-brand-rainbow">{business.brand}</span>
           </h2>
           <h3 className="hero-tagline">
-            Photo lab, custom gifts, albums, enlargements, and machine sales — vibrant quality with four decades of trust.
+            Photo lab, custom gifts, albums, enlargements, and machine sales, with vibrant quality and four decades of trust.
           </h3>
           <p className="hero-lead">
             Your memories and your brand deserve crisp colour and careful finishing. From wallet prints to wall-sized enlargements,
@@ -28,10 +41,15 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="hero-collage hero-collage--six" aria-hidden="true">
-          {homeHeroCollage.map((src) => (
-            <ZoomableImage key={src} src={src} alt="" loading="lazy" />
-          ))}
+        <div className="hero-showcase">
+          <figure className="hero-logo-card">
+            <ZoomableImage src={homeHeroLogo} alt={`${business.brand} logo artwork`} loading="eager" />
+          </figure>
+          <div className="hero-collage hero-collage--six" aria-hidden="true">
+            {homeHeroCollage.map((src) => (
+              <ZoomableImage key={src} src={src} alt="" loading="lazy" />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -49,7 +67,75 @@ export default function HomePage() {
         ))}
       </section>
 
-      <section className="split">
+      <section className="split home-about-section">
+        <ZoomableImage src={homeAboutImage} alt={`${business.brand} storefront`} loading="lazy" />
+        <div>
+          <p className="eyebrow">About us</p>
+          <h3>The real shop, the same trusted lab</h3>
+          <p>
+            This is the Rainbow Colour Lab storefront at Malviya Chowk, Jabalpur. Families, photographers, and businesses still
+            visit us here for prints, albums, gifts, framing, and practical guidance on what will look best in hand.
+          </p>
+          <p>
+            We have blended the warmth of a long-running neighbourhood studio with newer display products, premium packaging, and
+            faster digital workflows so the experience feels personal and up to date.
+          </p>
+          <div className="home-story-grid">
+            {homeStoryImages.slice(0, 4).map((src) => (
+              <ZoomableImage key={src} src={src} alt="" loading="lazy" />
+            ))}
+          </div>
+          <Link className="btn" to="/about">
+            Read our full story
+          </Link>
+        </div>
+      </section>
+
+      <section className="home-marquee" aria-label="Current offers preview">
+        <div className="home-marquee-track">
+          {[...homeAdvertisementImages, ...homeAdvertisementImages].map((src, index) => (
+            <div key={`${src}-${index}`} className="home-marquee-card">
+              <ZoomableImage src={src} alt="" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-offers">
+        <div className="section-headline home-section-headline">
+          <h2>Offers and featured advertisements</h2>
+          <p>
+            Current promotional creatives, premium gifting ideas, and standout display products from the new advertisement folder.
+          </p>
+        </div>
+        <div className="home-offer-grid">
+          {homeAdvertisementImages.map((src) => (
+            <article key={src} className="home-offer-card">
+              <ZoomableImage src={src} alt="" loading="lazy" />
+            </article>
+          ))}
+        </div>
+        <div className="home-video-grid">
+          {homeAdvertisementVideos.map((src, index) => (
+            <article key={src} className="home-video-card">
+              <video
+                controls
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                poster={homeAdvertisementVideoPosters[index]}
+              >
+                <source src={`${src}#t=0.001`} />
+              </video>
+              <h3>{adVideoLabels[index]}</h3>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="split home-industrial-spotlight">
         <ZoomableImage src={homeSplitImage} alt="Album and packaging from our lab" loading="lazy" />
         <div>
           <h3>Retail, weddings, and print businesses</h3>

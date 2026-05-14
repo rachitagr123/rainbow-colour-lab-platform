@@ -15,7 +15,8 @@ export default function IndustrialPage() {
       <section className="section-headline">
         <h2>Machine sales</h2>
         <p>
-          HP Indigo presses, genuine spares, consumables, and enlargement workflow hardware including Imetto—backed by guidance from a lab
+          HP Indigo presses, genuine spares, consumables, and enlargement workflow hardware including Imetto, backed by guidance from a
+          lab
           that runs production every day.
         </p>
       </section>
@@ -25,7 +26,8 @@ export default function IndustrialPage() {
           <p className="tag">Enlargement workflow</p>
           <h3>Imetto machine</h3>
           <p>
-            Imetto systems are widely used for professional photo enlargement and mounting workflows—including large sizes such as 30×90 inch
+            Imetto systems are widely used for professional photo enlargement and mounting workflows, including large sizes such as
+            30 x 90 inch
             when paired with the right media and finishing. Contact us for availability, installation context, and compatible supplies.
           </p>
           <ul>

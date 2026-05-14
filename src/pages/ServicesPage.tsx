@@ -2,11 +2,26 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ZoomableImage } from '../components/ImageLightbox'
 import {
+  normalizeSearchText,
   sectionSearchBlob,
   serviceCategories,
   serviceSections,
   type ServiceCategoryFilter,
 } from '../data/servicesCatalog'
+
+const MEDIA_PAGE_SIZE = 12
+
+type MediaItem =
+  | { type: 'image'; src: string }
+  | { type: 'video'; src: string; poster?: string }
+
+function chunkMedia(items: MediaItem[]): MediaItem[][] {
+  const pages: MediaItem[][] = []
+  for (let index = 0; index < items.length; index += MEDIA_PAGE_SIZE) {
+    pages.push(items.slice(index, index + MEDIA_PAGE_SIZE))
+  }
+  return pages
+}
 
 function MediaGrid({
   images,
@@ -17,22 +32,52 @@ function MediaGrid({
   videos?: string[]
   videoPosters?: string[]
 }) {
-  const has = (images?.length ?? 0) + (videos?.length ?? 0) > 0
+  const items: MediaItem[] = [
+    ...(images?.map((src) => ({ type: 'image' as const, src })) ?? []),
+    ...(videos?.map((src, index) => ({
+      type: 'video' as const,
+      src,
+      poster: videoPosters?.[index] ?? videoPosters?.[0] ?? images?.[0],
+    })) ?? []),
+  ]
+  const [page, setPage] = useState(0)
+  const has = items.length > 0
   if (!has) return null
-  const fallbackPoster = images?.[0]
+  const pages = chunkMedia(items)
+  const safePage = Math.min(page, pages.length - 1)
+  const currentPage = pages[safePage] ?? []
+
   return (
-    <div className="media-grid">
-      {images?.map((src) => (
-        <ZoomableImage key={src} src={src} alt="" loading="lazy" />
-      ))}
-      {videos?.map((src, i) => {
-        const poster = videoPosters?.[i] ?? videoPosters?.[0] ?? fallbackPoster
-        return (
-          <video key={src} controls playsInline preload="metadata" muted poster={poster}>
-            <source src={`${src}#t=0.001`} />
-          </video>
-        )
-      })}
+    <div className="media-gallery">
+      <div className="media-grid">
+        {currentPage.map((item) =>
+          item.type === 'image' ? (
+            <ZoomableImage key={item.src} src={item.src} alt="" loading="lazy" />
+          ) : (
+            <video key={item.src} controls playsInline preload="metadata" muted poster={item.poster}>
+              <source src={`${item.src}#t=0.001`} />
+            </video>
+          ),
+        )}
+      </div>
+      {pages.length > 1 ? (
+        <div className="media-slider-controls" aria-label="Media slider controls">
+          <button type="button" className="chip" onClick={() => setPage((current) => Math.max(current - 1, 0))} disabled={safePage === 0}>
+            Previous
+          </button>
+          <span className="media-slider-status">
+            {safePage + 1} / {pages.length}
+          </span>
+          <button
+            type="button"
+            className="chip"
+            onClick={() => setPage((current) => Math.min(current + 1, pages.length - 1))}
+            disabled={safePage === pages.length - 1}
+          >
+            Next
+          </button>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -42,10 +87,10 @@ export default function ServicesPage() {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
+    const normalizedQuery = normalizeSearchText(query)
     return serviceSections.filter((section) => {
       const categoryMatch = selectedCategory === 'All' || section.category === selectedCategory
-      const q = query.trim().toLowerCase()
-      const queryMatch = !q || sectionSearchBlob(section).includes(q)
+      const queryMatch = !normalizedQuery || sectionSearchBlob(section).includes(normalizedQuery)
       return categoryMatch && queryMatch
     })
   }, [query, selectedCategory])
@@ -64,7 +109,7 @@ export default function ServicesPage() {
         <input
           type="search"
           value={query}
-          placeholder="Search — e.g. mug, album, lamination, restoration…"
+          placeholder="Search services, e.g. mug, album, lamination, restoration"
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="chip-row">

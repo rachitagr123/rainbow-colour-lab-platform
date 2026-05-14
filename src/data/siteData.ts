@@ -1,4 +1,4 @@
-import { images2 } from '../lib/mediaPath'
+import { folderImages, images2 } from '../lib/mediaPath'
 
 export const visitingCardImage = '/images/IMG-20250911-WA0021.jpg'
 
@@ -19,18 +19,44 @@ export const business = {
   iec: '1100000101',
 }
 
-/** Home hero mosaic — refreshed product photography from `images 2`. */
+/** Home hero mosaic with refreshed product photography from `images 2`. */
+export const homeHeroLogo = images2('Home page', 'Rachit - 01.png')
+
 export const homeHeroCollage = [
-  images2('T-shirt printing', '03238bb92dc8e81dd60dd9eb2049446c.jpg'),
-  images2('Keyring', 'IMG-20260428-WA0047.jpg'),
-  images2('Calendar', 'IMG-20260428-WA0041.jpg'),
-  images2('2 peace box', 'IMG-20260428-WA0039.jpg'),
-  images2('PhotoBookAlbum Printing ', 'IMG-20260428-WA0025.jpg'),
-  images2('Lather bag cover', 'IMG-20260428-WA0006.jpg'),
+  images2('Home page', 'Main Image 2.JPG'),
+  images2('Home page', '000003.JPG'),
+  images2('Home page', '000004.jpg'),
+  images2('Home page', '13dc996bb445b81ecb6a094b0d387316.jpg'),
+  images2('Home page', 'fee7ddbd833ca9531f974a96b9f0bcab.jpg'),
+  images2('Home page', '5ff0cac004e6cc4607515e32e4cde53d.jpg'),
 ]
 
 /** Split / secondary band (single strong image). */
-export const homeSplitImage = images2('3 peace box cover', 'IMG_20251001_171528.jpg')
+export const homeSplitImage = images2('Home page', 'Only machines images.jpg')
+
+export const homeAboutImage = images2('Home page', 'shop_image.jpeg')
+
+export const homeStoryImages = folderImages('Home page', {
+  first: ['Main Image 2.JPG', '000004.jpg', '000003.JPG'],
+  exclude: ['Rachit - 01.psd', 'Rachit - 01.png', 'shop_image.jpeg', 'Only machines images.jpg'],
+})
+
+export const homeAdvertisementImages = [
+  images2('ADVERTISEMENT', 'RAINBOW-2.jpg'),
+  images2('ADVERTISEMENT', 'rainbow.jpg'),
+  images2('ADVERTISEMENT', 'a0c593af9483e8b49bdb939ce3110589.jpg'),
+  images2('ADVERTISEMENT', 'c2ef4a9b07ddfa4028857c3ed34a1b0a.jpg'),
+]
+
+export const homeAdvertisementVideos = [
+  images2('ADVERTISEMENT', 'led frame.mp4'),
+  images2('ADVERTISEMENT', 'booklet frame.mp4'),
+]
+
+export const homeAdvertisementVideoPosters = [
+  images2('ADVERTISEMENT', 'RAINBOW-2.jpg'),
+  images2('ADVERTISEMENT', 'c2ef4a9b07ddfa4028857c3ed34a1b0a.jpg'),
+]
 
 export type HomeHighlight = {
   title: string
@@ -41,21 +67,21 @@ export type HomeHighlight = {
 
 export const homeHighlights: HomeHighlight[] = [
   {
-    title: 'Photo printing — 4×6 to 30×90',
+    title: 'Photo printing, 4 x 6 to 30 x 90',
     description: 'Accurate colour, premium papers, and sizes for wallets to wall statements.',
-    image: images2('Calendar', 'IMG-20260428-WA0024.jpg'),
+    image: images2('Photo Printing Section ', '000004.jpg'),
     to: '/services#photo-printing',
   },
   {
     title: 'Custom gifts',
     description: 'Mugs, magic mugs, tees, cushions, and keyrings with your artwork.',
-    image: images2('Heart Cushion', 'ab966dae3975faae9db9a3cbbb9f0f25.jpg'),
+    image: images2('Home page', '13dc996bb445b81ecb6a094b0d387316.jpg'),
     to: '/services#custom-gifts',
   },
   {
     title: 'Photobook & album kits',
     description: '5-in-1 combos, acrylic boxes, wedding-ready packaging.',
-    image: images2('5 in 1 combo', 'IMG-20260428-WA0028.jpg'),
+    image: images2('5 in 1 combo', 'IMG-20260428-WA0053.jpg'),
     to: '/services#photobook-album',
   },
   {

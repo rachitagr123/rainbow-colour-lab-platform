@@ -70,9 +70,10 @@ function useLightbox(): LightboxContextValue {
   return ctx
 }
 
-/** Double-click to view full size (lightbox). */
+/** Click once to view full size in the lightbox. */
 export function ZoomableImage({
-  onDoubleClick,
+  onClick,
+  onKeyDown,
   ...props
 }: ImgHTMLAttributes<HTMLImageElement>) {
   const { open } = useLightbox()
@@ -81,10 +82,20 @@ export function ZoomableImage({
     <img
       {...props}
       className={[props.className, 'zoomable-img'].filter(Boolean).join(' ')}
-      title={props.title ?? 'Double-click to enlarge'}
-      onDoubleClick={(e) => {
-        onDoubleClick?.(e)
+      role="button"
+      tabIndex={0}
+      title={props.title ?? 'Click to enlarge'}
+      onClick={(e) => {
+        onClick?.(e)
         if (!e.defaultPrevented && typeof src === 'string' && src.length > 0) {
+          open(src)
+        }
+      }}
+      onKeyDown={(e) => {
+        onKeyDown?.(e)
+        if (e.defaultPrevented || typeof src !== 'string' || src.length === 0) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
           open(src)
         }
       }}

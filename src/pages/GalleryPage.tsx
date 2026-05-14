@@ -9,7 +9,7 @@ export default function GalleryPage() {
     <main>
       <section className="section-headline">
         <h2>Gallery</h2>
-        <p>Real samples from our lab—prints, albums, gifts, frames, and packaging from the Rainbow Colour Lab floor.</p>
+        <p>Real samples from our lab, prints, albums, gifts, frames, and packaging from the Rainbow Colour Lab floor.</p>
       </section>
       <section className="gallery-grid">
         {allImages.map((image) => (
