@@ -13,7 +13,10 @@ import {
   homeStoryImages,
 } from '../data/siteData'
 
-const adVideoLabels = ['LED frame promotion', 'Booklet frame promotion']
+const homeAdvertisementVideosMeta = [
+  { title: 'LED frame', index: 0 },
+  { title: 'Booklet frame', index: 1 },
+] as const
 
 export default function HomePage() {
   return (
@@ -57,7 +60,7 @@ export default function HomePage() {
         {homeHighlights.map((item) => (
           <Link key={item.title} to={item.to} className="quick-card">
             <article>
-              <ZoomableImage src={item.image} alt="" loading="lazy" />
+              <img src={item.image} alt="" loading="lazy" className="quick-card-image" />
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
@@ -73,7 +76,7 @@ export default function HomePage() {
           <p className="eyebrow">About us</p>
           <h3>The real shop, the same trusted lab</h3>
           <p>
-            This is the Rainbow Colour Lab storefront at Malviya Chowk, Jabalpur. Families, photographers, and businesses still
+            This is the Rainbow Colour Lab storefront at Malviya Chowk, Jabalpur. Families, photographers, and businesses
             visit us here for prints, albums, gifts, framing, and practical guidance on what will look best in hand.
           </p>
           <p>
@@ -116,8 +119,9 @@ export default function HomePage() {
           ))}
         </div>
         <div className="home-video-grid">
-          {homeAdvertisementVideos.map((src, index) => (
-            <article key={src} className="home-video-card">
+          {homeAdvertisementVideosMeta.map(({ title, index }) => (
+            <article key={title} className="home-video-card">
+              <h4 className="home-video-subheading">{title}</h4>
               <video
                 controls
                 autoPlay
@@ -127,9 +131,8 @@ export default function HomePage() {
                 preload="metadata"
                 poster={homeAdvertisementVideoPosters[index]}
               >
-                <source src={`${src}#t=0.001`} />
+                <source src={`${homeAdvertisementVideos[index]}#t=0.001`} />
               </video>
-              <h3>{adVideoLabels[index]}</h3>
             </article>
           ))}
         </div>

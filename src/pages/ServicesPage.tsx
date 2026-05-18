@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import MachineCatalogPanel from '../components/MachineCatalogPanel'
 import { ZoomableImage } from '../components/ImageLightbox'
 import {
   normalizeSearchText,
@@ -27,10 +27,12 @@ function MediaGrid({
   images,
   videos,
   videoPosters,
+  imageFit = 'cover',
 }: {
   images?: string[]
   videos?: string[]
   videoPosters?: string[]
+  imageFit?: 'cover' | 'contain'
 }) {
   const items: MediaItem[] = [
     ...(images?.map((src) => ({ type: 'image' as const, src })) ?? []),
@@ -49,7 +51,7 @@ function MediaGrid({
 
   return (
     <div className="media-gallery">
-      <div className="media-grid">
+      <div className={imageFit === 'contain' ? 'media-grid media-grid--contain' : 'media-grid'}>
         {currentPage.map((item) =>
           item.type === 'image' ? (
             <ZoomableImage key={item.src} src={item.src} alt="" loading="lazy" />
@@ -145,22 +147,29 @@ export default function ServicesPage() {
                   <strong>Ideal for:</strong> {section.idealFor}
                 </p>
               ) : null}
-              {section.id === 'machine-sales' ? (
-                <p className="machine-sales-cta">
-                  <Link className="btn solid" to="/industrial">
-                    View models, Imetto video &amp; quotes
-                  </Link>
-                </p>
-              ) : null}
             </header>
 
-            <MediaGrid images={section.images} videos={section.videos} videoPosters={section.videoPosters} />
+            {section.id === 'machine-sales' ? (
+              <MachineCatalogPanel compact />
+            ) : (
+              <MediaGrid
+                images={section.images}
+                videos={section.videos}
+                videoPosters={section.videoPosters}
+                imageFit={section.id === 'photo-printing' ? 'contain' : 'cover'}
+              />
+            )}
 
             {section.subsections?.map((sub) => (
               <div key={sub.title} className="service-subsection">
                 <h4>{sub.title}</h4>
                 <p>{sub.description}</p>
-                <MediaGrid images={sub.images} videos={sub.videos} videoPosters={sub.videoPosters} />
+                <MediaGrid
+                  images={sub.images}
+                  videos={sub.videos}
+                  videoPosters={sub.videoPosters}
+                  imageFit={section.id === 'photo-printing' ? 'contain' : 'cover'}
+                />
               </div>
             ))}
           </article>

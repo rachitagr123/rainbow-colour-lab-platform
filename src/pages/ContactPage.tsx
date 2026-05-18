@@ -84,6 +84,12 @@ export default function ContactPage() {
           <p>
             <strong>Email:</strong> {business.emails.join(' · ')}
           </p>
+          <p>
+            <strong>Instagram:</strong>{' '}
+            <a href={business.instagramUrl} target="_blank" rel="noreferrer">
+              @{business.instagram}
+            </a>
+          </p>
           <iframe
             title="Rainbow Colour Lab map"
             src="https://www.google.com/maps?q=21%20Naya%20Bazar%20Malviya%20Chowk%20Jabalpur%20Madhya%20Pradesh&output=embed"

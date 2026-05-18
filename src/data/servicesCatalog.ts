@@ -1,4 +1,13 @@
-import { folderImages, folderMedia, mergeMedia } from '../lib/mediaPath'
+import { folderImages, folderMedia, images2, mergeMedia } from '../lib/mediaPath'
+
+const PHOTO_PRINTING_FOLDER = 'Photo Printing Section ' as const
+
+const photoPrintingImages = [
+  images2(PHOTO_PRINTING_FOLDER, 'beach.jpg'),
+  images2(PHOTO_PRINTING_FOLDER, '000003.JPG'),
+  images2(PHOTO_PRINTING_FOLDER, '000004.jpg'),
+  images2(PHOTO_PRINTING_FOLDER, 'filters_quality(80).webp'),
+]
 
 export type ServiceSubsection = {
   title: string
@@ -85,7 +94,7 @@ export const serviceSections: ServiceSection[] = [
       'Fast turnaround for events and bulk studio orders',
     ],
     idealFor: 'Families, photographers, students, corporates, and gifting.',
-    images: folderImages('Photo Printing Section '),
+    images: photoPrintingImages,
   },
   {
     id: 'custom-gifts',
@@ -283,13 +292,13 @@ export const serviceSections: ServiceSection[] = [
   },
   {
     id: 'machine-sales',
-    title: 'Machine sales & spares',
+    title: 'Reconditioned machine sales & spares',
     category: 'Machine Sales',
     intro:
-      'HP Indigo digital presses, genuine spares, consumables, blankets, PIP, and enlargement hardware including Imetto, sold with practical advice from a working lab. Product photos on the machine page stay easy to update when you supply final shots.',
+      'Reconditioned HP Indigo digital presses, genuine spares, consumables, blankets, PIP, and reconditioned Imetto enlargement systems, sold with practical advice from a working lab in Jabalpur.',
     specs: [
-      'HP Indigo family: 5500 through 12000 (ask for current availability)',
-      'Imetto enlargement systems, see the video on the machine sales page',
+      'Reconditioned HP Indigo lineup from 3500 through 12000',
+      'Reconditioned Imetto enlargement workflow hardware',
       'Consumables and parts support for commercial buyers',
     ],
     idealFor: 'Photo labs, print entrepreneurs, and industrial print units across India.',

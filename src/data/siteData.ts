@@ -15,6 +15,8 @@ export const business = {
   /** Primary inbox for website inquiries (Web3Forms + mailto fallback). */
   inquiryEmail: 'rachitagr123@gmail.com',
   emails: ['rachitagr123@gmail.com', 'rcolourlab123@gmail.com'],
+  instagram: 'rainbowlabjbp',
+  instagramUrl: 'https://www.instagram.com/rainbowlabjbp/',
   gst: '23ACIPA1110D1ZS',
   iec: '1100000101',
 }
@@ -92,35 +94,4 @@ export const homeHighlights: HomeHighlight[] = [
   },
 ]
 
-export const machineCatalog = [
-  {
-    model: 'HP Indigo 5500',
-    image: 'https://images.unsplash.com/photo-1581092921461-39b9d08a9b2f?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'Entry commercial digital press for photo and short-run jobs.',
-  },
-  {
-    model: 'HP Indigo 5600',
-    image: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'Production-grade press for scalable print operations.',
-  },
-  {
-    model: 'HP Indigo 7500',
-    image: 'https://images.unsplash.com/photo-1581093804475-577d72e13c89?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'High-volume premium print output with improved colour consistency.',
-  },
-  {
-    model: 'HP Indigo 7600',
-    image: 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'Industrial-capable digital print system for demanding workflows.',
-  },
-  {
-    model: 'HP Indigo 10000',
-    image: 'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'Large-format commercial machine for heavy B2B output.',
-  },
-  {
-    model: 'HP Indigo 12000',
-    image: 'https://images.unsplash.com/photo-1581092446327-9f89b8f8f64d?auto=format&fit=crop&w=1400&q=80',
-    useCase: 'Top-tier production solution for enterprise print businesses.',
-  },
-]
+export { machineCatalog } from './machineCatalog'

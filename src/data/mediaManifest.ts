@@ -165,6 +165,9 @@ export const mediaManifest = {
   ],
   "Machine images": [
     "000111.jpg",
+    "HP 10000.jpg",
+    "HP 12000 - 2 .jpg",
+    "HP 12000.jpg",
     "HP 3500 details.jpg",
     "HP 3500.jpg",
     "HP 5000 details.jpg",
@@ -179,6 +182,7 @@ export const mediaManifest = {
     "HP 7600.jpg",
     "HP 7900 details.jpg",
     "HP 7900.jpg",
+    "HP-10000 -2.jpg",
     "Main Image .JPG",
     "Main Image 2.JPG",
     "Only machines images.jpg"
@@ -210,7 +214,7 @@ export const mediaManifest = {
   "Photo Printing Section ": [
     "000003.JPG",
     "000004.jpg",
-    "61EJbED3G9L._AC_UF350,350_QL80_.jpg",
+    "beach.jpg",
     "filters_quality(80).webp"
   ],
   "Photo frame": [
