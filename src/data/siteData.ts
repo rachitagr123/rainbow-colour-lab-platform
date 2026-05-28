@@ -10,11 +10,11 @@ export const business = {
   established: '1980s',
   legacy: '40+ years',
   address: '21 Naya Bazar, Malviya Chowk, Jabalpur, Madhya Pradesh, India, 482001',
-  phones: ['+91-9425324286', '+91-7987627054', '+91-9425801886'],
+  phones: ['+91-9425324286', '+91-7987627054'],
   landline: '07614082458',
   /** Primary inbox for website inquiries (Web3Forms + mailto fallback). */
-  inquiryEmail: 'rachitagr123@gmail.com',
-  emails: ['rachitagr123@gmail.com', 'rcolourlab123@gmail.com'],
+  inquiryEmail: 'rcolourlab123@gmail.com',
+  emails: ['rcolourlab123@gmail.com'],
   instagram: 'rainbowlabjbp',
   instagramUrl: 'https://www.instagram.com/rainbowlabjbp/',
   gst: '23ACIPA1110D1ZS',
@@ -25,18 +25,20 @@ export const business = {
 export const homeHeroLogo = images2('Home page', 'Rachit - 01.png')
 
 export const homeHeroCollage = [
-  images2('Home page', 'Main Image 2.JPG'),
-  images2('Home page', '000003.JPG'),
-  images2('Home page', '000004.jpg'),
-  images2('Home page', '13dc996bb445b81ecb6a094b0d387316.jpg'),
-  images2('Home page', 'fee7ddbd833ca9531f974a96b9f0bcab.jpg'),
-  images2('Home page', '5ff0cac004e6cc4607515e32e4cde53d.jpg'),
+  images2('Home page', 'upper section', '11dd80f990af41468692b5a49d2e20eb.jpg'),
+  images2('Home page', 'upper section', '1.jpeg'),
+  images2('Home page', 'upper section', '218a72c4a23114ce896210679c8f5c99.jpg'),
+  images2('Home page', 'upper section', 'a220c3c5762981505c8ac07ebb7bc068.jpg'),
+  images2('Home page', 'upper section', '17a0a0019381d063d867856f9734afab.jpg'),
+  images2('Home page', 'upper section', '20ee6bf29266ccd5aa300904ace3c9a4.jpg'),
 ]
 
 /** Split / secondary band (single strong image). */
-export const homeSplitImage = images2('Home page', 'Only machines images.jpg')
+export const homeSplitImage = images2('Machine images', 'Main Image .JPG')
 
 export const homeAboutImage = images2('Home page', 'shop_image.jpeg')
+
+export const aboutSecondaryImage = images2('About us', 'IMG-20250911-WA0021.jpg')
 
 export const homeStoryImages = folderImages('Home page', {
   first: ['Main Image 2.JPG', '000004.jpg', '000003.JPG'],
@@ -45,19 +47,24 @@ export const homeStoryImages = folderImages('Home page', {
 
 export const homeAdvertisementImages = [
   images2('ADVERTISEMENT', 'RAINBOW-2.jpg'),
-  images2('ADVERTISEMENT', 'rainbow.jpg'),
   images2('ADVERTISEMENT', 'a0c593af9483e8b49bdb939ce3110589.jpg'),
+  images2('ADVERTISEMENT', 'rainbow.jpg'),
   images2('ADVERTISEMENT', 'c2ef4a9b07ddfa4028857c3ed34a1b0a.jpg'),
+  images2('Home page', 'upper section', 'IMG-20260108-WA0014.jpg'),
 ]
 
 export const homeAdvertisementVideos = [
   images2('ADVERTISEMENT', 'led frame.mp4'),
   images2('ADVERTISEMENT', 'booklet frame.mp4'),
+  images2('Home page', 'acrylic printing.mp4'),
+  images2('Home page', 'Magic mug.mp4'),
 ]
 
 export const homeAdvertisementVideoPosters = [
   images2('ADVERTISEMENT', 'RAINBOW-2.jpg'),
   images2('ADVERTISEMENT', 'c2ef4a9b07ddfa4028857c3ed34a1b0a.jpg'),
+  images2('Acrylic printing', 'cube_acr5.jpg'),
+  images2('Magic mug', 'new magic mug.jpg'),
 ]
 
 export type HomeHighlight = {
@@ -71,25 +78,25 @@ export const homeHighlights: HomeHighlight[] = [
   {
     title: 'Photo printing, 4 x 6 to 30 x 90',
     description: 'Accurate colour, premium papers, and sizes for wallets to wall statements.',
-    image: images2('Photo Printing Section ', '000004.jpg'),
+    image: images2('Home page', '000004.jpg'),
     to: '/services#photo-printing',
   },
   {
     title: 'Custom gifts',
     description: 'Mugs, magic mugs, tees, cushions, and keyrings with your artwork.',
-    image: images2('Home page', '13dc996bb445b81ecb6a094b0d387316.jpg'),
+    image: images2('Home page', 'Custom Gift Main', 'this.jpg'),
     to: '/services#custom-gifts',
   },
   {
     title: 'Photobook & album kits',
     description: '5-in-1 combos, acrylic boxes, wedding-ready packaging.',
-    image: images2('5 in 1 combo', 'IMG-20260428-WA0053.jpg'),
+    image: images2('Home page', 'Photobook and album kits', 'Screenshot 2026-05-27 at 10.18.39 PM.png'),
     to: '/services#photobook-album',
   },
   {
     title: 'Lamination & framing',
     description: 'Protect prints and finish them with designer-ready frames.',
-    image: images2('Photo frame', '363e638ed0734d399180d944309d4612.jpg'),
+    image: images2('Home page', 'Lamination and Prinitng', '91e764de8acc29b413b80b46680fef48.jpg'),
     to: '/services#lamination-framing',
   },
 ]

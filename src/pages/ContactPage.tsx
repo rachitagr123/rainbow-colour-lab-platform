@@ -7,6 +7,8 @@ const web3AccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | unde
 export default function ContactPage() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const contactPhones = [...business.phones, '+91-9425801886']
+  const contactEmails = [...new Set([...business.emails, 'rachitagr123@gmail.com'])]
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -62,12 +64,8 @@ export default function ContactPage() {
       <section className="section-headline">
         <h2>Contact us</h2>
         <p>
-          Call, WhatsApp, or use the form below. Messages go to <strong>{business.inquiryEmail}</strong> via{' '}
-          <a href="https://web3forms.com" target="_blank" rel="noreferrer">
-            Web3Forms
-          </a>{' '}
-          once you add your free access key to a <code className="inline-code">.env</code> file (see{' '}
-          <code className="inline-code">.env.example</code> in the project).
+          Have a question or need a quote? Reach out by phone, WhatsApp, or the form below and we will get back to you
+          as soon as we can.
         </p>
       </section>
       <section className="contact-grid">
@@ -76,13 +74,13 @@ export default function ContactPage() {
             <strong>Address:</strong> {business.address}
           </p>
           <p>
-            <strong>Phones:</strong> {business.phones.join(' · ')}
+            <strong>Phones:</strong> {contactPhones.join(' · ')}
           </p>
           <p>
             <strong>Landline:</strong> {business.landline}
           </p>
           <p>
-            <strong>Email:</strong> {business.emails.join(' · ')}
+            <strong>Email:</strong> {contactEmails.join(' · ')}
           </p>
           <p>
             <strong>Instagram:</strong>{' '}

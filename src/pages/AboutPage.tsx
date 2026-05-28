@@ -6,12 +6,17 @@ export default function AboutPage() {
     <main>
       <section className="section-headline">
         <h2>About {business.brand}</h2>
-        <p>A full-service photo lab rooted in Jabalpur, with the reach and reliability of an all-India supplier.</p>
+        <p>
+          A full-service photo lab rooted in Jabalpur, with the reach and reliability of an all-India supplier. For decades,
+          families, photographers, and businesses have trusted us for reliable colour, careful finishing, and practical guidance.
+        </p>
       </section>
       <section className="split about-split">
-        <figure className="about-card-figure">
-          <ZoomableImage src={homeAboutImage} alt={`${business.brand} storefront`} loading="lazy" />
-        </figure>
+        <div className="about-images">
+          <figure className="about-card-figure">
+            <ZoomableImage src={homeAboutImage} alt={`${business.brand} storefront`} loading="lazy" />
+          </figure>
+        </div>
         <div className="about-copy">
           <p>
             <strong>{business.brand}</strong> has been part of Jabalpur&apos;s celebrations and businesses for generations. What began in

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import MachineCatalogPanel from '../components/MachineCatalogPanel'
 import { ZoomableImage } from '../components/ImageLightbox'
 import {
   normalizeSearchText,
@@ -14,6 +13,7 @@ const MEDIA_PAGE_SIZE = 12
 type MediaItem =
   | { type: 'image'; src: string }
   | { type: 'video'; src: string; poster?: string }
+  | { type: 'placeholder' }
 
 function chunkMedia(items: MediaItem[]): MediaItem[][] {
   const pages: MediaItem[][] = []
@@ -21,6 +21,15 @@ function chunkMedia(items: MediaItem[]): MediaItem[][] {
     pages.push(items.slice(index, index + MEDIA_PAGE_SIZE))
   }
   return pages
+}
+
+function padPageToSize(page: MediaItem[], pageSize: number): MediaItem[] {
+  if (page.length >= pageSize) return page
+  const padded = [...page]
+  while (padded.length < pageSize) {
+    padded.push({ type: 'placeholder' })
+  }
+  return padded
 }
 
 function MediaGrid({
@@ -48,19 +57,24 @@ function MediaGrid({
   const pages = chunkMedia(items)
   const safePage = Math.min(page, pages.length - 1)
   const currentPage = pages[safePage] ?? []
+  const displayPage = pages.length > 1 ? padPageToSize(currentPage, MEDIA_PAGE_SIZE) : currentPage
 
   return (
     <div className="media-gallery">
       <div className={imageFit === 'contain' ? 'media-grid media-grid--contain' : 'media-grid'}>
-        {currentPage.map((item) =>
-          item.type === 'image' ? (
-            <ZoomableImage key={item.src} src={item.src} alt="" loading="lazy" />
-          ) : (
+        {displayPage.map((item, index) => {
+          if (item.type === 'placeholder') {
+            return <div key={`placeholder-${safePage}-${index}`} className="media-grid-slot media-grid-slot--empty" aria-hidden="true" />
+          }
+          if (item.type === 'image') {
+            return <ZoomableImage key={item.src} src={item.src} alt="" loading="lazy" />
+          }
+          return (
             <video key={item.src} controls playsInline preload="metadata" muted poster={item.poster}>
               <source src={`${item.src}#t=0.001`} />
             </video>
-          ),
-        )}
+          )
+        })}
       </div>
       {pages.length > 1 ? (
         <div className="media-slider-controls" aria-label="Media slider controls">
@@ -149,16 +163,12 @@ export default function ServicesPage() {
               ) : null}
             </header>
 
-            {section.id === 'machine-sales' ? (
-              <MachineCatalogPanel compact />
-            ) : (
-              <MediaGrid
-                images={section.images}
-                videos={section.videos}
-                videoPosters={section.videoPosters}
-                imageFit={section.id === 'photo-printing' ? 'contain' : 'cover'}
-              />
-            )}
+            <MediaGrid
+              images={section.images}
+              videos={section.videos}
+              videoPosters={section.videoPosters}
+              imageFit={section.id === 'photo-printing' ? 'contain' : 'cover'}
+            />
 
             {section.subsections?.map((sub) => (
               <div key={sub.title} className="service-subsection">

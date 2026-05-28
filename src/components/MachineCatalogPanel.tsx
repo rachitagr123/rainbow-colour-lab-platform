@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { ZoomableImage } from './ImageLightbox'
-import { machineCatalog } from '../data/machineCatalog'
+import { defaultMachineId, machineCatalog } from '../data/machineCatalog'
 
 type MachineCatalogPanelProps = {
   compact?: boolean
 }
 
 export default function MachineCatalogPanel({ compact = false }: MachineCatalogPanelProps) {
-  const [selectedId, setSelectedId] = useState(machineCatalog[0].id)
-  const selected = machineCatalog.find((machine) => machine.id === selectedId) ?? machineCatalog[0]
+  const [selectedId, setSelectedId] = useState(defaultMachineId)
+  const fallback = machineCatalog.find((machine) => machine.id === defaultMachineId) ?? machineCatalog[0]
+  const selected = machineCatalog.find((machine) => machine.id === selectedId) ?? fallback
 
   return (
     <div className={compact ? 'machine-catalog-panel machine-catalog-panel--compact' : 'machine-catalog-panel'}>

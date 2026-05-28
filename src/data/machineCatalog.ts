@@ -29,6 +29,8 @@ function entry(
   }
 }
 
+export const defaultMachineId = 'hp-5500'
+
 export const machineCatalog: MachineCatalogEntry[] = [
   entry(
     'hp-3500',

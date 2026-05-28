@@ -77,6 +77,9 @@ export const mediaManifest = {
     "VID-20260502-WA0003.mp4",
     "VID_20260214_130057.mp4"
   ],
+  "About us": [
+    "IMG-20250911-WA0021.jpg"
+  ],
   "BackLight": [
     "1.jpeg",
     "2.jpg",
@@ -112,6 +115,30 @@ export const mediaManifest = {
     "24_POLOROID_PICTURES_IN_JUST_59_E2_82_B9_SHIPPING_EXTRA_HURRY_UP_ONLY_FOR_TODAY__Hurry_up.mp4",
     "Booklet_frame_for_Rs.500_with_free_shipping_pan_India._Personalised_gifting_for_friends,_lover,_family,_coworkers,_employees,_boss,_mother,_father,_br.mp4",
     "Here_s_our_hot_selling_transparent_calendar_frames._These_make_a_perfect_gift_for_any_occasion._The_best_way_to_remember_the_best_day_of_your_life._DM.mp4"
+  ],
+  "Gallery": [
+    "000003.JPG",
+    "1.jpeg",
+    "11dd80f990af41468692b5a49d2e20eb.jpg",
+    "2.jpg",
+    "20ee6bf29266ccd5aa300904ace3c9a4.jpg",
+    "218a72c4a23114ce896210679c8f5c99.jpg",
+    "4e93950ee676505337c6718a2693ee39.jpg",
+    "91e764de8acc29b413b80b46680fef48.jpg",
+    "92f475cb7acacd19b2a1d3fa84d5ba56.jpg",
+    "Digital-Print-Glass-5.jpg",
+    "HP 10000.jpg",
+    "IMG-20260108-WA0014.jpg",
+    "IMG-20260428-WA0001.jpg",
+    "IMG-20260428-WA0008.jpg",
+    "IMG-20260428-WA0011.jpg",
+    "IMG-20260428-WA0015.jpg",
+    "Optical-Clear-Glass-Film-1.webp",
+    "a220c3c5762981505c8ac07ebb7bc068.jpg",
+    "ab966dae3975faae9db9a3cbbb9f0f25.jpg",
+    "cbc5a66fa6424d6dcd561a3cbb9b354c.jpg",
+    "f98579eb38bf7ace4bae9ce07f8ac551.jpg",
+    "new magic mug.jpg"
   ],
   "Glass": [
     "Digital-Print-Glass-5.jpg",

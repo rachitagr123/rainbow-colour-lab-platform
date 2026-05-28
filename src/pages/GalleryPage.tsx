@@ -1,9 +1,8 @@
 import { ZoomableImage } from '../components/ImageLightbox'
 import { galleryAssets } from '../data/galleryAssets'
-import { visitingCardImage } from '../data/siteData'
 
 export default function GalleryPage() {
-  const allImages = [visitingCardImage, ...galleryAssets]
+  const allImages = galleryAssets
 
   return (
     <main>

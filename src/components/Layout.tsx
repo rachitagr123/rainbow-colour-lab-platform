@@ -38,6 +38,8 @@ export default function Layout() {
             <p className="footer-contact-line">
               <a href="tel:+919425324286">{business.phones[0]}</a>
               <span aria-hidden="true"> · </span>
+              <a href="tel:+917987627054">{business.phones[1]}</a>
+              <span aria-hidden="true"> · </span>
               <a href={`mailto:${business.inquiryEmail}`}>{business.inquiryEmail}</a>
             </p>
           </div>

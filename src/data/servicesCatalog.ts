@@ -61,7 +61,16 @@ const glassShowcase = folderMedia('Glass')
 const enlargementShowcase = folderMedia('Enlargement machine', {
   first: ['000004.jpg'],
 })
-const accessoriesShowcase = folderMedia('Excessories')
+const accessoriesShowcase = {
+  videos: [
+    images2('Excessories', '24_POLOROID_PICTURES_IN_JUST_59_E2_82_B9_SHIPPING_EXTRA_HURRY_UP_ONLY_FOR_TODAY__Hurry_up.mp4'),
+    images2('ADVERTISEMENT', 'booklet frame.mp4'),
+    images2(
+      'Excessories',
+      'Here_s_our_hot_selling_transparent_calendar_frames._These_make_a_perfect_gift_for_any_occasion._The_best_way_to_remember_the_best_day_of_your_life._DM.mp4',
+    ),
+  ],
+}
 
 export const serviceCategories = [
   'All',
@@ -76,7 +85,6 @@ export const serviceCategories = [
   'Enlargement Printing',
   'Glass Printing',
   'Backlight Printing',
-  'Machine Sales',
 ] as const
 
 export type ServiceCategoryFilter = (typeof serviceCategories)[number]
@@ -128,9 +136,11 @@ export const serviceSections: ServiceSection[] = [
         title: 'Heart cushion',
         description:
           'Soft heart-shaped cushions personalised with your picture, now expanded with the latest photos and video samples.',
-        ...folderMedia('Heart Cushion', {
+        images: folderImages('Heart Cushion', {
           first: ['this.jpg'],
         }),
+        videos: [images2('video', 'Led_Heart_Cushion_❤_💙_💜(720p).mp4')],
+        videoPosters: [images2('Heart Cushion', 'this.jpg')],
       },
       {
         title: 'Key ring',
@@ -289,19 +299,6 @@ export const serviceSections: ServiceSection[] = [
       'Translucent prints designed for LED panels and lightboxes, with vivid colour that wakes up when illuminated. Ideal for menus, retail posters, and exhibition graphics.',
     idealFor: 'Cafés, malls, exhibitions, and night-visible signage.',
     images: folderImages('BackLight'),
-  },
-  {
-    id: 'machine-sales',
-    title: 'Reconditioned machine sales & spares',
-    category: 'Machine Sales',
-    intro:
-      'Reconditioned HP Indigo digital presses, genuine spares, consumables, blankets, PIP, and reconditioned Imetto enlargement systems, sold with practical advice from a working lab in Jabalpur.',
-    specs: [
-      'Reconditioned HP Indigo lineup from 3500 through 12000',
-      'Reconditioned Imetto enlargement workflow hardware',
-      'Consumables and parts support for commercial buyers',
-    ],
-    idealFor: 'Photo labs, print entrepreneurs, and industrial print units across India.',
   },
 ]
 
