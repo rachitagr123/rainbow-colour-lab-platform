@@ -147,7 +147,7 @@ export const mediaManifest = {
     "glass.mp4"
   ],
   "Heart Cushion": [
-    "#ledpillow_#personalizedgifts_#giftsforhim_#lovegift_#giftsforher_#lovegift_#valentinedayspecial.mp4",
+    "heart-cushion-led-pillow.mp4",
     "20ee6bf29266ccd5aa300904ace3c9a4.jpg",
     "7a2e77ac027100aa322eee041de9acd9.jpg",
     "ab966dae3975faae9db9a3cbbb9f0f25.jpg",
@@ -176,7 +176,7 @@ export const mediaManifest = {
     "cc251ee9d999a04cf058601ada39a4ec.jpg"
   ],
   "LED FRame": [
-    "LED_ANNIVERSARY_FRAME_\ud83d\uddbc\ufe0f_._._\ud83e\udd40\ud83d\udc9e_#engraving_#wooden_#woodenengraving_#gift_#acrylicpainting_#giftgallery_#foryou_#acrylicframe_#explore#reelsindia_#.mp4"
+    "led-anniversary-frame.mp4"
   ],
   "Lather bag cover": [
     "IMG-20260428-WA0000.jpg",
