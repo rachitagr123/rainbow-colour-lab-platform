@@ -48,9 +48,9 @@ export default function HomePage() {
           <figure className="hero-logo-card">
             <ZoomableImage src={homeHeroLogo} alt={`${business.brand} logo artwork`} loading="eager" />
           </figure>
-          <div className="hero-collage hero-collage--six" aria-hidden="true">
-            {homeHeroCollage.map((src) => (
-              <ZoomableImage key={src} src={src} alt="" loading="lazy" />
+          <div className="hero-collage hero-collage--six" aria-label="Featured products">
+            {homeHeroCollage.map((src, index) => (
+              <ZoomableImage key={src} src={src} alt="" loading={index === 0 ? 'eager' : 'lazy'} />
             ))}
           </div>
         </div>

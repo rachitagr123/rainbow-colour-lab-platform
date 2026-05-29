@@ -25,8 +25,8 @@ export const business = {
 export const homeHeroLogo = images2('Home page', 'Rachit - 01.png')
 
 export const homeHeroCollage = [
-  images2('Home page', 'upper section', '11dd80f990af41468692b5a49d2e20eb.jpg'),
-  images2('Home page', 'upper section', '1.jpeg'),
+  images2('Home page', 'upper section', '4.jpg'),
+  images2('Home page', 'upper section', 'Digital-Print-Glass-5.jpg'),
   images2('Home page', 'upper section', '218a72c4a23114ce896210679c8f5c99.jpg'),
   images2('Home page', 'upper section', 'a220c3c5762981505c8ac07ebb7bc068.jpg'),
   images2('Home page', 'upper section', '17a0a0019381d063d867856f9734afab.jpg'),
@@ -90,7 +90,7 @@ export const homeHighlights: HomeHighlight[] = [
   {
     title: 'Photobook & album kits',
     description: '5-in-1 combos, acrylic boxes, wedding-ready packaging.',
-    image: images2('Home page', 'Photobook and album kits', 'Screenshot 2026-05-27 at 10.18.39 PM.png'),
+    image: images2('Home page', 'Photobook and album kits', '3.webp'),
     to: '/services#photobook-album',
   },
   {

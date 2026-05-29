@@ -15,6 +15,18 @@ export default function IndustrialPage() {
         </p>
       </section>
 
+      <section className="section-headline machine-catalog-head">
+        <h3>Reconditioned HP Indigo lineup</h3>
+        <p>
+          Browse reconditioned models with machine photos and specification sheets. For most models, full technical
+          details are shown in the details image.
+        </p>
+      </section>
+
+      <section className="machine-catalog-section">
+        <MachineCatalogPanel />
+      </section>
+
       <section className="imetto-panel">
         <div>
           <p className="tag">Enlargement workflow</p>
@@ -38,18 +50,6 @@ export default function IndustrialPage() {
         <video className="imetto-video" controls playsInline preload="metadata" muted poster={imettoPoster}>
           <source src={`${imettoVideo}#t=0.001`} />
         </video>
-      </section>
-
-      <section className="section-headline machine-catalog-head">
-        <h3>Reconditioned HP Indigo lineup</h3>
-        <p>
-          Browse reconditioned models with machine photos and specification sheets. For most models, full technical
-          details are shown in the details image.
-        </p>
-      </section>
-
-      <section className="machine-catalog-section">
-        <MachineCatalogPanel />
       </section>
     </main>
   )

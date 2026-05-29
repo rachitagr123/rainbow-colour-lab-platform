@@ -1,34 +1,62 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useSearchParams } from 'react-router-dom'
 import { LightboxProvider } from './ImageLightbox'
+import VibrantHomeNav from './VibrantHomeNav'
+import { isVibrantLayoutPreview } from '../config/layoutPreview'
 import { business } from '../data/siteData'
 
 const year = new Date().getFullYear()
 
 export default function Layout() {
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const isHome = location.pathname === '/'
+  const vibrantPreview = isVibrantLayoutPreview(searchParams)
+  const shellClass = vibrantPreview
+    ? 'shell vibrant-preview'
+    : isHome
+      ? 'shell'
+      : 'shell inner-shell'
+
+  const pageContent =
+    vibrantPreview && !isHome ? (
+      <div className="vibrant-inner-shell">
+        <div className="vibrant-inner-shell__band">
+          <div className="vibrant-inner-shell__backdrop" aria-hidden="true" />
+          <div className="vibrant-inner-shell__band-inner">
+            <VibrantHomeNav />
+          </div>
+        </div>
+        <div className="vibrant-inner-shell__body">
+          <Outlet />
+        </div>
+      </div>
+    ) : (
+      <Outlet />
+    )
 
   return (
     <LightboxProvider>
-    <div className={isHome ? 'shell' : 'shell inner-shell'}>
-      <header className="site-header">
-        <div>
-          <p className="firm">{business.firmName}</p>
-          <h1>{business.brand}</h1>
-        </div>
-        <nav>
-          <NavLink to="/" end>
-            Home
-          </NavLink>
-          <NavLink to="/services">Services</NavLink>
-          <NavLink to="/gallery">Gallery</NavLink>
-          <NavLink to="/industrial">Machine sales</NavLink>
-          <NavLink to="/about">About</NavLink>
-          <NavLink to="/contact">Contact</NavLink>
-        </nav>
-      </header>
+    <div className={shellClass}>
+      {vibrantPreview ? null : (
+        <header className="site-header">
+          <div>
+            <p className="firm">{business.firmName}</p>
+            <h1>{business.brand}</h1>
+          </div>
+          <nav>
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+            <NavLink to="/services">Services</NavLink>
+            <NavLink to="/gallery">Gallery</NavLink>
+            <NavLink to="/industrial">Machine sales</NavLink>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
+          </nav>
+        </header>
+      )}
 
-      <Outlet />
+      {pageContent}
 
       <footer className="site-footer" role="contentinfo">
         <div className="site-footer-inner">
