@@ -1,12 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { ZoomableImage } from '../components/ImageLightbox'
-import {
-  normalizeSearchText,
-  sectionSearchBlob,
-  serviceCategories,
-  serviceSections,
-  type ServiceCategoryFilter,
-} from '../data/servicesCatalog'
+import { serviceCategories, serviceSections, type ServiceCategoryFilter } from '../data/servicesCatalog'
 
 const MEDIA_PAGE_SIZE = 12
 
@@ -99,17 +94,35 @@ function MediaGrid({
 }
 
 export default function ServicesPage() {
+  const location = useLocation()
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategoryFilter>('All')
-  const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
-    const normalizedQuery = normalizeSearchText(query)
     return serviceSections.filter((section) => {
-      const categoryMatch = selectedCategory === 'All' || section.category === selectedCategory
-      const queryMatch = !normalizedQuery || sectionSearchBlob(section).includes(normalizedQuery)
-      return categoryMatch && queryMatch
+      return selectedCategory === 'All' || section.category === selectedCategory
     })
-  }, [query, selectedCategory])
+  }, [selectedCategory])
+
+  useEffect(() => {
+    const hash = location.hash.replace(/^#/, '')
+    if (!hash) return
+
+    const section = serviceSections.find((entry) => entry.id === hash)
+    if (section) {
+      setSelectedCategory('All')
+    }
+  }, [location.pathname, location.hash])
+
+  useEffect(() => {
+    const hash = location.hash.replace(/^#/, '')
+    if (!hash || !filtered.some((section) => section.id === hash)) return
+
+    const timeoutId = window.setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [location.hash, filtered])
 
   return (
     <main>
@@ -122,12 +135,6 @@ export default function ServicesPage() {
       </section>
 
       <section className="controls">
-        <input
-          type="search"
-          value={query}
-          placeholder="Search services, e.g. mug, album, lamination, restoration"
-          onChange={(e) => setQuery(e.target.value)}
-        />
         <div className="chip-row">
           {serviceCategories.map((category) => (
             <button
@@ -187,7 +194,7 @@ export default function ServicesPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="empty-services">No services match your filters. Try another category or clear the search.</p>
+        <p className="empty-services">No services in this category.</p>
       ) : null}
     </main>
   )
