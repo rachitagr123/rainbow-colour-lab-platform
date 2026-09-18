@@ -81,6 +81,7 @@ export function ZoomableImage({
   return (
     <img
       {...props}
+      decoding={props.decoding ?? 'async'}
       className={[props.className, 'zoomable-img'].filter(Boolean).join(' ')}
       role="button"
       tabIndex={0}

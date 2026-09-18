@@ -144,8 +144,7 @@
 .vibrant-preview .contact-grid input,
 .vibrant-preview .contact-grid select,
 .vibrant-preview .contact-grid textarea,
-.vibrant-preview .machine-panel select,
-.vibrant-preview .machine-catalog-panel select {
+.vibrant-preview .machine-panel select {
   border-color: #e8e4f4;
 }
 
@@ -153,8 +152,7 @@
 .vibrant-preview .contact-grid input:focus,
 .vibrant-preview .contact-grid select:focus,
 .vibrant-preview .contact-grid textarea:focus,
-.vibrant-preview .machine-panel select:focus,
-.vibrant-preview .machine-catalog-panel select:focus {
+.vibrant-preview .machine-panel select:focus {
   outline: 2px solid #c4b5fd;
   outline-offset: 1px;
   border-color: #a78bfa;

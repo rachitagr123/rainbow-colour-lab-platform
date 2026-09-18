@@ -14,13 +14,16 @@ export default function MachineCatalogPanel({ compact = false }: MachineCatalogP
   return (
     <div className={compact ? 'machine-catalog-panel machine-catalog-panel--compact' : 'machine-catalog-panel'}>
       <label htmlFor="machine-select">Choose model</label>
-      <select id="machine-select" value={selectedId} onChange={(event) => setSelectedId(event.target.value)}>
-        {machineCatalog.map((machine) => (
-          <option key={machine.id} value={machine.id}>
-            {machine.model}
-          </option>
-        ))}
-      </select>
+      <p className="machine-select-hint">Open the list below to browse reconditioned HP Indigo machines</p>
+      <div className="machine-select-wrap">
+        <select id="machine-select" value={selectedId} onChange={(event) => setSelectedId(event.target.value)}>
+          {machineCatalog.map((machine) => (
+            <option key={machine.id} value={machine.id}>
+              {machine.model}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <h4>{selected.model}</h4>
       <p>{selected.summary}</p>

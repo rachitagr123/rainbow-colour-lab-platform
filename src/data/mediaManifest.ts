@@ -75,7 +75,6 @@ export const mediaManifest = {
   ],
   "Album video": [
     "VID-20260502-WA0003.mp4",
-    "VID_20260214_130057.mp4"
   ],
   "About us": [
     "IMG-20250911-WA0021.jpg"
@@ -303,42 +302,7 @@ export const mediaManifest = {
     "eca68b74235209fc72e17c7b5a9815a0.jpg"
   ],
   "video": [
-    "10_15_size_all_over_India_shipping_available_Only_gor_premium_customers_only..__E2_9D_A4_EF_B8_8F.mp4",
-    "24_36..frame_size....._8k_price_..._Follow_and_support.mp4",
-    "321852244_6376652959096631_4262682786081525970_n.mp4.mp4",
-    "A_smile_happens_in_a_Flash_2C_but_it_E2_80_99s_Memory_can_last_a_lifetime_E2_8F_B3__Shop_C2_A0_40the_unique_cart_C2_A0a_unique_personalized_gift_to_show_the_one_you_love_how_much_t.mp4",
-    "Creative_gifts..._follow_only.mp4",
-    "Customise_mugs__F0_9F_91_88___Instagram.mp4",
-    "Follow_and_support.mp4",
-    "Follow_for_blessings..._\ud83d\ude0d.mp4",
-    "Follow_for_more...mp4",
-    "Follow_for_updates.mp4",
-    "Frame_Arts__F0_9F_92_97_on_Instagram___E2_80_9CCustomized_Photo_Frame_Available__F0_9F_92_97DM_us_for_More_Information__E2_9C_85__23affordable__23affortableprice__23foryoupage__23birthdaygift__23p.mp4",
-    "Get_Your_Customized_Frame_for_Your_special_day_and_make_the_moment_more_special__F0_9F_98_8D__Dm_us__40giftinghappiness_4u____23customizedframe__23customizedgifts__23cu.mp4",
-    "Get_customised_heart_shape_pillow_available_Available_and_all_over_Karnataka_shipping_available.mp4",
-    "Inner_Rim_Color_mug(360p).mp4",
-    "Inner_colour_Sublimation_mug(240p).mp4",
-    "LED_Cushion___Customised_Cushion_Online___Print_Photo.in(480p).mp4",
     "Led_Heart_Cushion_\u2764_\ud83d\udc99_\ud83d\udc9c(720p).mp4",
-    "Made_these_two_pretty_Frames_for_a_customer__E2_9D_A4_EF_B8_8F_F0_9F_A6_8B__Gift_these_beautiful_custom_made__frames_to_your_loved_ones__E2_9D_A4_EF_B8_8F__Dm_To_Order__21_21__._._._._.__23customise.mp4",
-    "Mega_Photo_Album_For_Couples.__Rs.439___Free_Shipping___Includes_4_pages_for_maps_2C_4_spotify_dedications_2C_2_love_letters_2C_1_cover_page_2C_1_collage_page.mp4",
-    "Memory_Book_1.0__Including__E2_96_AA_EF_B8_8F1_Theme_Page__E2_96_AA_EF_B8_8F9_Photos___E2_96_AA_EF_B8_8F10_Messages___Note_-_This_Album_Contains_Laminated_Photo_Print_Outs_and_These_photo_Prints_are.mp4",
-    "Normal_coffe_mug_with_photo_250_-_Rs_All_over_india_shipping_available.mp4",
-    "Photo_albums_for_Rs.199_with_free_shipping._The_album_can_be_customised_with_your_photos,_it_comes_with_a_translucent_cover_and_blue_back_plastic_cove.mp4",
-    "Photo_frames_available__F0_9F_93_8D__Dm_to_order__23polaroids__23photoframe__23photobook__23photoalbum__23gifts_F0_9F_8E_81__23giftideas__23giftideas__23photoshop__23photoframes.mp4",
-    "Spotify_Vibes_Music_in_your_pocket_Keychain___..__..To_place_your_order,_please_direct_message_us_or_reach_out_via_WhatsApp_at_7700043200._Alternative.mp4",
-    "You_name_it_2C_we_make_it_21_Aesthetic_Frames__F0_9F_96_BC_EF_B8_8F__._._._._Follow__40aparnadesigns__F0_9F_92_95.mp4",
-    "_F0_9F_A4_A9_Surprise_your_loved_ones_with_a_personalized_magic_Mug__F0_9F_A4_A9___F0_9F_94_B9_Kindly_send_us_direct_message_on_Instagram_or_WhatsApp_9014668584_for_all_the_details.mp4",
-    "customised_calendar_theme_mug_F0_9F_98_8D_F0_9F_98_8D___F0_9F_8C_9FScope_of_any_photo__2C_name__2C_text_and_date_on_calendar_can_be_customised___F0_9F_8C_9FCapacity-330ml___F0_9F_8C_9FMaterial-Ceremic___F0_9F_8C_9F.mp4",
-    "ins_1691295974920.mp4",
-    "ins_1695007669254.mp4",
-    "ins_1700897151251.mp4",
-    "ins_1701705442041.mp4",
-    "ins_1701868719252.mp4",
-    "ins_1710877988168.mp4",
-    "instagram_1689488969419.mp4",
-    "instagram_1689863766097.mp4",
-    "magic_mug(240p).mp4"
   ]
 } as const
 
