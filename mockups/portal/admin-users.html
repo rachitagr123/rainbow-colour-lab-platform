@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Admin · Users &amp; passwords · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+    .u { display: flex; align-items: center; gap: .75rem; }
+    .u i { font-style: normal; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--btn-fill); font-weight: 700; font-size: .85rem; flex: none; }
+    .u i.staff { background: linear-gradient(135deg, #8b5cf6, #2563eb); }
+    .u b { display: block; color: var(--ink); }
+    .u span { color: var(--muted); font-size: .8rem; }
+    .muted { color: var(--muted); font-size: .84rem; }
+    .actions { display: flex; gap: .4rem; justify-content: flex-end; }
+    .perm { display: grid; gap: .55rem; margin-top: .3rem; }
+    .perm div { display: flex; justify-content: space-between; align-items: center; padding: .6rem .8rem; border: 1px solid var(--line); border-radius: 12px; font-size: .88rem; }
+    .perm b { color: var(--ink); font-weight: 600; }
+    .yes { color: var(--green); font-weight: 700; }
+    .no { color: var(--red); font-weight: 700; }
+    .pw { position: relative; }
+    .pw span { position: absolute; right: .9rem; top: 50%; transform: translateY(-50%); font-size: .8rem; font-weight: 700; color: var(--violet); }
+    .meter { display: flex; gap: .3rem; margin-top: .45rem; }
+    .meter span { flex: 1; height: 5px; border-radius: 99px; background: var(--line); }
+    .meter span.on { background: var(--green); }
+    .hint { font-size: .78rem; color: var(--muted); margin-top: .35rem; }
+    .log td { font-size: .86rem; }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 7 · Admin · Users &amp; passwords</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Admin panel</span></div></div>
+      <div class="topbar__right">
+        <div class="user-chip"><i>AD</i>admin <span class="role role--admin">Admin</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="side">
+      <div class="side__label">Albums</div>
+      <a href="/mockups/portal/admin-orders.html"><i>📋</i>Orders by date</a>
+      <a href="/mockups/portal/staff-new-album.html"><i>＋</i>New album order</a>
+      <div class="side__label">Setup</div>
+      <a href="/mockups/portal/admin-customer-rates.html"><i>👥</i>Customers &amp; rates</a>
+      <a class="active" href="#"><i>🔑</i>Users &amp; passwords</a>
+      <div class="side__label">Reports</div>
+      <a href="/mockups/portal/admin-monthly.html"><i>📈</i>Monthly summary</a>
+    </nav>
+
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>Users &amp; passwords</h1>
+          <p>Who can sign in to Album Desk, what they can see, and their passwords.</p>
+        </div>
+        <a class="btn btn--grad" href="#">+ Add user</a>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="card">
+            <div class="card__head"><h2>Accounts</h2><small>2 users</small></div>
+            <table>
+              <thead><tr><th>User</th><th>Role</th><th>Last sign-in</th><th>Status</th><th class="right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="u"><i>AD</i><div><b>admin</b><span>Owner</span></div></div></td>
+                  <td><span class="role role--admin">Admin</span></td>
+                  <td class="muted">Today, 11:02 PM</td>
+                  <td><span class="pill pill--green">Active</span></td>
+                  <td><div class="actions"><a class="btn btn--sm" href="#">Change password</a></div></td>
+                </tr>
+                <tr>
+                  <td><div class="u"><i class="staff">RC</i><div><b>rcolourlab</b><span>Counter staff</span></div></div></td>
+                  <td><span class="role">Staff</span></td>
+                  <td class="muted">Today, 6:42 PM</td>
+                  <td><span class="pill pill--green">Active</span></td>
+                  <td><div class="actions"><a class="btn btn--sm" href="#">Reset password</a><a class="btn btn--sm" href="#">Disable</a></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card__head"><h2>What each role can do</h2></div>
+            <table>
+              <thead><tr><th>Permission</th><th class="right">Staff</th><th class="right">Admin</th></tr></thead>
+              <tbody>
+                <tr><td>Enter new album orders</td><td class="right yes">✓</td><td class="right yes">✓</td></tr>
+                <tr><td>Print slip &amp; send on WhatsApp (no prices)</td><td class="right yes">✓</td><td class="right yes">✓</td></tr>
+                <tr><td>Add a new customer (name + phone)</td><td class="right yes">✓</td><td class="right yes">✓</td></tr>
+                <tr><td>See rates, amounts &amp; totals</td><td class="right no">✕</td><td class="right yes">✓</td></tr>
+                <tr><td>Edit customer rate lists</td><td class="right no">✕</td><td class="right yes">✓</td></tr>
+                <tr><td>Print all albums for a date (with prices)</td><td class="right no">✕</td><td class="right yes">✓</td></tr>
+                <tr><td>Monthly summary</td><td class="right no">✕</td><td class="right yes">✓</td></tr>
+                <tr><td>Manage users &amp; passwords</td><td class="right no">✕</td><td class="right yes">✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card__head"><h2>Recent sign-ins</h2><small>Last 7 days</small></div>
+            <table class="log">
+              <thead><tr><th>When</th><th>User</th><th>Device</th><th>Result</th></tr></thead>
+              <tbody>
+                <tr><td>04 Nov, 11:02 PM</td><td>admin</td><td class="muted">Chrome · MacBook</td><td><span class="pill pill--green">Signed in</span></td></tr>
+                <tr><td>04 Nov, 10:15 AM</td><td>rcolourlab</td><td class="muted">Chrome · Counter PC</td><td><span class="pill pill--green">Signed in</span></td></tr>
+                <tr><td>03 Nov, 10:09 AM</td><td>rcolourlab</td><td class="muted">Chrome · Counter PC</td><td><span class="pill pill--amber">Wrong password</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><h2>Reset password · rcolourlab</h2></div>
+          <div class="grid">
+            <div class="field">
+              <label>Login ID</label>
+              <input class="input readonly" value="rcolourlab" />
+            </div>
+            <div class="field">
+              <label>New password</label>
+              <div class="pw"><input class="input focus" type="password" value="Rainbow@2026" /><span>Show</span></div>
+              <div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+              <div class="hint">Good · at least 8 characters with a number</div>
+            </div>
+            <div class="field">
+              <label>Confirm new password</label>
+              <input class="input" type="password" value="Rainbow@2026" />
+            </div>
+            <div class="perm">
+              <div><b>Sign out from all devices</b><span class="yes">On</span></div>
+              <div><b>Ask to change at next sign-in</b><span class="muted">Off</span></div>
+            </div>
+            <a class="btn btn--grad btn--block" href="#">Save new password</a>
+            <a class="btn btn--text" href="#" style="justify-self:center">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

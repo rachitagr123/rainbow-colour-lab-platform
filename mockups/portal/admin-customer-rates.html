@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Admin · Customers &amp; rates · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .cols { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+    .list { padding: .9rem; }
+    .list .input { border-radius: 999px; margin-bottom: .7rem; }
+    .c { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .7rem .75rem; border-radius: 12px; }
+    .c b { display: block; color: var(--ink); font-size: .92rem; }
+    .c span { color: var(--muted); font-size: .78rem; }
+    .c.active { background: var(--soft); box-shadow: inset 3px 0 0 var(--pink); }
+    .c em { font-style: normal; font-size: .75rem; font-weight: 700; color: var(--muted); }
+    .profile { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 1rem; }
+    .rates-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .9rem; }
+    .tabs { display: flex; gap: .4rem; }
+    .rate-input { width: 96px; padding: .45rem .6rem; border: 1px solid var(--line-2); border-radius: 10px; font: inherit; font-weight: 700; color: var(--ink); text-align: right; background: #fff; }
+    .rate-input.changed { border-color: #a78bfa; background: var(--soft); }
+    .default { color: var(--muted); font-size: .82rem; }
+    .group-row td { background: #fcfbff; font-size: .72rem; font-weight: 800; letter-spacing: .06em; color: var(--violet); text-transform: uppercase; }
+    .save-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 5/6 · Admin · Customers &amp; rate list</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Admin panel</span></div></div>
+      <div class="topbar__right">
+        <div class="user-chip"><i>AD</i>admin <span class="role role--admin">Admin</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="side">
+      <div class="side__label">Albums</div>
+      <a href="/mockups/portal/admin-orders.html"><i>📋</i>Orders by date</a>
+      <a href="/mockups/portal/staff-new-album.html"><i>＋</i>New album order</a>
+      <div class="side__label">Setup</div>
+      <a class="active" href="#"><i>👥</i>Customers &amp; rates</a>
+      <a href="/mockups/portal/admin-users.html"><i>🔑</i>Users &amp; passwords</a>
+      <div class="side__label">Reports</div>
+      <a href="/mockups/portal/admin-monthly.html"><i>📈</i>Monthly summary</a>
+    </nav>
+
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>Customers &amp; rate list</h1>
+          <p>Each customer gets their own price per sheet, cover, box and product. New customers start with the default rates.</p>
+        </div>
+        <div style="display:flex;gap:.6rem">
+          <a class="btn" href="#">⬆ Import from Excel</a>
+          <a class="btn btn--grad" href="#">+ Add customer</a>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="card list">
+          <input class="input" placeholder="Search 128 customers…" />
+          <div class="c active"><div><b>Sagar Studio</b><span>94251 63212</span></div><em>46</em></div>
+          <div class="c"><div><b>Moments Photography</b><span>98260 44107</span></div><em>31</em></div>
+          <div class="c"><div><b>Pixel Studio, Katni</b><span>70004 18832</span></div><em>22</em></div>
+          <div class="c"><div><b>Shree Ganesh Digital</b><span>94240 73319</span></div><em>18</em></div>
+          <div class="c"><div><b>Click Art Studio</b><span>88171 20456</span></div><em>12</em></div>
+          <div class="c"><div><b>Sagar Photo Point, Katni</b><span>98270 11288</span></div><em>9</em></div>
+          <div class="c"><div><b>Royal Frames</b><span>79991 63805</span></div><em>7</em></div>
+          <div class="c"><div><b>Walk-in · Rohit Jain</b><span>99930 25760</span></div><em>1</em></div>
+          <p style="text-align:center;margin:.6rem 0 0" class="default">Number = albums so far</p>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card__head"><h2>Sagar Studio</h2><span class="pill pill--green">Active</span></div>
+            <div class="profile">
+              <div class="field"><label>Customer / studio name</label><input class="input" value="Sagar Studio" /></div>
+              <div class="field"><label>WhatsApp number</label><input class="input" value="+91 94251 63212" /></div>
+              <div class="field"><label>City</label><input class="input" value="Jabalpur" /></div>
+              <div class="field"><label>Rate plan</label><select class="input select"><option>Custom</option></select></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="rates-head">
+              <h2 style="margin:0;font-size:1.08rem">Rate list</h2>
+              <div class="tabs">
+                <span class="chip active">All</span><span class="chip">Sheets</span><span class="chip">Cover</span><span class="chip">Box</span><span class="chip">Products</span>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>Item</th><th>Size</th><th>Unit</th><th class="right">Default rate</th><th class="right">Sagar Studio rate</th></tr></thead>
+              <tbody>
+                <tr class="group-row"><td colspan="5">Sheets</td></tr>
+                <tr><td>Normal High Gloss</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹28</td><td class="right"><input class="rate-input changed" value="₹25" /></td></tr>
+                <tr><td>Normal Matt</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹28</td><td class="right"><input class="rate-input changed" value="₹25" /></td></tr>
+                <tr><td>NTR Slim Gloss / Matt</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹32</td><td class="right"><input class="rate-input" value="₹32" /></td></tr>
+                <tr><td>NTR Silky Matt</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹36</td><td class="right"><input class="rate-input changed" value="₹34" /></td></tr>
+                <tr><td>Pearl</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹40</td><td class="right"><input class="rate-input" value="₹40" /></td></tr>
+                <tr><td>Crystal</td><td>12 × 36</td><td>per sheet</td><td class="right default">₹45</td><td class="right"><input class="rate-input" value="₹45" /></td></tr>
+                <tr class="group-row"><td colspan="5">Cover</td></tr>
+                <tr><td>Normal Cover</td><td>12 × 36</td><td>per cover</td><td class="right default">₹250</td><td class="right"><input class="rate-input changed" value="₹225" /></td></tr>
+                <tr><td>Acrylic Cover</td><td>12 × 36</td><td>per cover</td><td class="right default">₹450</td><td class="right"><input class="rate-input" value="₹450" /></td></tr>
+                <tr class="group-row"><td colspan="5">Box</td></tr>
+                <tr><td>Regular with Cover</td><td>12 × 36</td><td>per box</td><td class="right default">₹150</td><td class="right"><input class="rate-input" value="₹150" /></td></tr>
+                <tr class="group-row"><td colspan="5">Products</td></tr>
+                <tr><td>Wall Calendar</td><td>8 × 18</td><td>per piece</td><td class="right default">₹120</td><td class="right"><input class="rate-input" value="₹120" /></td></tr>
+              </tbody>
+            </table>
+            <div class="save-bar">
+              <span class="default">4 rates changed · showing 10 of 38 items</span>
+              <div style="display:flex;gap:.6rem"><a class="btn" href="#">Reset to default</a><a class="btn btn--grad" href="#">Save rates</a></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card__head"><h2>Recent albums</h2><a class="btn btn--text" href="/mockups/portal/admin-orders.html">View all 46 →</a></div>
+            <table>
+              <thead><tr><th>Date</th><th>Order</th><th>Album</th><th>Sheets</th><th class="right">Total</th><th class="right">Balance</th></tr></thead>
+              <tbody>
+                <tr><td>04 Nov 2026</td><td style="color:var(--pink);font-weight:800">#715</td><td>Rahul weds Priya</td><td>30</td><td class="right money">₹1,485</td><td class="right money">₹985</td></tr>
+                <tr><td>04 Nov 2026</td><td style="color:var(--pink);font-weight:800">#712</td><td>Neha &amp; Karan</td><td>36</td><td class="right money">₹2,310</td><td class="right money">₹2,310</td></tr>
+                <tr><td>28 Oct 2026</td><td style="color:var(--pink);font-weight:800">#688</td><td>Mehta reception</td><td>28</td><td class="right money">₹1,320</td><td class="right money">₹0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

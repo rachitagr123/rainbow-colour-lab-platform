@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Checkout · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/shop.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.5rem; align-items: start; }
+    .side { position: sticky; top: 96px; }
+
+    .card__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .card__head h2 { margin: 0; }
+    .card__head h2 span { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .82rem; margin-right: .55rem; font-family: Inter, sans-serif; vertical-align: 2px; }
+    .card__head a { color: var(--r-sky); font-weight: 600; font-size: .88rem; }
+
+    .check { display: flex; align-items: center; gap: .6rem; color: var(--muted); font-size: .9rem; }
+    .check i { width: 20px; height: 20px; border-radius: 6px; background: var(--r-green); color: #fff; display: grid; place-items: center; font-style: normal; font-size: .75rem; }
+
+    .pickup { display: flex; gap: 1rem; align-items: center; padding: 1rem; border-radius: 16px; background: var(--soft); }
+    .pickup img { width: 84px; height: 64px; border-radius: 12px; object-fit: cover; flex: none; }
+    .pickup div { font-size: .9rem; color: var(--muted); line-height: 1.5; }
+    .pickup strong { color: var(--ink); display: block; }
+
+    .pay-opt { display: grid; gap: .7rem; }
+    .pay-opt .opt { align-items: center; }
+    .upi-logos { display: flex; gap: .35rem; }
+    .upi-logos span { padding: .2rem .5rem; border-radius: 6px; background: #f1f1f6; font-size: .72rem; font-weight: 700; color: var(--muted); }
+
+    .upi-box { display: grid; grid-template-columns: 150px 1fr; gap: 1.2rem; align-items: center; margin: .2rem 0 .3rem; padding: 1.1rem; border-radius: 16px; border: 1px dashed #f3b5d6; background: #fff; }
+    .qr { width: 150px; height: 150px; border-radius: 14px; background:
+      conic-gradient(from 90deg at 18% 18%, #1e1b4b 25%, transparent 0) 0 0 / 20px 20px,
+      linear-gradient(#fff, #fff);
+      border: 8px solid #fff; box-shadow: inset 0 0 0 2px var(--line); position: relative; }
+    .qr::after { content: "UPI"; position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); background: #fff; padding: .25rem .45rem; border-radius: 8px; font-weight: 800; font-size: .8rem; color: var(--r-pink); }
+    .upi-box p { margin: 0 0 .7rem; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .or { text-align: center; color: var(--muted); font-size: .8rem; margin: .5rem 0; }
+
+    .mini-item { display: flex; gap: .8rem; align-items: center; padding: .55rem 0; }
+    .mini-item img { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; flex: none; }
+    .mini-item div { flex: 1; font-size: .9rem; }
+    .mini-item div span { display: block; color: var(--muted); font-size: .8rem; }
+    .mini-item b { font-weight: 600; }
+
+    .secure { margin-top: .8rem; text-align: center; color: var(--muted); font-size: .8rem; }
+
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+      .side { position: static; }
+      .upi-box { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Shop 3/3 · Checkout &amp; payment · prices are placeholders</div>
+  <div class="rainbow-bar"></div>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="nav__logo" href="/mockups/home-v1.html"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" /></a>
+      <nav class="nav__links">
+        <a href="/mockups/home-v1.html">Home</a>
+        <a href="#">Services</a>
+        <a class="active" href="/mockups/shop-mug.html">Shop</a>
+        <a href="#">Gallery</a>
+        <a href="#">Machine sales</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="nav__right">
+        <a class="cart-btn" href="/mockups/shop-cart.html">🛒 Cart <span class="count">2</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="stepper">
+      <div class="step done"><i>✓</i>Cart</div>
+      <div class="step-line done"></div>
+      <div class="step done"><i>✓</i>Details</div>
+      <div class="step-line done"></div>
+      <div class="step current"><i>3</i>Payment</div>
+      <div class="step-line"></div>
+      <div class="step"><i>4</i>Done</div>
+    </div>
+
+    <h1 class="page-title">Checkout</h1>
+
+    <div class="layout">
+      <div>
+        <div class="card">
+          <div class="card__head"><h2><span>1</span>Your details</h2><a href="#">Edit</a></div>
+          <div class="stack">
+            <div class="grid-2">
+              <div class="field"><label>Full name</label><input class="input" value="Priya Sharma" /></div>
+              <div class="field"><label>Mobile (WhatsApp) <small>· for design preview</small></label><input class="input focus" value="+91 98765 43210" /></div>
+            </div>
+            <div class="field"><label>Email <small>· optional, for receipt</small></label><input class="input" placeholder="you@example.com" /></div>
+            <div class="check"><i>✓</i>Send my order updates and design preview on WhatsApp</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><h2><span>2</span>Pickup</h2><a href="/mockups/shop-cart.html">Change to delivery</a></div>
+          <div class="pickup">
+            <img src="/images%202/Home%20page/shop_image.jpeg" alt="Shop" />
+            <div><strong>Rainbow Colour Lab, Naya Bazar</strong>21 Naya Bazar, Malviya Chowk, Jabalpur 482001<br />Ready for pickup: tomorrow after 5 PM</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><h2><span>3</span>Payment</h2></div>
+          <div class="pay-opt">
+            <div class="opt selected">
+              <div class="opt__radio"></div>
+              <div class="opt__text"><strong>UPI</strong><span>Pay with any UPI app</span></div>
+              <div class="upi-logos"><span>GPay</span><span>PhonePe</span><span>Paytm</span></div>
+            </div>
+
+            <div class="upi-box">
+              <div class="qr"></div>
+              <div>
+                <p><b style="color:var(--ink)">Scan with any UPI app</b> or enter your UPI ID below. The order is confirmed as soon as payment goes through.</p>
+                <div class="or">— or —</div>
+                <div class="coupon" style="display:flex;gap:.5rem">
+                  <input class="input" placeholder="yourname@okaxis" style="flex:1" />
+                  <button class="btn btn--ghost">Verify</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="opt">
+              <div class="opt__radio"></div>
+              <div class="opt__text"><strong>Debit / credit card</strong><span>Visa, Mastercard, RuPay</span></div>
+            </div>
+            <div class="opt">
+              <div class="opt__radio"></div>
+              <div class="opt__text"><strong>Net banking</strong><span>All major Indian banks</span></div>
+            </div>
+            <div class="opt">
+              <div class="opt__radio"></div>
+              <div class="opt__text"><strong>Pay at shop on pickup</strong><span>Cash or UPI when you collect · design starts after confirmation call</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="card">
+          <h2>Order summary</h2>
+          <div class="mini-item">
+            <img src="/images%202/Normal%20mug/08b5829c7d1a89fb5b9e09c0d3f960cb.jpg" alt="" />
+            <div>Classic photo mug × 2<span>3 photos · with message</span></div>
+            <b>₹598</b>
+          </div>
+          <div class="mini-item">
+            <img src="/images%202/Magic%20mug/new%20magic%20mug.jpg" alt="" />
+            <div>Magic mug × 1<span>1 photo</span></div>
+            <b>₹449</b>
+          </div>
+          <div style="border-top:1px solid var(--line);margin:.8rem 0 .3rem"></div>
+          <div class="summary-row"><span>Subtotal</span><b>₹1,047</b></div>
+          <div class="summary-row"><span>Pickup</span><b>Free</b></div>
+          <div class="summary-row discount"><span>RAINBOW10</span><b>− ₹105</b></div>
+          <div class="summary-row total"><span>To pay</span><b>₹942</b></div>
+
+          <a class="btn btn--pink btn--lg btn--block" href="#" style="margin-top:1.2rem">Pay ₹942 securely</a>
+          <div class="secure">🔒 Payments processed securely by Razorpay</div>
+
+          <div class="note" style="margin-top:1.1rem"><span>💬</span><span>After payment we'll WhatsApp you a design preview. Printing starts only after you approve it.</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" />
+      <span>21 Naya Bazar, Malviya Chowk, Jabalpur · +91 94253 24286</span>
+    </div>
+  </footer>
+  <div class="rainbow-bar"></div>
+</body>
+</html>

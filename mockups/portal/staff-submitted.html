@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Order submitted · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .layout { display: grid; grid-template-columns: 380px 1fr; gap: 1.5rem; align-items: start; }
+    .done { text-align: center; padding: 1.8rem 1.4rem; }
+    .done__icon { width: 64px; height: 64px; margin: 0 auto .9rem; border-radius: 50%; background: var(--btn-fill); color: #fff; display: grid; place-items: center; font-size: 1.8rem; box-shadow: 0 10px 24px rgba(236,72,153,.3); }
+    .done h2 { margin: 0; font-family: Georgia, serif; font-size: 1.6rem; }
+    .done p { color: var(--muted); margin: .4rem 0 0; }
+    .steps { display: grid; gap: .6rem; margin-top: 1.2rem; text-align: left; }
+    .st { display: flex; gap: .75rem; align-items: center; padding: .8rem .9rem; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+    .st i { flex: none; font-style: normal; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #dcfce7; color: var(--green); font-weight: 800; }
+    .st b { display: block; color: var(--ink); font-size: .92rem; }
+    .st span { color: var(--muted); font-size: .8rem; }
+    .actions { display: grid; gap: .6rem; margin-top: 1.2rem; }
+    .preview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
+    .preview-head h3 { margin: 0; font-size: 1rem; }
+    .paper { background: #ece9f5; border-radius: 18px; padding: 1.6rem; }
+    .slip { max-width: 560px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 3/6 · Staff · After submit (slip has no rates)</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Indigo Album (Collection)</span></div></div>
+      <div class="topbar__right">
+        <a class="btn btn--sm" href="#">Today's orders (9)</a>
+        <div class="user-chip"><i>RC</i>rcolourlab <span class="role">Staff</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="layout">
+      <div class="card done">
+        <div class="done__icon">✓</div>
+        <h2>Order #715 saved</h2>
+        <p>Sagar Studio · Rahul weds Priya · 30 sheets</p>
+
+        <div class="steps">
+          <div class="st"><i>✓</i><div><b>Saved to database</b><span>04 Nov 2026, 6:42 PM · with customer rates</span></div></div>
+          <div class="st"><i>✓</i><div><b>Sent to printer</b><span>Slip printed (no rates)</span></div></div>
+          <div class="st"><i>✓</i><div><b>WhatsApp delivered</b><span>PDF sent to +91 94251 63212</span></div></div>
+        </div>
+
+        <div class="actions">
+          <a class="btn btn--grad btn--lg" href="/mockups/portal/staff-new-album.html">+ New album order</a>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+            <a class="btn" href="#">🖨 Print again</a>
+            <a class="btn btn--wa" href="#">Resend WhatsApp</a>
+          </div>
+          <a class="btn btn--text" href="#">Edit this order</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="preview-head"><h3>Slip preview — what the customer receives</h3><span class="pill pill--grey">A5 · no prices</span></div>
+        <div class="paper">
+          <div class="slip">
+            <div class="slip__head">
+              <img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" />
+              <div class="addr">21 Naya Bazar, Malviya Chowk, Jabalpur (M.P.) 482001<br />Mob: 94253 24286, 79876 27054 · rcolourlab123@gmail.com</div>
+            </div>
+            <div class="slip__title">INDIGO ALBUM (COLLECTION)</div>
+            <div class="slip__meta">
+              <div>Name: <b>Sagar Studio</b></div><div style="text-align:right">Order No: <b style="color:#dc2626">715</b></div>
+              <div>Album: <b>Rahul weds Priya</b></div><div style="text-align:right">Date: <b>04/11/2026</b></div>
+              <div>Mob: <b>94251 63212</b></div>
+            </div>
+            <table>
+              <thead><tr><th>Particular</th><th>Size</th><th class="right">Qty</th></tr></thead>
+              <tbody>
+                <tr class="group"><td colspan="3">SHEETS</td></tr>
+                <tr><td>Normal High Gloss</td><td>12 × 36</td><td class="right">10</td></tr>
+                <tr><td>NTR Silky Matt</td><td>12 × 36</td><td class="right">10</td></tr>
+                <tr><td>Pearl</td><td>12 × 36</td><td class="right">10</td></tr>
+                <tr><td style="font-weight:700">Total sheets</td><td></td><td class="right" style="font-weight:800">30</td></tr>
+                <tr class="group"><td colspan="3">COVER</td></tr>
+                <tr><td>Normal</td><td>12 × 36</td><td class="right">1</td></tr>
+                <tr class="group"><td colspan="3">BOX</td></tr>
+                <tr><td>Regular with Cover</td><td>12 × 36</td><td class="right">1</td></tr>
+                <tr class="group"><td colspan="3">PRODUCTS</td></tr>
+                <tr><td>Wall Calendar</td><td>8 × 18</td><td class="right">1</td></tr>
+              </tbody>
+            </table>
+            <div class="slip__foot">
+              <div class="slip__note"><b>Note:</b> Cover name in gold foil. Delivery before Saturday.</div>
+              <div class="slip__sign">Auth. Signature</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

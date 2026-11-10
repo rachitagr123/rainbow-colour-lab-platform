@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Admin · Orders by date · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .filters { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
+    .date { display: flex; align-items: center; gap: .4rem; padding: .35rem; border: 1px solid var(--line-2); border-radius: 999px; background: #fff; }
+    .date span { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: var(--muted); font-weight: 700; }
+    .date b { color: var(--ink); padding: 0 .4rem; }
+    .search { width: 260px; border-radius: 999px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem; }
+    .cust b { display: block; }
+    .cust span { color: var(--muted); font-size: .8rem; }
+    .muted { color: var(--muted); font-size: .84rem; }
+    .actions { display: flex; gap: .35rem; justify-content: flex-end; }
+    .icon-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); display: grid; place-items: center; background: #fff; font-size: .9rem; }
+    tfoot td { font-weight: 800; background: #fcfbff; border-top: 2px solid var(--line); }
+    .ono { font-weight: 800; color: var(--pink); }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 4/6 · Admin · Orders by date</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Admin panel</span></div></div>
+      <div class="topbar__right">
+        <div class="user-chip"><i>AD</i>admin <span class="role role--admin">Admin</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="side">
+      <div class="side__label">Albums</div>
+      <a class="active" href="#"><i>📋</i>Orders by date</a>
+      <a href="/mockups/portal/staff-new-album.html"><i>＋</i>New album order</a>
+      <div class="side__label">Setup</div>
+      <a href="/mockups/portal/admin-customer-rates.html"><i>👥</i>Customers &amp; rates</a>
+      <a href="/mockups/portal/admin-users.html"><i>🔑</i>Users &amp; passwords</a>
+      <div class="side__label">Reports</div>
+      <a href="/mockups/portal/admin-monthly.html"><i>📈</i>Monthly summary</a>
+    </nav>
+
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>Orders by date</h1>
+          <p>Every album entered on the selected day, with customer rates and totals.</p>
+        </div>
+        <a class="btn btn--grad btn--lg" href="/mockups/portal/admin-print-day.html">🖨 Print all albums for 04 Nov</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>Albums today</span><b>9</b><small>+2 vs yesterday</small></div>
+        <div class="stat"><span>Total sheets</span><b>286</b></div>
+        <div class="stat"><span>Order value</span><b>₹14,920</b></div>
+        <div class="stat"><span>Balance to collect</span><b>₹8,435</b><small style="color:var(--orange)">6 albums unpaid</small></div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="filters">
+            <div class="date"><span>‹</span><b>📅 Wed, 04 Nov 2026</b><span>›</span></div>
+            <input class="input search" placeholder="Search customer or order no." />
+            <select class="input select" style="width:auto;border-radius:999px"><option>All statuses</option></select>
+          </div>
+          <a class="btn btn--sm" href="#">⬇ Export Excel</a>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th><th>Customer</th><th>Album</th><th>Sheets</th><th>Cover / Box</th>
+              <th class="right">Total</th><th class="right">Advance</th><th class="right">Balance</th><th>Status</th><th class="right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ono">#715</td>
+              <td class="cust"><b>Sagar Studio</b><span>94251 63212</span></td>
+              <td>Rahul weds Priya</td>
+              <td><b>30</b> <span class="muted">· Normal HG, NTR Silky, Pearl</span></td>
+              <td class="muted">Normal · Regular box</td>
+              <td class="right money">₹1,485</td><td class="right money">₹500</td><td class="right money">₹985</td>
+              <td><span class="pill pill--amber">In print</span></td>
+              <td><div class="actions"><span class="icon-btn">🖨</span><span class="icon-btn">✎</span></div></td>
+            </tr>
+            <tr>
+              <td class="ono">#714</td>
+              <td class="cust"><b>Moments Photography</b><span>98260 44107</span></td>
+              <td>Aarav 1st birthday</td>
+              <td><b>20</b> <span class="muted">· NTR Heavy Matt</span></td>
+              <td class="muted">3D · —</td>
+              <td class="right money">₹1,250</td><td class="right money">₹1,250</td><td class="right money">₹0</td>
+              <td><span class="pill pill--green">Paid</span></td>
+              <td><div class="actions"><span class="icon-btn">🖨</span><span class="icon-btn">✎</span></div></td>
+            </tr>
+            <tr>
+              <td class="ono">#713</td>
+              <td class="cust"><b>Pixel Studio, Katni</b><span>70004 18832</span></td>
+              <td>Sharma family</td>
+              <td><b>40</b> <span class="muted">· Normal Matt, Metallic Gold</span></td>
+              <td class="muted">Acrylic · Acrylic box</td>
+              <td class="right money">₹2,640</td><td class="right money">₹1,000</td><td class="right money">₹1,640</td>
+              <td><span class="pill pill--violet">New</span></td>
+              <td><div class="actions"><span class="icon-btn">🖨</span><span class="icon-btn">✎</span></div></td>
+            </tr>
+            <tr>
+              <td class="ono">#712</td>
+              <td class="cust"><b>Sagar Studio</b><span>94251 63212</span></td>
+              <td>Neha &amp; Karan</td>
+              <td><b>36</b> <span class="muted">· Crystal, Pearl</span></td>
+              <td class="muted">Leather · Regular box</td>
+              <td class="right money">₹2,310</td><td class="right money">₹0</td><td class="right money">₹2,310</td>
+              <td><span class="pill pill--violet">New</span></td>
+              <td><div class="actions"><span class="icon-btn">🖨</span><span class="icon-btn">✎</span></div></td>
+            </tr>
+            <tr>
+              <td class="ono">#711</td>
+              <td class="cust"><b>Walk-in · Rohit Jain</b><span>99930 25760</span></td>
+              <td>Pre-wedding</td>
+              <td><b>24</b> <span class="muted">· NTR Velvet</span></td>
+              <td class="muted">Sparkle · —</td>
+              <td class="right money">₹1,560</td><td class="right money">₹800</td><td class="right money">₹760</td>
+              <td><span class="pill pill--grey">Ready</span></td>
+              <td><div class="actions"><span class="icon-btn">🖨</span><span class="icon-btn">✎</span></div></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3">5 of 9 shown</td><td>150</td><td></td><td class="right">₹9,245</td><td class="right">₹3,550</td><td class="right">₹5,695</td><td colspan="2"></td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

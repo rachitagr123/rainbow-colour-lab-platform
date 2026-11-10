@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Portal login · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    body { min-height: 100vh; background: var(--backdrop); display: grid; place-items: center; padding: 2rem 1rem; }
+    .login { width: min(440px, 100%); }
+    .login__logo { display: flex; justify-content: center; margin-bottom: 1.4rem; }
+    .login__logo img { width: 230px; height: auto; border-radius: 18px; background: rgba(255,255,255,.92); padding: .6rem 1rem; box-shadow: 0 8px 26px rgba(15,23,42,.08); }
+    .login .card { padding: 2rem 2rem 1.7rem; border-radius: 24px; }
+    .login h1 { margin: 0; font-family: Georgia, serif; font-size: 1.9rem; text-align: center; }
+    .login .sub { margin: .4rem 0 1.6rem; text-align: center; color: var(--muted); }
+    .pw { position: relative; }
+    .pw span { position: absolute; right: .9rem; top: 50%; transform: translateY(-50%); font-size: .8rem; font-weight: 700; color: var(--violet); }
+    .row { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); margin: .2rem 0 1.3rem; }
+    .row label { display: flex; align-items: center; gap: .45rem; }
+    .box { width: 18px; height: 18px; border-radius: 5px; background: var(--btn-fill); color: #fff; display: grid; place-items: center; font-size: .7rem; }
+    .err { display: flex; gap: .5rem; align-items: center; padding: .7rem .9rem; border-radius: 12px; background: #fef2f2; color: var(--red); font-size: .85rem; font-weight: 600; margin-bottom: 1rem; }
+    .foot { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 1.2rem; }
+    .accounts { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-top: 1.3rem; }
+    .acc { padding: .8rem .9rem; border-radius: 14px; border: 1px dashed #d8cdf3; background: rgba(255,255,255,.7); font-size: .8rem; color: var(--muted); }
+    .acc b { display: block; color: var(--ink); font-size: .92rem; margin-bottom: .15rem; }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 1/6 · Login</div>
+  <div class="login">
+    <div class="login__logo"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" /></div>
+    <div class="card">
+      <h1>Album Desk</h1>
+      <p class="sub">Sign in to enter and manage album orders</p>
+
+      <div class="grid">
+        <div class="field">
+          <label>Login ID</label>
+          <input class="input focus" value="rcolourlab" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="pw"><input class="input" type="password" value="password123" /><span>Show</span></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label><span class="box">✓</span>Keep me signed in on this computer</label>
+      </div>
+
+      <a class="btn btn--grad btn--lg btn--block" href="/mockups/portal/staff-new-album.html">Sign in</a>
+      <p class="foot">Forgot password? Ask the admin to reset it.</p>
+    </div>
+
+    <div class="accounts">
+      <div class="acc"><b>rcolourlab</b>Counter staff · enters album orders, no prices</div>
+      <div class="acc"><b>admin</b>Owner · rates, customers, totals &amp; date-wise prints</div>
+    </div>
+  </div>
+</body>
+</html>

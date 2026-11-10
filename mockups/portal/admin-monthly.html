@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Admin · Monthly summary · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .stats { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .month { display: flex; align-items: center; gap: .4rem; padding: .35rem; border: 1px solid var(--line-2); border-radius: 999px; background: #fff; }
+    .month span { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; color: var(--muted); font-weight: 700; }
+    .month b { color: var(--ink); padding: 0 .4rem; }
+    .head-actions { display: flex; gap: .6rem; align-items: center; }
+
+    .chart { display: flex; align-items: flex-end; gap: 6px; height: 190px; padding: 0 .2rem; border-bottom: 1px solid var(--line); }
+    .chart div { flex: 1; border-radius: 6px 6px 0 0; background: var(--btn-fill); opacity: .9; }
+    .chart div.sun { background: #e9e3f7; }
+    .axis { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); padding: .45rem .2rem 0; }
+    .legend { display: flex; gap: 1rem; font-size: .8rem; color: var(--muted); }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; background: var(--btn-fill); }
+    .legend i.sun { background: #e9e3f7; }
+
+    .two { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1rem; margin-top: 1rem; align-items: start; }
+    .two .card + .card { margin-top: 0; }
+    .hbar { display: grid; grid-template-columns: 130px 1fr 54px; gap: .7rem; align-items: center; font-size: .86rem; margin-bottom: .65rem; }
+    .hbar b { color: var(--ink); font-weight: 600; }
+    .hbar .track { height: 10px; border-radius: 99px; background: var(--soft); overflow: hidden; }
+    .hbar .track span { display: block; height: 100%; border-radius: 99px; background: var(--btn-fill); }
+    .hbar em { font-style: normal; text-align: right; font-weight: 700; color: var(--ink); }
+    .sub-label { font-size: .74rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 1.1rem 0 .7rem; }
+    .cust b { display: block; }
+    .cust span { color: var(--muted); font-size: .8rem; }
+    tfoot td { font-weight: 800; background: #fcfbff; border-top: 2px solid var(--line); }
+    .due { color: var(--orange); }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 8 · Admin · Monthly summary</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Admin panel</span></div></div>
+      <div class="topbar__right">
+        <div class="user-chip"><i>AD</i>admin <span class="role role--admin">Admin</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="side">
+      <div class="side__label">Albums</div>
+      <a href="/mockups/portal/admin-orders.html"><i>📋</i>Orders by date</a>
+      <a href="/mockups/portal/staff-new-album.html"><i>＋</i>New album order</a>
+      <div class="side__label">Setup</div>
+      <a href="/mockups/portal/admin-customer-rates.html"><i>👥</i>Customers &amp; rates</a>
+      <a href="/mockups/portal/admin-users.html"><i>🔑</i>Users &amp; passwords</a>
+      <div class="side__label">Reports</div>
+      <a class="active" href="#"><i>📈</i>Monthly summary</a>
+    </nav>
+
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>Monthly summary</h1>
+          <p>Albums, sheets, order value and money still to collect for the month.</p>
+        </div>
+        <div class="head-actions">
+          <div class="month"><span>‹</span><b>📅 October 2026</b><span>›</span></div>
+          <a class="btn" href="#">⬇ Export Excel</a>
+          <a class="btn btn--grad" href="#">🖨 Print summary</a>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>Albums</span><b>214</b><small>+12% vs Sep</small></div>
+        <div class="stat"><span>Sheets printed</span><b>6,420</b><small>+9% vs Sep</small></div>
+        <div class="stat"><span>Order value</span><b>₹3,42,600</b><small>+14% vs Sep</small></div>
+        <div class="stat"><span>Collected</span><b>₹2,71,300</b></div>
+        <div class="stat"><span>Balance to collect</span><b>₹71,300</b><small class="due">38 albums unpaid</small></div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h2>Albums per day</h2>
+          <div class="legend"><span><i></i>Working day</span><span><i class="sun"></i>Sunday</span></div>
+        </div>
+        <div class="chart">
+          <div style="height:52%"></div><div style="height:61%"></div><div style="height:48%"></div><div class="sun" style="height:14%"></div>
+          <div style="height:66%"></div><div style="height:72%"></div><div style="height:58%"></div><div style="height:63%"></div>
+          <div style="height:70%"></div><div style="height:81%"></div><div class="sun" style="height:18%"></div><div style="height:55%"></div>
+          <div style="height:60%"></div><div style="height:74%"></div><div style="height:68%"></div><div style="height:77%"></div>
+          <div style="height:92%"></div><div class="sun" style="height:22%"></div><div style="height:64%"></div><div style="height:71%"></div>
+          <div style="height:86%"></div><div style="height:100%"></div><div style="height:89%"></div><div style="height:76%"></div>
+          <div class="sun" style="height:16%"></div><div style="height:59%"></div><div style="height:62%"></div><div style="height:57%"></div>
+          <div style="height:69%"></div><div style="height:73%"></div><div style="height:66%"></div>
+        </div>
+        <div class="axis"><span>1 Oct</span><span>8</span><span>15</span><span>22</span><span>31 Oct</span></div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <div class="card__head"><h2>Top customers</h2><a class="btn btn--text" href="/mockups/portal/admin-customer-rates.html">All customers →</a></div>
+          <table>
+            <thead><tr><th>Customer</th><th class="right">Albums</th><th class="right">Sheets</th><th class="right">Order value</th><th class="right">Paid</th><th class="right">Balance</th></tr></thead>
+            <tbody>
+              <tr><td class="cust"><b>Sagar Studio</b><span>94251 63212</span></td><td class="right">38</td><td class="right">1,180</td><td class="right money">₹61,450</td><td class="right money">₹48,000</td><td class="right money due">₹13,450</td></tr>
+              <tr><td class="cust"><b>Moments Photography</b><span>98260 44107</span></td><td class="right">27</td><td class="right">860</td><td class="right money">₹47,200</td><td class="right money">₹47,200</td><td class="right money">₹0</td></tr>
+              <tr><td class="cust"><b>Pixel Studio, Katni</b><span>70004 18832</span></td><td class="right">22</td><td class="right">790</td><td class="right money">₹44,880</td><td class="right money">₹30,000</td><td class="right money due">₹14,880</td></tr>
+              <tr><td class="cust"><b>Shree Ganesh Digital</b><span>94240 73319</span></td><td class="right">18</td><td class="right">540</td><td class="right money">₹27,540</td><td class="right money">₹20,000</td><td class="right money due">₹7,540</td></tr>
+              <tr><td class="cust"><b>Click Art Studio</b><span>88171 20456</span></td><td class="right">12</td><td class="right">410</td><td class="right money">₹21,320</td><td class="right money">₹21,320</td><td class="right money">₹0</td></tr>
+            </tbody>
+            <tfoot><tr><td>Top 5 of 41 customers</td><td class="right">117</td><td class="right">3,780</td><td class="right">₹2,02,390</td><td class="right">₹1,66,520</td><td class="right due">₹35,870</td></tr></tfoot>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><h2>What was ordered</h2></div>
+          <p class="sub-label" style="margin-top:0">Sheets by type</p>
+          <div class="hbar"><b>Normal High Gloss</b><div class="track"><span style="width:100%"></span></div><em>1,920</em></div>
+          <div class="hbar"><b>NTR Silky Matt</b><div class="track"><span style="width:60%"></span></div><em>1,150</em></div>
+          <div class="hbar"><b>Normal Matt</b><div class="track"><span style="width:51%"></span></div><em>980</em></div>
+          <div class="hbar"><b>NTR Heavy</b><div class="track"><span style="width:38%"></span></div><em>720</em></div>
+          <div class="hbar"><b>Pearl</b><div class="track"><span style="width:29%"></span></div><em>560</em></div>
+          <div class="hbar"><b>All others</b><div class="track"><span style="width:57%"></span></div><em>1,090</em></div>
+
+          <p class="sub-label">Covers</p>
+          <div class="hbar"><b>Normal</b><div class="track"><span style="width:100%"></span></div><em>118</em></div>
+          <div class="hbar"><b>3D</b><div class="track"><span style="width:35%"></span></div><em>41</em></div>
+          <div class="hbar"><b>Acrylic</b><div class="track"><span style="width:24%"></span></div><em>28</em></div>
+          <div class="hbar"><b>Leather</b><div class="track"><span style="width:12%"></span></div><em>14</em></div>
+          <div class="hbar"><b>Sparkle / Emboss</b><div class="track"><span style="width:11%"></span></div><em>13</em></div>
+
+          <p class="sub-label">Boxes &amp; products</p>
+          <div class="hbar"><b>Regular box</b><div class="track"><span style="width:100%"></span></div><em>96</em></div>
+          <div class="hbar"><b>Acrylic box</b><div class="track"><span style="width:32%"></span></div><em>31</em></div>
+          <div class="hbar"><b>Calendars</b><div class="track"><span style="width:47%"></span></div><em>45</em></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

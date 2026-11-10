@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Order a photo mug · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/shop.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .product { display: grid; grid-template-columns: 1.05fr 1fr; gap: 2.5rem; align-items: start; padding-top: .6rem; }
+
+    .gallery { position: sticky; top: 96px; display: grid; gap: .8rem; }
+    .gallery__main { position: relative; border-radius: 26px; overflow: hidden; aspect-ratio: 1 / 1; background: #fff; box-shadow: 0 18px 40px rgba(30,27,75,.10); }
+    .gallery__main img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery__tag { position: absolute; top: 1rem; left: 1rem; background: #fff; padding: .4rem .8rem; border-radius: 999px; font-weight: 700; font-size: .8rem; color: var(--r-pink); box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+    .gallery__thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; }
+    .gallery__thumbs div { aspect-ratio: 1; border-radius: 14px; overflow: hidden; border: 2px solid transparent; background: #fff; }
+    .gallery__thumbs div.active { border-color: var(--r-pink); }
+    .gallery__thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+    .pd__cat { display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--r-purple); }
+    .pd h1 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); margin: .4rem 0 .5rem; line-height: 1.1; }
+    .pd__rating { display: flex; gap: .5rem; align-items: center; color: var(--muted); font-size: .9rem; }
+    .pd__rating b { color: var(--r-orange); letter-spacing: .1em; }
+    .pd__price { display: flex; align-items: baseline; gap: .7rem; margin: 1.1rem 0 .3rem; }
+    .pd__price strong { font-family: Fredoka, sans-serif; font-size: 2.2rem; }
+    .pd__price s { color: var(--muted); }
+    .pd__price em { font-style: normal; background: #e8f7ec; color: var(--r-green); font-weight: 700; font-size: .82rem; padding: .25rem .6rem; border-radius: 999px; }
+    .pd__desc { color: var(--muted); line-height: 1.65; margin: .6rem 0 1.6rem; }
+
+    .block { margin-top: 1.6rem; }
+    .block__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .75rem; }
+    .block__head h3 { margin: 0; font-size: 1.12rem; }
+    .block__head h3 span { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .8rem; margin-right: .5rem; font-family: Inter, sans-serif; }
+    .block__head small { color: var(--muted); }
+
+    .uploads { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+    .up { position: relative; aspect-ratio: 1; border-radius: 18px; overflow: hidden; }
+    .up img { width: 100%; height: 100%; object-fit: cover; }
+    .up__x { position: absolute; top: .5rem; right: .5rem; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,.6); color: #fff; display: grid; place-items: center; font-size: .9rem; font-weight: 700; }
+    .up__ok { position: absolute; left: .5rem; bottom: .5rem; background: #fff; color: var(--r-green); font-size: .72rem; font-weight: 700; padding: .25rem .55rem; border-radius: 999px; }
+    .up--empty { border: 2px dashed #d4cde8; background: var(--soft); display: grid; place-items: center; text-align: center; padding: 1rem; color: var(--muted); font-size: .85rem; }
+    .up--empty b { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--r-pink); font-size: 1.5rem; margin: 0 auto .5rem; box-shadow: 0 6px 16px rgba(233,30,140,.15); }
+    .up-hint { margin-top: .7rem; color: var(--muted); font-size: .84rem; }
+
+    .wa-alt { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .9rem; padding: .85rem 1rem; border-radius: 14px; background: #ecfdf3; font-size: .9rem; }
+    .wa-alt a { color: #128c4b; font-weight: 700; white-space: nowrap; }
+
+    .buy { display: flex; gap: .8rem; align-items: center; margin-top: 1.8rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+    .buy .btn--pink { flex: 1; }
+
+    .perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; margin-top: 1.2rem; }
+    .perk { padding: .9rem; border-radius: 16px; background: #fff; border: 1px solid var(--line); font-size: .84rem; color: var(--muted); }
+    .perk strong { display: block; color: var(--ink); font-size: .92rem; margin-bottom: .15rem; }
+
+    .more { margin-top: 4rem; }
+    .more h2 { font-size: 1.8rem; margin: 0 0 1.2rem; }
+    .more__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .mini { background: #fff; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+    .mini__img { aspect-ratio: 1; }
+    .mini__img img { width: 100%; height: 100%; object-fit: cover; }
+    .mini__body { padding: .9rem 1rem 1.1rem; }
+    .mini__body strong { display: block; }
+    .mini__body span { color: var(--muted); font-size: .9rem; }
+    .mini__body b { display: block; margin-top: .35rem; font-size: 1.05rem; }
+
+    @media (max-width: 960px) {
+      .product { grid-template-columns: 1fr; }
+      .gallery { position: static; }
+      .more__grid { grid-template-columns: repeat(2, 1fr); }
+      .perks { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Shop 1/3 · Product page · prices are placeholders</div>
+  <div class="rainbow-bar"></div>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="nav__logo" href="/mockups/home-v1.html"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" /></a>
+      <nav class="nav__links">
+        <a href="/mockups/home-v1.html">Home</a>
+        <a href="#">Services</a>
+        <a class="active" href="/mockups/shop-mug.html">Shop</a>
+        <a href="#">Gallery</a>
+        <a href="#">Machine sales</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="nav__right">
+        <a class="cart-btn" href="/mockups/shop-cart.html">🛒 Cart <span class="count">2</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="crumbs"><a href="/mockups/home-v1.html">Home</a> / <a href="#">Shop</a> / <a href="#">Custom gifts</a> / <b>Photo mug</b></div>
+
+    <section class="product">
+      <div class="gallery">
+        <div class="gallery__main">
+          <span class="gallery__tag">★ Bestseller</span>
+          <img src="/images%202/Normal%20mug/08b5829c7d1a89fb5b9e09c0d3f960cb.jpg" alt="Photo collage mug" />
+        </div>
+        <div class="gallery__thumbs">
+          <div class="active"><img src="/images%202/Normal%20mug/08b5829c7d1a89fb5b9e09c0d3f960cb.jpg" alt="" /></div>
+          <div><img src="/images%202/Normal%20mug/1b5ccd01c63478a90b2f18ab536c141c.jpg" alt="" /></div>
+          <div><img src="/images%202/Normal%20mug/20bfb114a0c09e761c4fd88558be3b5a.jpg" alt="" /></div>
+          <div><img src="/images%202/Magic%20mug/new%20magic%20mug.jpg" alt="" /></div>
+          <div><img src="/images%202/Normal%20mug/3dddf14893d680518e294aaf7fef3c68.jpg" alt="" /></div>
+        </div>
+      </div>
+
+      <div class="pd">
+        <span class="pd__cat">Custom gifts · Mugs</span>
+        <h1>Personalised Photo Mug</h1>
+        <div class="pd__rating"><b>★★★★★</b> Loved by Jabalpur families · printed in-house</div>
+        <div class="pd__price"><strong>₹299</strong><s>₹399</s><em>Save 25%</em></div>
+        <p class="pd__desc">Turn your favourite photos into a mug you'll use every day. Upload up to 3 pictures and we'll design a collage, check it, and print it with vivid, dishwasher-safe colours.</p>
+
+        <div class="block">
+          <div class="block__head"><h3><span>1</span>Choose your mug</h3></div>
+          <div class="opt-group">
+            <div class="opt selected">
+              <div class="opt__radio"></div>
+              <div class="opt__thumb"><img src="/images%202/Normal%20mug/08b5829c7d1a89fb5b9e09c0d3f960cb.jpg" alt="" /></div>
+              <div class="opt__text"><strong>Classic white photo mug</strong><span>11 oz ceramic · full-wrap print</span></div>
+              <div class="opt__price">₹299</div>
+            </div>
+            <div class="opt">
+              <div class="opt__radio"></div>
+              <div class="opt__thumb"><img src="/images%202/Magic%20mug/new%20magic%20mug.jpg" alt="" /></div>
+              <div class="opt__text"><strong>Magic mug</strong><span>Black until hot — photo appears with tea or coffee</span></div>
+              <div class="opt__price">₹449</div>
+            </div>
+            <div class="opt">
+              <div class="opt__radio"></div>
+              <div class="opt__thumb"><img src="/images%202/Normal%20mug/3dddf14893d680518e294aaf7fef3c68.jpg" alt="" /></div>
+              <div class="opt__text"><strong>Name / initial mug</strong><span>Floral initial with a name — no photo needed</span></div>
+              <div class="opt__price">₹349</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block__head"><h3><span>2</span>Upload your photos</h3><small>2 of 3 added</small></div>
+          <div class="uploads">
+            <div class="up">
+              <img src="/images%202/photo/30e8aa60cb3463fbf0781c80c0621222.jpg" alt="" style="transform:scale(1.9);transform-origin:50% 33%" />
+              <span class="up__x">×</span><span class="up__ok">✓ Good quality</span>
+            </div>
+            <div class="up">
+              <img src="/images%202/photo/3833b722cd0025544d28836e1c15542d.jpg" alt="" style="transform:scale(1.9);transform-origin:52% 45%" />
+              <span class="up__x">×</span><span class="up__ok">✓ Good quality</span>
+            </div>
+            <div class="up up--empty">
+              <div><b>+</b>Add photo<br /><small>JPG / PNG · up to 10 MB</small></div>
+            </div>
+          </div>
+          <p class="up-hint">Tip: use clear, well-lit photos. We'll send you a design preview on WhatsApp before printing.</p>
+          <div class="wa-alt"><span>Photos are on your phone?</span><a href="https://wa.me/919425324286">Send on WhatsApp instead →</a></div>
+        </div>
+
+        <div class="block">
+          <div class="block__head"><h3><span>3</span>Add a name or message</h3><small>Optional</small></div>
+          <input class="input" value="Happy Anniversary, Mom &amp; Dad ❤" />
+        </div>
+
+        <div class="buy">
+          <div class="qty"><span>−</span><b>1</b><span>+</span></div>
+          <a class="btn btn--pink btn--lg" href="/mockups/shop-cart.html">Add to cart · ₹299</a>
+        </div>
+
+        <div class="perks">
+          <div class="perk"><strong>Ready in 24 hrs</strong>Pick up from Naya Bazar shop</div>
+          <div class="perk"><strong>Home delivery</strong>Across Jabalpur in 1–2 days</div>
+          <div class="perk"><strong>Preview first</strong>Approve the design before print</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="more">
+      <h2>You may also like</h2>
+      <div class="more__grid">
+        <a class="mini" href="#"><div class="mini__img"><img src="/images%202/Magic%20mug/new%20magic%20mug.jpg" alt="" /></div><div class="mini__body"><strong>Magic mug</strong><span>Heat-reveal photo</span><b>₹449</b></div></a>
+        <a class="mini" href="#"><div class="mini__img"><img src="/images%202/Heart%20Cushion/this.jpg" alt="" /></div><div class="mini__body"><strong>Heart cushion</strong><span>LED photo cushion</span><b>₹699</b></div></a>
+        <a class="mini" href="#"><div class="mini__img"><img src="/images%202/Home%20page/Photobook%20and%20album%20kits/3.webp" alt="" /></div><div class="mini__body"><strong>Photobook</strong><span>20 pages, hardcover</span><b>₹999</b></div></a>
+        <a class="mini" href="#"><div class="mini__img"><img src="/images%202/Home%20page/Lamination%20and%20Prinitng/91e764de8acc29b413b80b46680fef48.jpg" alt="" /></div><div class="mini__body"><strong>Photo frame</strong><span>Collage frame</span><b>₹599</b></div></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" />
+      <span>21 Naya Bazar, Malviya Chowk, Jabalpur · +91 94253 24286</span>
+    </div>
+  </footer>
+  <div class="rainbow-bar"></div>
+</body>
+</html>

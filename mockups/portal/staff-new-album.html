@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · New album order · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/mockups/portal/portal.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    .layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.3rem; align-items: start; }
+    .aside { position: sticky; top: 1rem; }
+
+    .ac { margin-top: .2rem; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 40px rgba(30,27,75,.14); overflow: hidden; }
+    .ac__item { display: flex; justify-content: space-between; align-items: center; gap: .8rem; padding: .7rem .9rem; border-bottom: 1px solid var(--line); }
+    .ac__item b { color: var(--ink); }
+    .ac__item b u { text-decoration: none; background: #fde68a; border-radius: 3px; }
+    .ac__item span { color: var(--muted); font-size: .82rem; }
+    .ac__item.hl { background: var(--soft); }
+    .ac__new { padding: .75rem .9rem; color: var(--violet); font-weight: 700; font-size: .88rem; background: #fcfbff; }
+    .order-no { display: flex; align-items: center; gap: .5rem; }
+    .order-no .input { font-weight: 800; color: var(--pink); letter-spacing: .04em; }
+
+    .rows { display: grid; gap: .6rem; }
+    .row { display: grid; grid-template-columns: 1.7fr 1fr .7fr 36px; gap: .6rem; align-items: center; }
+    .row--head { font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 0 .2rem; }
+    .del { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: #94a3b8; border: 1px solid var(--line); background: #fff; font-weight: 700; }
+    .add-row { margin-top: .8rem; display: flex; justify-content: space-between; align-items: center; }
+    .add { display: inline-flex; gap: .4rem; align-items: center; padding: .55rem .9rem; border: 1.5px dashed #c4b5fd; border-radius: 12px; color: var(--violet); font-weight: 700; font-size: .86rem; background: #fcfbff; }
+    .total-pill { font-weight: 700; color: var(--ink); background: var(--soft); padding: .45rem .8rem; border-radius: 10px; font-size: .88rem; }
+
+    .sub-label { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 .55rem; }
+    .inline { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .9rem; }
+
+    .sum-row { display: flex; justify-content: space-between; padding: .5rem 0; border-bottom: 1px dashed var(--line); font-size: .9rem; }
+    .sum-row:last-of-type { border-bottom: 0; }
+    .sum-row span { color: var(--muted); }
+    .sum-row b { color: var(--ink); text-align: right; }
+    .sum-big { display: flex; align-items: baseline; justify-content: space-between; margin: .3rem 0 .9rem; }
+    .sum-big b { font-family: Georgia, serif; font-size: 2.2rem; color: var(--ink); }
+    .opt { display: flex; gap: .6rem; align-items: flex-start; padding: .7rem .8rem; border-radius: 12px; border: 1px solid var(--line); margin-bottom: .55rem; font-size: .88rem; }
+    .opt .box { flex: none; width: 20px; height: 20px; border-radius: 6px; background: var(--btn-fill); color: #fff; display: grid; place-items: center; font-size: .72rem; margin-top: 1px; }
+    .opt b { color: var(--ink); display: block; }
+    .opt span { color: var(--muted); font-size: .8rem; }
+    .lock { margin-top: .9rem; font-size: .78rem; color: var(--muted); display: flex; gap: .45rem; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Portal 2/6 · Staff · New album order</div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="" /><div><b>Album Desk</b><span>Indigo Album (Collection)</span></div></div>
+      <div class="topbar__right">
+        <a class="btn btn--sm" href="#">Today's orders (8)</a>
+        <div class="user-chip"><i>RC</i>rcolourlab <span class="role">Staff</span></div>
+        <a class="btn btn--sm" href="/mockups/portal/login.html">Log out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <h1>New album order</h1>
+        <p>Fill the customer, sheets, cover and box. Rates are added automatically and are only visible to admin.</p>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <!-- Customer -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">1</span>Customer</h2><small>Pick a saved customer or add a new one</small></div>
+          <div class="grid g2">
+            <div class="field">
+              <label>Customer name <small>· type a few letters</small></label>
+              <input class="input focus" value="sag" />
+              <div class="ac">
+                <div class="ac__item hl"><b><u>Sag</u>ar Studio</b><span>+91 94251 63212 · 46 albums</span></div>
+                <div class="ac__item"><b><u>Sag</u>ar Photo Point, Katni</b><span>+91 98270 11288 · 9 albums</span></div>
+                <div class="ac__item"><b>Shree <u>Sag</u>ar Digital</b><span>+91 70009 52241 · 3 albums</span></div>
+                <div class="ac__new">+ Add “sag” as a new customer (name + phone)</div>
+              </div>
+            </div>
+            <div class="grid g2" style="align-content:start">
+              <div class="field">
+                <label>WhatsApp number <small>· auto-filled</small></label>
+                <input class="input" value="+91 94251 63212" />
+              </div>
+              <div class="field">
+                <label>Date</label>
+                <input class="input" value="04 Nov 2026" />
+              </div>
+              <div class="field">
+                <label>Order no. <small>· auto</small></label>
+                <div class="order-no"><input class="input readonly" value="#715" /></div>
+              </div>
+              <div class="field">
+                <label>Album / design name</label>
+                <input class="input" value="Rahul weds Priya" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sheets -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">2</span>Sheets</h2><small>One album can mix several sheet types</small></div>
+          <div class="rows">
+            <div class="row row--head"><span>Sheet type</span><span>Size</span><span>No. of sheets</span><span></span></div>
+            <div class="row">
+              <select class="input select"><option>Normal High Gloss</option></select>
+              <select class="input select"><option>12 × 36</option></select>
+              <input class="input" value="10" />
+              <span class="del">×</span>
+            </div>
+            <div class="row">
+              <select class="input select"><option>NTR Silky Matt</option></select>
+              <select class="input select"><option>12 × 36</option></select>
+              <input class="input" value="10" />
+              <span class="del">×</span>
+            </div>
+            <div class="row">
+              <select class="input select"><option>Pearl</option></select>
+              <select class="input select"><option>12 × 36</option></select>
+              <input class="input" value="10" />
+              <span class="del">×</span>
+            </div>
+          </div>
+          <div class="add-row">
+            <span class="add">+ Add another sheet type</span>
+            <span class="total-pill">Total: 30 sheets</span>
+          </div>
+          <p class="sub-label" style="margin-top:1.1rem">Sheet types available</p>
+          <div class="chips">
+            <span class="chip">Normal High Gloss</span><span class="chip">Normal Matt</span><span class="chip">NTR Slim Gloss</span><span class="chip">NTR Slim Matt</span>
+            <span class="chip">NTR Heavy Gloss</span><span class="chip">NTR Heavy Matt</span><span class="chip">NTR Silky Matt</span><span class="chip">Normal Velvet</span>
+            <span class="chip">NTR Velvet</span><span class="chip">Texture</span><span class="chip">Metallic Gold</span><span class="chip">Metallic Silver</span>
+            <span class="chip">Pearl</span><span class="chip">Crystal</span><span class="chip">Emboss Sheet</span>
+          </div>
+        </section>
+
+        <!-- Cover -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">3</span>Cover</h2></div>
+          <div class="chips">
+            <span class="chip">None</span><span class="chip active">Normal</span><span class="chip">3D</span><span class="chip">Sparkle</span><span class="chip">Acrylic</span><span class="chip">Emboss Cover</span><span class="chip">Leather Cover (Readymade)</span>
+          </div>
+          <div class="inline">
+            <div class="field"><label>Cover size</label><select class="input select"><option>12 × 36</option></select></div>
+            <div class="field"><label>Quantity</label><input class="input" value="1" /></div>
+          </div>
+        </section>
+
+        <!-- Box -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">4</span>Box</h2></div>
+          <div class="chips">
+            <span class="chip">None</span><span class="chip active">Regular with Cover</span><span class="chip">Acrylic with Cover</span>
+          </div>
+          <div class="inline">
+            <div class="field"><label>Box size</label><select class="input select"><option>12 × 36</option></select></div>
+            <div class="field"><label>Quantity</label><input class="input" value="1" /></div>
+          </div>
+        </section>
+
+        <!-- Products -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">5</span>Other products</h2><small>Optional</small></div>
+          <div class="rows">
+            <div class="row row--head"><span>Product</span><span>Size</span><span>Qty</span><span></span></div>
+            <div class="row">
+              <select class="input select"><option>Wall Calendar</option></select>
+              <select class="input select"><option>8 × 18</option></select>
+              <input class="input" value="1" />
+              <span class="del">×</span>
+            </div>
+          </div>
+          <div class="add-row"><span class="add">+ Add product (Table Calendar, Wall Calendar…)</span></div>
+        </section>
+
+        <!-- Notes -->
+        <section class="card">
+          <div class="card__head"><h2><span class="num">6</span>Notes</h2><small>Printed on the slip</small></div>
+          <textarea class="input" rows="2">Cover name in gold foil. Delivery before Saturday.</textarea>
+        </section>
+      </div>
+
+      <!-- Summary -->
+      <aside class="aside">
+        <div class="card">
+          <div class="card__head" style="margin-bottom:.4rem"><h2>Order #715</h2><span class="pill pill--violet">Draft</span></div>
+          <div class="sum-big"><span style="color:var(--muted);font-weight:600">Total sheets</span><b>30</b></div>
+          <div class="sum-row"><span>Customer</span><b>Sagar Studio</b></div>
+          <div class="sum-row"><span>Album</span><b>Rahul weds Priya</b></div>
+          <div class="sum-row"><span>Sheets</span><b>10 Normal HG · 10 NTR Silky · 10 Pearl</b></div>
+          <div class="sum-row"><span>Cover</span><b>Normal 12×36 × 1</b></div>
+          <div class="sum-row"><span>Box</span><b>Regular with Cover × 1</b></div>
+          <div class="sum-row"><span>Products</span><b>Wall Calendar 8×18 × 1</b></div>
+
+          <p class="sub-label" style="margin-top:1rem">On submit</p>
+          <div class="opt"><span class="box">✓</span><div><b>Save to database</b><span>Linked to Sagar Studio, with their rates</span></div></div>
+          <div class="opt"><span class="box">✓</span><div><b>Print slip</b><span>Without rates or amounts</span></div></div>
+          <div class="opt"><span class="box">✓</span><div><b>Send slip on WhatsApp</b><span>To +91 94251 63212 as PDF</span></div></div>
+
+          <a class="btn btn--grad btn--lg btn--block" href="/mockups/portal/staff-submitted.html" style="margin-top:.6rem">Submit order</a>
+          <div class="lock">🔒 Rates &amp; totals are hidden for staff accounts</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

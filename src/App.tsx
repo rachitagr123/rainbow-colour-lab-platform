@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import Layout from './components/Layout'
 import { isVibrantLayoutPreview } from './config/layoutPreview'
@@ -10,6 +11,8 @@ import IndustrialPage from './pages/IndustrialPage'
 import ServicesPage from './pages/ServicesPage'
 import './App.css'
 import './vibrant-preview.css'
+
+const PortalApp = lazy(() => import('./portal/PortalApp'))
 
 function HomeRoute() {
   const [searchParams] = useSearchParams()
@@ -27,6 +30,14 @@ function App() {
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
       </Route>
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={null}>
+            <PortalApp />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

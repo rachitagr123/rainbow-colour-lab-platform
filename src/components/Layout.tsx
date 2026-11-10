@@ -52,6 +52,7 @@ export default function Layout() {
             <NavLink to="/industrial">Machine sales</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/admin/login">Login</NavLink>
           </nav>
         </header>
       )}

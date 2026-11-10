@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup · Home v1 · Rainbow Colour Lab</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    :root {
+      --ink: #1e1b4b;
+      --muted: #5b6475;
+      --line: #ece8f5;
+      --bg: #fffdfb;
+      --r-blue: #1a237e;
+      --r-sky: #1e88e5;
+      --r-green: #2e9e44;
+      --r-red: #e53935;
+      --r-pink: #e91e8c;
+      --r-purple: #9c27b0;
+      --r-orange: #f57c00;
+      --rainbow: linear-gradient(90deg, var(--r-blue), var(--r-sky), var(--r-green), #f9c400, var(--r-orange), var(--r-red), var(--r-pink), var(--r-purple));
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .mock-badge {
+      position: fixed; bottom: 1rem; left: 1rem; z-index: 50;
+      background: #111; color: #fff; font-size: .75rem; font-weight: 600;
+      padding: .4rem .7rem; border-radius: 999px; letter-spacing: .04em;
+    }
+
+    .rainbow-bar { height: 6px; background: var(--rainbow); }
+
+    /* Nav */
+    .nav { position: sticky; top: 0; z-index: 20; background: rgba(255,253,251,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 76px; }
+    .nav__logo img { height: 52px; width: auto; }
+    .nav__links { display: flex; gap: .25rem; }
+    .nav__links a { padding: .5rem .85rem; border-radius: 999px; font-weight: 500; color: var(--muted); font-size: .95rem; }
+    .nav__links a.active, .nav__links a:hover { background: #f3effc; color: var(--ink); }
+    .nav__cta { display: flex; gap: .5rem; }
+
+    .btn { display: inline-flex; align-items: center; gap: .45rem; padding: .7rem 1.25rem; border-radius: 999px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; transition: transform .15s ease, box-shadow .15s ease; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn--dark { background: var(--ink); color: #fff; }
+    .btn--wa { background: #25d366; color: #fff; }
+    .btn--ghost { border-color: var(--line); background: #fff; }
+    .btn--lg { padding: .9rem 1.6rem; font-size: 1rem; }
+
+    /* Hero */
+    .hero { padding: 3.5rem 0 3rem; position: relative; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: -40% -10% auto auto; width: 620px; height: 620px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(233,30,140,.12), transparent 65%);
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: auto auto -50% -10%; width: 560px; height: 560px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(30,136,229,.12), transparent 65%);
+    }
+    .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 3rem; align-items: center; }
+    .hero__tag { display: inline-flex; align-items: center; gap: .5rem; background: #fff; border: 1px solid var(--line); padding: .4rem .85rem; border-radius: 999px; font-size: .85rem; font-weight: 600; color: var(--muted); }
+    .hero__tag span { width: 8px; height: 8px; border-radius: 50%; background: var(--r-green); }
+    .hero__logo { margin: 1.4rem 0 .4rem; width: min(440px, 100%); }
+    .hero h1 { font-family: Fredoka, Inter, sans-serif; font-weight: 600; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.1; margin: .6rem 0 1rem; }
+    .hero h1 em { font-style: normal; background: var(--rainbow); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { color: var(--muted); font-size: 1.08rem; line-height: 1.65; max-width: 48ch; margin: 0 0 1.6rem; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+
+    .hero__grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 170px 170px 170px; gap: .75rem; }
+    .hero__grid figure { margin: 0; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 12px 30px rgba(30,27,75,.10); }
+    .hero__grid img { width: 100%; height: 100%; object-fit: cover; }
+    .hero__grid .tall { grid-row: span 2; }
+    .hero__grid .wide { grid-column: span 2; }
+
+    /* Stats */
+    .stats { padding: 0 0 3rem; }
+    .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; }
+    .stat { padding: 1.4rem 1.2rem; text-align: center; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat strong { display: block; font-family: Fredoka, sans-serif; font-size: 1.9rem; }
+    .stat span { color: var(--muted); font-size: .9rem; }
+    .stat:nth-child(1) strong { color: var(--r-blue); }
+    .stat:nth-child(2) strong { color: var(--r-green); }
+    .stat:nth-child(3) strong { color: var(--r-pink); }
+    .stat:nth-child(4) strong { color: var(--r-orange); }
+
+    /* Sections */
+    .section { padding: 3.5rem 0; }
+    .section__head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
+    .section__head h2 { font-family: Fredoka, sans-serif; font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0; }
+    .section__head p { margin: .35rem 0 0; color: var(--muted); }
+    .link-arrow { font-weight: 600; color: var(--r-purple); white-space: nowrap; }
+
+    .services { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .svc { background: #fff; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease; }
+    .svc:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgba(30,27,75,.10); }
+    .svc__img { aspect-ratio: 4/3; background: #f6f4fb; }
+    .svc__img img { width: 100%; height: 100%; object-fit: cover; }
+    .svc__body { padding: 1rem 1.1rem 1.2rem; border-top: 4px solid var(--c); }
+    .svc h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+    .svc p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+
+    /* Offers */
+    .offers-band { background: linear-gradient(135deg, #fdf2f8, #f3e8ff 50%, #e0f2fe); }
+    .offers { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: 220px 220px; gap: 1rem; }
+    .offers figure { margin: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 26px rgba(30,27,75,.08); }
+    .offers figure:first-child { grid-row: span 2; }
+    .offers figure { background: #111; }
+    .offers img, .offers video { width: 100%; height: 100%; object-fit: contain; }
+
+    /* Why us */
+    .why { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+    .why__img { border-radius: 24px; overflow: hidden; aspect-ratio: 4/3.2; box-shadow: 0 20px 40px rgba(30,27,75,.12); }
+    .why__img img { width: 100%; height: 100%; object-fit: cover; }
+    .why__list { display: grid; gap: 1rem; margin-top: 1.4rem; }
+    .why__item { display: flex; gap: .9rem; align-items: flex-start; }
+    .why__dot { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 700; }
+    .why__item h4 { margin: 0 0 .2rem; }
+    .why__item p { margin: 0; color: var(--muted); font-size: .94rem; }
+
+    /* Machines band */
+    .machines { background: var(--ink); color: #fff; border-radius: 28px; padding: 2.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; overflow: hidden; }
+    .machines h2 { font-family: Fredoka, sans-serif; font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.2rem); margin: .4rem 0 .8rem; }
+    .machines p { color: #c7c9e8; line-height: 1.6; margin: 0 0 1.4rem; }
+    .machines .eyebrow { color: #f9c400; font-weight: 700; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; }
+    .machines__img { border-radius: 18px; overflow: hidden; aspect-ratio: 16/10; }
+    .machines__img img { width: 100%; height: 100%; object-fit: cover; }
+    .btn--light { background: #fff; color: var(--ink); }
+
+    /* Contact CTA */
+    .contact { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; }
+    .contact__card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 2rem; }
+    .contact__card h2 { font-family: Fredoka, sans-serif; font-weight: 600; margin: 0 0 .5rem; font-size: 1.9rem; }
+    .contact__card p { color: var(--muted); margin: 0 0 1.4rem; }
+    .contact__rows { display: grid; gap: .8rem; }
+    .contact__row { display: flex; gap: .8rem; align-items: center; padding: .85rem 1rem; border-radius: 14px; background: #faf8ff; }
+    .contact__row b { min-width: 86px; color: var(--muted); font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; }
+    .map { border-radius: 24px; overflow: hidden; border: 1px solid var(--line); min-height: 320px; background: #eef; }
+    .map iframe { width: 100%; height: 100%; border: 0; min-height: 320px; }
+
+    footer { margin-top: 3.5rem; border-top: 1px solid var(--line); padding: 2rem 0; color: var(--muted); font-size: .9rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    footer img { height: 38px; width: auto; }
+
+    @media (max-width: 960px) {
+      .nav__links { display: none; }
+      .hero .wrap, .why, .machines, .contact { grid-template-columns: 1fr; }
+      .hero__grid { grid-template-rows: 130px 130px 130px; }
+      .services { grid-template-columns: repeat(2, 1fr); }
+      .stats .wrap { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: 0; }
+      .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .offers { grid-template-columns: 1fr 1fr; grid-template-rows: 260px 180px 180px; }
+      .offers figure:first-child { grid-column: span 2; grid-row: auto; }
+    }
+    @media (max-width: 560px) {
+      .nav__cta .btn--ghost { display: none; }
+      .nav__logo img { height: 42px; }
+      .services { grid-template-columns: 1fr; }
+      .section__head { flex-direction: column; align-items: start; }
+      .machines { padding: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mock-badge">MOCKUP · Home v1</div>
+  <div class="rainbow-bar"></div>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="nav__logo" href="#"><img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" /></a>
+      <nav class="nav__links">
+        <a class="active" href="#">Home</a>
+        <a href="#">Services</a>
+        <a href="#">Gallery</a>
+        <a href="#">Machine sales</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="nav__cta">
+        <a class="btn btn--ghost" href="tel:+919425324286">Call</a>
+        <a class="btn btn--wa" href="https://wa.me/919425324286">WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="hero__tag"><span></span> Naya Bazar, Jabalpur · Open today</span>
+        <h1>Your memories, printed in <em>every colour</em> they deserve.</h1>
+        <p>Photo prints, wedding albums, custom gifts and framing — plus HP Indigo machine sales. Trusted by Jabalpur families and photographers for 40+ years.</p>
+        <div class="hero__actions">
+          <a class="btn btn--dark btn--lg" href="#">Explore services</a>
+          <a class="btn btn--wa btn--lg" href="https://wa.me/919425324286">Get a quote on WhatsApp</a>
+        </div>
+      </div>
+      <div class="hero__grid">
+        <figure class="tall"><img src="/images%202/Home%20page/upper%20section/4.jpg" alt="" /></figure>
+        <figure><img src="/images%202/Home%20page/upper%20section/Digital-Print-Glass-5.jpg" alt="" /></figure>
+        <figure><img src="/images%202/Home%20page/upper%20section/218a72c4a23114ce896210679c8f5c99.jpg" alt="" /></figure>
+        <figure class="wide"><img src="/images%202/Home%20page/upper%20section/a220c3c5762981505c8ac07ebb7bc068.jpg" alt="" /></figure>
+        <figure><img src="/images%202/Home%20page/upper%20section/17a0a0019381d063d867856f9734afab.jpg" alt="" /></figure>
+        <figure class="wide"><img src="/images%202/Home%20page/upper%20section/20ee6bf29266ccd5aa300904ace3c9a4.jpg" alt="" /></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="wrap">
+      <div class="stat"><strong>40+</strong><span>Years in Jabalpur</span></div>
+      <div class="stat"><strong>4×6 → 30×90</strong><span>Print sizes</span></div>
+      <div class="stat"><strong>50+</strong><span>Gift products</span></div>
+      <div class="stat"><strong>HP Indigo</strong><span>Machine sales</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <h2>What we make</h2>
+          <p>From a single photo to a full wedding album set.</p>
+        </div>
+        <a class="link-arrow" href="#">All services →</a>
+      </div>
+      <div class="services">
+        <a class="svc" href="#" style="--c: var(--r-blue)">
+          <div class="svc__img"><img src="/images%202/Home%20page/000004.jpg" alt="" /></div>
+          <div class="svc__body"><h3>Photo printing</h3><p>4×6 to 30×90 on premium papers with accurate colour.</p></div>
+        </a>
+        <a class="svc" href="#" style="--c: var(--r-pink)">
+          <div class="svc__img"><img src="/images%202/Home%20page/Custom%20Gift%20Main/this.jpg" alt="" /></div>
+          <div class="svc__body"><h3>Custom gifts</h3><p>Mugs, magic mugs, tees, cushions and keyrings.</p></div>
+        </a>
+        <a class="svc" href="#" style="--c: var(--r-green)">
+          <div class="svc__img"><img src="/images%202/Home%20page/Photobook%20and%20album%20kits/3.webp" alt="" /></div>
+          <div class="svc__body"><h3>Photobooks & albums</h3><p>5-in-1 combos, acrylic boxes, wedding-ready packaging.</p></div>
+        </a>
+        <a class="svc" href="#" style="--c: var(--r-orange)">
+          <div class="svc__img"><img src="/images%202/Home%20page/Lamination%20and%20Prinitng/91e764de8acc29b413b80b46680fef48.jpg" alt="" /></div>
+          <div class="svc__body"><h3>Lamination & framing</h3><p>Protect and finish prints with designer frames.</p></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section offers-band">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <h2>This month's offers</h2>
+          <p>Running now at the shop — tap to enlarge.</p>
+        </div>
+      </div>
+      <div class="offers">
+        <figure><img src="/images%202/ADVERTISEMENT/RAINBOW-2.jpg" alt="" /></figure>
+        <figure><video autoplay loop muted playsinline src="/images%202/ADVERTISEMENT/led%20frame.mp4"></video></figure>
+        <figure><img src="/images%202/ADVERTISEMENT/rainbow.jpg" alt="" /></figure>
+        <figure><video autoplay loop muted playsinline src="/images%202/Home%20page/Magic%20mug.mp4"></video></figure>
+        <figure><img src="/images%202/ADVERTISEMENT/c2ef4a9b07ddfa4028857c3ed34a1b0a.jpg" alt="" /></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap why">
+      <div class="why__img"><img src="/images%202/Home%20page/shop_image.jpeg" alt="Rainbow Colour Lab shop" /></div>
+      <div>
+        <div class="section__head" style="margin:0"><div><h2>Why Jabalpur chooses us</h2></div></div>
+        <div class="why__list">
+          <div class="why__item"><div class="why__dot" style="background:var(--r-blue)">1</div><div><h4>Family-run since the 1980s</h4><p>Sushil Kumar &amp; Rashmi Agrawal guide every order personally.</p></div></div>
+          <div class="why__item"><div class="why__dot" style="background:var(--r-green)">2</div><div><h4>Colour you can trust</h4><p>Calibrated lab printing so skin tones and wedding reds come out right.</p></div></div>
+          <div class="why__item"><div class="why__dot" style="background:var(--r-pink)">3</div><div><h4>Quick turnaround</h4><p>Walk in with your phone, walk out with prints.</p></div></div>
+          <div class="why__item"><div class="why__dot" style="background:var(--r-orange)">4</div><div><h4>For businesses too</h4><p>Photographers and print shops source albums and machines from us.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="machines">
+        <div>
+          <span class="eyebrow">For print businesses</span>
+          <h2>HP Indigo &amp; large-format machine sales</h2>
+          <p>Setting up or upgrading a print business? We supply and guide you on HP Indigo lines and large-format systems across India.</p>
+          <a class="btn btn--light btn--lg" href="#">View machines</a>
+        </div>
+        <div class="machines__img"><img src="/images%202/Machine%20images/Main%20Image%20.JPG" alt="" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap contact">
+      <div class="contact__card">
+        <h2>Visit or message us</h2>
+        <p>Share your photos on WhatsApp and we'll have them ready.</p>
+        <div class="contact__rows">
+          <div class="contact__row"><b>Address</b><span>21 Naya Bazar, Malviya Chowk, Jabalpur 482001</span></div>
+          <div class="contact__row"><b>Phone</b><span>+91 94253 24286 · +91 79876 27054</span></div>
+          <div class="contact__row"><b>Email</b><span>rcolourlab123@gmail.com</span></div>
+          <div class="contact__row"><b>Instagram</b><span>@rainbowlabjbp</span></div>
+        </div>
+        <div class="hero__actions" style="margin-top:1.4rem">
+          <a class="btn btn--wa btn--lg" href="https://wa.me/919425324286">WhatsApp us</a>
+          <a class="btn btn--ghost btn--lg" href="tel:+919425324286">Call now</a>
+        </div>
+      </div>
+      <div class="map">
+        <iframe loading="lazy" src="https://www.google.com/maps?q=Naya+Bazar+Malviya+Chowk+Jabalpur&output=embed" title="Map"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <img src="/images%202/Home%20page/Rachit%20-%2001.png" alt="Rainbow Colour Lab" />
+      <span>© 2026 Rainbow Colour Lab · GST 23ACIPA1110D1ZS</span>
+    </div>
+  </footer>
+  <div class="rainbow-bar"></div>
+</body>
+</html>
