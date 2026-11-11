@@ -156,7 +156,7 @@ export default function MonthlyPage() {
 
   return (
     <>
-      <div className="p-head">
+      <div className="p-head no-print">
         <div>
           <h1>Monthly summary</h1>
           <p>Albums, sheets, order value and money still to collect for the month.</p>
