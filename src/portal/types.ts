@@ -34,6 +34,8 @@ export interface Item {
   category: Category
   sort: number
   active: boolean
+  /** e.g. ['Gloss', 'Matt']: chosen per order line, same price for each. */
+  finishes: string[] | null
 }
 
 export interface ItemSize {
@@ -79,7 +81,9 @@ export interface OrderLine {
   order_no: number
   item_id: number | null
   item_size_id: number | null
+  /** Includes the finish, e.g. "Normal High Gloss". */
   item_name: string
+  finish: string | null
   category: Category
   size: string | null
   qty: number

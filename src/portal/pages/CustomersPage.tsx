@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { listCustomers, listDefaultRates, listItems, listItemSizes, loadCustomerOrders, totalSheets } from '../api'
+import { itemLabel, listCustomers, listDefaultRates, listItems, listItemSizes, loadCustomerOrders, totalSheets } from '../api'
 import { money, prettyDate } from '../format'
 import { errorMessage, supabase } from '../supabase'
 import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
@@ -165,6 +165,9 @@ function DefaultsPanel({
                                     />
                                     Item in use
                                   </label>
+                                  {it.finishes?.length ? (
+                                    <div className="p-finish-note">{it.finishes.join(' / ')} · same price</div>
+                                  ) : null}
                                 </td>
                               )}
                               <td>
@@ -440,7 +443,7 @@ function CustomerPanel({
                           const special = v !== '' && Number(v) !== defaults.get(s.id)
                           return (
                             <tr key={s.id}>
-                              <td>{idx === 0 ? it.name : ''}</td>
+                              <td>{idx === 0 ? itemLabel(it) : ''}</td>
                               <td className="p-muted">{s.size}</td>
                               <td className="r p-muted">{money(defaults.get(s.id))}</td>
                               <td className="r">

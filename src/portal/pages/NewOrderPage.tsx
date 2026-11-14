@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { listCustomers, listItems, listItemSizes } from '../api'
+import { itemLabel, listCustomers, listItems, listItemSizes } from '../api'
 import { todayIST } from '../format'
 import { errorMessage, supabase } from '../supabase'
 import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
@@ -11,6 +11,8 @@ interface Row {
   itemId: number | ''
   sizeId: number | ''
   qty: string
+  /** Gloss / Matt for items that have a finish choice; '' means the item's first finish (Gloss). */
+  finish: string
 }
 
 let rowKey = 0
@@ -19,7 +21,7 @@ let rowKey = 0
 function newRow(sizes: ItemSize[], itemId: number | '', preferSize?: string): Row {
   const options = sizes.filter((s) => s.item_id === itemId)
   const size = options.find((s) => s.size === preferSize) ?? options[0]
-  return { key: ++rowKey, itemId, sizeId: size?.id ?? '', qty: '' }
+  return { key: ++rowKey, itemId, sizeId: size?.id ?? '', qty: '', finish: '' }
 }
 
 function CustomerPicker({
@@ -220,9 +222,9 @@ function LineRows({
 
   const changeItem = (r: Row, itemId: number | '') => {
     const next = newRow(sizes, itemId, sizeText(r.sizeId))
-    update(r.key, { itemId, sizeId: next.sizeId })
+    update(r.key, { itemId, sizeId: next.sizeId, finish: '' })
   }
-  const used = new Set(rows.map((r) => r.itemId))
+  const finishesOf = (itemId: number | '') => items.find((i) => i.id === itemId)?.finishes ?? []
 
   return (
     <>
@@ -234,16 +236,34 @@ function LineRows({
             <span>Qty</span>
             <span />
           </div>
-          {rows.map((r) => (
+          {rows.map((r) => {
+            const finishes = finishesOf(r.itemId)
+            return (
             <div className="p-line" key={r.key}>
-              <select className="p-input p-select" value={r.itemId} onChange={(e) => changeItem(r, Number(e.target.value) || '')}>
-                <option value="">Select…</option>
-                {items.map((it) => (
-                  <option key={it.id} value={it.id}>
-                    {it.name}
-                  </option>
-                ))}
-              </select>
+              <div className={finishes.length ? 'p-typecell has-finish' : 'p-typecell'}>
+                <select className="p-input p-select" value={r.itemId} onChange={(e) => changeItem(r, Number(e.target.value) || '')}>
+                  <option value="">Select…</option>
+                  {items.map((it) => (
+                    <option key={it.id} value={it.id}>
+                      {it.name}
+                    </option>
+                  ))}
+                </select>
+                {finishes.length > 0 && (
+                  <select
+                    className="p-input p-select"
+                    value={r.finish || finishes[0]}
+                    onChange={(e) => update(r.key, { finish: e.target.value })}
+                    aria-label="Finish"
+                  >
+                    {finishes.map((f) => (
+                      <option key={f} value={f}>
+                        {f}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
               <select
                 className="p-input p-select"
                 value={r.sizeId}
@@ -274,7 +294,8 @@ function LineRows({
                 ×
               </button>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
       {!(single && rows.length > 0) && (
@@ -286,19 +307,13 @@ function LineRows({
         </div>
       )}
       {items.length > 0 && (
-        <div className="p-hints">
-          <p className="p-sub-label">
+        <p className="p-hints">
+          <b>
             {hintLabel}
-            {single ? ' · 1 per album' : ''}
-          </p>
-          <div className="p-chips">
-            {items.map((it) => (
-              <span key={it.id} className={`p-chip${used.has(it.id) ? ' is-active' : ''}`}>
-                {it.name}
-              </span>
-            ))}
-          </div>
-        </div>
+            {single ? ' (1 per album)' : ''}:
+          </b>{' '}
+          {items.map(itemLabel).join(' · ')}
+        </p>
       )}
     </>
   )
@@ -343,7 +358,15 @@ export default function NewOrderPage() {
   }
 
   const filled = (Object.values(rows).flat() as Row[]).filter((r) => r.sizeId && Number(r.qty) > 0)
-  const itemName = (id: number | '') => items.find((i) => i.id === id)?.name ?? ''
+  const finishOf = (r: Row) => {
+    const finishes = items.find((i) => i.id === r.itemId)?.finishes ?? []
+    return finishes.length ? r.finish || finishes[0] : null
+  }
+  const rowName = (r: Row) => {
+    const name = items.find((i) => i.id === r.itemId)?.name ?? ''
+    const finish = finishOf(r)
+    return finish ? `${name} ${finish}` : name
+  }
   const sizeName = (id: number | '') => sizes.find((s) => s.id === id)?.size ?? ''
   const sheetCount = rows.sheet.filter((r) => r.sizeId).reduce((s, r) => s + (Number(r.qty) || 0), 0)
 
@@ -360,7 +383,7 @@ export default function NewOrderPage() {
       p_notes: notes,
       p_phone: phone,
       p_order_date: date,
-      p_lines: filled.map((r) => ({ item_size_id: r.sizeId, qty: Number(r.qty) })),
+      p_lines: filled.map((r) => ({ item_size_id: r.sizeId, qty: Number(r.qty), finish: finishOf(r) })),
     })
     setSubmitting(false)
     if (err) return setError(errorMessage(err))
@@ -506,7 +529,7 @@ export default function NewOrderPage() {
             ) : (
               filled.map((r) => (
                 <div className="p-sum-row" key={r.key}>
-                  <span>{itemName(r.itemId)}</span>
+                  <span>{rowName(r)}</span>
                   <b>{`${sizeName(r.sizeId)} · ${r.qty}`}</b>
                 </div>
               ))

@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 import { CATEGORY_ORDER, type Customer, type FullOrder, type Item, type ItemSize, type Order, type OrderLine } from './types'
 
 export async function listItems(includeInactive = false) {
-  let query = supabase.from('items').select('id, name, category, sort, active').order('sort').order('name')
+  let query = supabase.from('items').select('id, name, category, sort, active, finishes').order('sort').order('name')
   if (!includeInactive) query = query.eq('active', true)
   const { data, error } = await query
   if (error) throw error
@@ -84,6 +84,11 @@ export async function loadCustomerOrders(customerId: number, limit = 10) {
     .limit(limit)
   if (error) throw error
   return ((data ?? []) as unknown as OrderRow[]).map((r) => toFullOrder(r, true))
+}
+
+/** "Normal High (Gloss / Matt)" for items with a finish choice, otherwise the plain name. */
+export function itemLabel(item: Pick<Item, 'name' | 'finishes'>) {
+  return item.finishes?.length ? `${item.name} (${item.finishes.join(' / ')})` : item.name
 }
 
 export function totalSheets(order: Pick<FullOrder, 'lines'>) {

@@ -664,29 +664,29 @@
   align-items: center;
   gap: 1rem;
 }
-.portal .p-hints .p-sub-label {
-  margin-top: 1.1rem;
+.portal .p-typecell {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
 }
-.portal .p-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+.portal .p-typecell.has-finish {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
 }
-.portal .p-chip {
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  background: #fff;
+.portal .p-finish-note {
+  margin-top: 0.3rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  font-size: 0.84rem;
-  color: #475569;
-  cursor: default;
-  user-select: none;
+  color: var(--violet);
 }
-.portal .p-chip.is-active {
-  background: var(--btn-bg);
-  border-color: transparent;
-  color: #fff;
+.portal .p-hints {
+  margin: 0.9rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.portal .p-hints b {
+  font-weight: 600;
+  color: #475569;
 }
 .portal .p-total-pill {
   font-weight: 700;

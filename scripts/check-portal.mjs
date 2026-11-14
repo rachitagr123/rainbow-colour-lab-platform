@@ -1,6 +1,8 @@
 // Checks the Album Desk database end to end with the real logins.
 // Usage: ADMIN_PW='…' STAFF_PW='…' node scripts/check-portal.mjs
-// Creates one test order for "customer1" and deletes it again at the end.
+// Uses a temporary customer and deletes every test order, customer and account it creates.
+// Each run still uses up about 3 order numbers (the counter never goes back), so avoid running
+// it on the live database once real orders are being numbered.
 import { createClient } from '@supabase/supabase-js'
 import { readFileSync } from 'node:fs'
 
@@ -53,7 +55,7 @@ const adminProfile = await ownProfile(admin)
 ok('rcolourlab has role staff', staffProfile?.role === 'staff', JSON.stringify(staffProfile))
 ok('admin has role admin', adminProfile?.role === 'admin', JSON.stringify(adminProfile))
 
-const items = (await staff.from('items').select('id, name, category')).data ?? []
+const items = (await staff.from('items').select('id, name, category, finishes')).data ?? []
 const sizes = (await staff.from('item_sizes').select('id, item_id, size')).data ?? []
 const customers = (await staff.from('customers').select('id, name')).data ?? []
 ok('staff can list items', items.length > 0, `${items.length} items`)
@@ -77,9 +79,16 @@ ok('admin can read default prices', prices.length === sizes.length, `${prices.le
 const { data: users, error: usersErr } = await admin.rpc('admin_list_users')
 ok('admin can list users', users?.length >= 2, usersErr?.message ?? users?.map((u) => `${u.username}:${u.role}`).join(', '))
 
-// Price a test order: two sheet sizes + one cover, for customer1, with one special rate.
-const cust = customers.find((c) => c.name === 'customer1') ?? customers[0]
-const sheetItem = items.find((i) => i.category === 'sheet')
+// Price a test order for a temporary customer (never a real one), with one special rate.
+const { data: cust, error: tmpCustErr } = await admin
+  .from('customers')
+  .insert({ name: 'CHECK temporary customer – safe to delete' })
+  .select()
+  .single()
+if (tmpCustErr) throw tmpCustErr
+const sheetItem =
+  items.find((i) => i.category === 'sheet' && i.finishes?.length) ?? items.find((i) => i.category === 'sheet')
+const sheetFinish = sheetItem.finishes?.[0] ?? null
 const coverItem = items.find((i) => i.category === 'cover')
 const sheetSize = sizes.find((s) => s.item_id === sheetItem.id)
 const coverSize = sizes.find((s) => s.item_id === coverItem.id)
@@ -98,7 +107,7 @@ const { data: created, error: createErr } = await staff.rpc('create_order', {
   p_phone: '',
   p_order_date: null,
   p_lines: [
-    { item_size_id: sheetSize.id, qty: 30 },
+    { item_size_id: sheetSize.id, qty: 30, finish: sheetFinish },
     { item_size_id: coverSize.id, qty: 1 },
   ],
 })
@@ -107,6 +116,10 @@ ok('staff can submit an order', !createErr, createErr?.message ?? `order no ${cr
 if (created) {
   const { data: staffView } = await staff.from('orders').select('*, order_lines(*)').eq('order_no', created.order_no).single()
   ok('staff sees the order and its lines', staffView?.order_lines?.length === 2)
+  if (sheetFinish) {
+    const sheetLine = staffView?.order_lines?.find((l) => l.category === 'sheet')
+    ok('sheet line name includes Gloss/Matt', sheetLine?.item_name === `${sheetItem.name} ${sheetFinish}`, sheetLine?.item_name)
+  }
   const { data: byNo } = await admin.from('order_lines').select('order_no').eq('order_no', created.order_no)
   ok('order lines are looked up by order number', byNo?.length === 2)
   const { data: staffAmt } = await staff.from('order_amounts').select('*').eq('order_no', created.order_no)
@@ -125,7 +138,13 @@ if (created) {
   const { error: delErr } = await admin.from('orders').delete().eq('order_no', created.order_no)
   ok('admin can delete the test order', !delErr, delErr?.message)
 }
-await admin.from('customer_rates').delete().eq('customer_id', cust.id).eq('item_size_id', sheetSize.id)
+if (sheetFinish) {
+  const { error: noFinish } = await staff.rpc('create_order', {
+    p_customer_id: cust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
+    p_lines: [{ item_size_id: sheetSize.id, qty: 5 }],
+  })
+  ok(`${sheetItem.name} without Gloss/Matt is refused`, Boolean(noFinish), noFinish?.message)
+}
 
 // Customer type (collection / counter) and one cover / one box per album.
 const { data: counterCust, error: ctErr } = await staff
@@ -138,13 +157,13 @@ const coverSizes = sizes.filter((s) => items.find((i) => i.id === s.item_id)?.ca
 if (counterCust) {
   const { error: twoCovers } = await staff.rpc('create_order', {
     p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
-    p_lines: [{ item_size_id: sheetSize.id, qty: 10 }, { item_size_id: coverSizes[0].id, qty: 1 }, { item_size_id: coverSizes[1].id, qty: 1 }],
+    p_lines: [{ item_size_id: sheetSize.id, qty: 10, finish: sheetFinish }, { item_size_id: coverSizes[0].id, qty: 1 }, { item_size_id: coverSizes[1].id, qty: 1 }],
   })
   ok('an album cannot have two covers', Boolean(twoCovers), twoCovers?.message)
 
   const { data: co, error: coErr } = await staff.rpc('create_order', {
     p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
-    p_lines: [{ item_size_id: sheetSize.id, qty: 10 }, { item_size_id: coverSizes[0].id, qty: 5 }],
+    p_lines: [{ item_size_id: sheetSize.id, qty: 10, finish: sheetFinish }, { item_size_id: coverSizes[0].id, qty: 5 }],
   })
   ok('counter customer order saves', !coErr, coErr?.message)
   if (co) {
@@ -158,7 +177,7 @@ if (counterCust) {
   await admin.from('customers').delete().eq('id', counterCust.id)
 }
 const { data: oldCust } = await staff.from('customers').select('customer_type').eq('id', cust.id).single()
-ok('existing customers default to collection', oldCust?.customer_type === 'collection', oldCust?.customer_type)
+ok('customers default to collection', oldCust?.customer_type === 'collection', oldCust?.customer_type)
 
 // Sign-up: new accounts are unapproved staff and see nothing until admin approves them.
 const testId = `checkbot${Date.now().toString().slice(-6)}`
@@ -180,7 +199,7 @@ if (!signupErr) {
     ok('unapproved account sees no orders', (await count(fresh, 'orders')) === 0)
     const { error: blocked } = await fresh.rpc('create_order', {
       p_customer_id: cust.id, p_album_name: 'x', p_notes: '', p_phone: '', p_order_date: null,
-      p_lines: [{ item_size_id: sheetSize.id, qty: 1 }],
+      p_lines: [{ item_size_id: sheetSize.id, qty: 1, finish: sheetFinish }],
     })
     ok('unapproved account cannot submit orders', Boolean(blocked), blocked?.message)
     const { error: selfApprove } = await fresh.rpc('admin_set_approved', { p_user_id: (await fresh.auth.getUser()).data.user.id, p_approved: true })
@@ -197,6 +216,10 @@ if (!signupErr) {
     ok('admin can delete the test account', !delUserErr, delUserErr?.message)
   }
 }
+
+await admin.from('orders').delete().eq('customer_id', cust.id)
+const { error: tmpDelErr } = await admin.from('customers').delete().eq('id', cust.id)
+ok('temporary test customer removed', !tmpDelErr, tmpDelErr?.message)
 
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed')
 process.exit(failures ? 1 : 0)
