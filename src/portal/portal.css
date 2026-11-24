@@ -882,6 +882,11 @@
 .portal .p-click:hover td {
   background: #fcfbff;
 }
+.portal .p-row-act {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
 .portal .p-ono {
   font-weight: 800;
   color: var(--pink);
@@ -1199,7 +1204,53 @@
   padding: 1.6rem;
 }
 
-/* ── Slip (A4 printout) ── */
+/*
+  Landscape sheet (8×6): old portrait slip spun 90° clockwise.
+  Same on screen and in print so the preview matches the paper.
+  Must use fixed inches — % height on abspos children collapses when the
+  parent only has aspect-ratio.
+*/
+.portal .slip-sheet {
+  width: 8in;
+  height: 6in;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #d8d3e8;
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(30, 27, 75, 0.08);
+}
+.portal .slip-sheet .slip {
+  width: 6in;
+  height: 8in;
+  max-width: none;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Center first, then spin 90° CCW — matches landscape hold; logo on the left */
+  transform: translate(-50%, -50%) rotate(-90deg);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.35in 0.4in;
+  font-size: 10pt;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.portal .slip-sheet .slip table {
+  flex: 1;
+}
+.portal .slip-sheet .slip__foot {
+  margin-top: auto;
+}
+.portal .slip-sheet .slip__head img {
+  height: 42px;
+}
+
+/* ── Slip (on-screen when not inside a landscape sheet) ── */
 .portal .slip {
   max-width: 720px;
   margin: 0 auto;
@@ -1210,6 +1261,7 @@
   font-size: 0.92rem;
   color: #111827;
   box-shadow: 0 12px 30px rgba(30, 27, 75, 0.08);
+  box-sizing: border-box;
 }
 .portal .slip__head {
   display: flex;
@@ -1344,8 +1396,12 @@
 }
 .portal .p-print-list {
   display: grid;
-  gap: 1.6rem;
+  gap: 1.4rem;
   padding: 1.8rem 1.5rem 3rem;
+  justify-items: center;
+}
+.portal .p-print-list .slip-sheet {
+  width: min(100%, 8in);
 }
 
 /* ── Monthly ── */
@@ -1590,11 +1646,15 @@
   }
 }
 
-/* ── Print (A4) ── */
+/* ── Print ──
+   Landscape 8×6 page; slip already rotated inside .slip-sheet (same as screen).
+   Day print: 2 pages per order. Monthly stays on A4. */
 @media print {
-  /* Zero page margin leaves the browser no room for its own header/footer (URL, date, page no.);
-     the printed content gets its margins from padding below instead. */
   @page {
+    size: 8in 6in;
+    margin: 0;
+  }
+  @page a4sheet {
     size: A4;
     margin: 0;
   }
@@ -1620,26 +1680,34 @@
   }
   .portal .p-paper,
   .portal .p-print-list {
-    background: none;
-    padding: 0;
+    background: none !important;
+    padding: 0 !important;
     display: block;
+    box-shadow: none;
   }
-  .portal .slip {
-    max-width: none;
+  .portal .slip-sheet {
+    width: 8in;
+    height: 6in;
+    aspect-ratio: auto;
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    padding: 12mm 14mm;
-    font-size: 11.5pt;
-  }
-  .portal .p-page > .p-print-area {
-    padding: 12mm 14mm;
-  }
-  .portal .p-print-page {
     break-after: page;
   }
-  .portal .p-print-page:last-child {
+  .portal .slip-sheet:last-child {
     break-after: auto;
+  }
+  .portal .slip-sheet .slip {
+    width: 6in;
+    height: 8in;
+    padding: 0.32in 0.38in;
+    font-size: 10pt;
+  }
+  .portal .slip-sheet .slip__head img {
+    height: 42px;
+  }
+  .portal .p-page > .p-print-area {
+    padding: 0;
   }
   .portal .p-print-only {
     display: block;
@@ -1648,5 +1716,9 @@
   .portal .p-stat {
     box-shadow: none;
     break-inside: avoid;
+  }
+  .portal .p-monthly-print {
+    page: a4sheet;
+    padding: 12mm 14mm;
   }
 }

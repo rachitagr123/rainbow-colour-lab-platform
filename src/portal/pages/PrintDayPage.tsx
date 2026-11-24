@@ -32,7 +32,11 @@ export default function PrintDayPage() {
         <div className="p-printbar__inner">
           <div>
             <h1>Print · {prettyDate(date, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</h1>
-            <p>{orders ? `${orders.length} albums · one A4 page per album` : 'Loading…'}</p>
+            <p>
+              {orders
+                ? `${orders.length} albums · 2 copies each · landscape (rotated 90°)`
+                : 'Loading…'}
+            </p>
           </div>
           <div className="p-printbar__right">
             <label className="p-check">
@@ -43,7 +47,7 @@ export default function PrintDayPage() {
               ← Back
             </Link>
             <button type="button" className="p-btn p-btn--grad" disabled={!orders?.length} onClick={() => window.print()}>
-              🖨 Print {orders?.length ?? ''} slips
+              🖨 Print {orders ? orders.length * 2 : ''} slips
             </button>
           </div>
         </div>
@@ -53,11 +57,13 @@ export default function PrintDayPage() {
       {orders && orders.length === 0 && <div className="p-empty">No albums on this date.</div>}
 
       <div className="p-print-area p-print-list">
-        {orders?.map((o) => (
-          <div className="p-print-page" key={o.order_no}>
-            <Slip order={o} showPrices={withPrices} />
-          </div>
-        ))}
+        {orders?.flatMap((o) =>
+          [1, 2].map((copy) => (
+            <div className="p-print-page slip-sheet" key={`${o.order_no}-${copy}`}>
+              <Slip order={o} showPrices={withPrices} />
+            </div>
+          )),
+        )}
       </div>
     </div>
   )

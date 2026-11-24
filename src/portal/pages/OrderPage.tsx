@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { loadOrder, totalSheets } from '../api'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { deleteOrder, loadOrder, totalSheets } from '../api'
 import { useAuth } from '../auth'
 import { money, prettyDate } from '../format'
 import { Slip } from '../Slip'
@@ -10,6 +10,7 @@ import { STATUS_LABEL, type FullOrder, type OrderStatus } from '../types'
 
 export default function OrderPage() {
   const { orderNo } = useParams()
+  const navigate = useNavigate()
   const { isAdmin } = useAuth()
   const [params, setParams] = useSearchParams()
   const isNew = params.get('new') === '1'
@@ -19,6 +20,7 @@ export default function OrderPage() {
   const [advance, setAdvance] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const printed = useRef(false)
 
   const [waTotal, setWaTotal] = useState<number | null>(null)
@@ -86,6 +88,22 @@ export default function OrderPage() {
     }
   }
 
+  const removeOrder = async () => {
+    const ok = window.confirm(
+      `Delete order ${order.order_no} for ${order.customer_name}? This removes it from the database and cannot be undone.`,
+    )
+    if (!ok) return
+    setDeleting(true)
+    setSaved(null)
+    try {
+      await deleteOrder(order.order_no)
+      navigate(`/admin/orders?date=${order.order_date}`, { replace: true })
+    } catch (e) {
+      setSaved(errorMessage(e))
+      setDeleting(false)
+    }
+  }
+
   return (
     <div className="p-order-view">
       <div className="p-stack no-print">
@@ -109,7 +127,7 @@ export default function OrderPage() {
               <i>🖨</i>
               <div>
                 <b>Print slip</b>
-                <span>A4 · {showPrices ? 'with prices (admin copy)' : 'no prices (customer copy)'}</span>
+                <span>Landscape · {showPrices ? 'with prices (admin copy)' : 'no prices (customer copy)'}</span>
               </div>
             </div>
             <div className="p-step">
@@ -139,6 +157,10 @@ export default function OrderPage() {
             <Link className="p-btn p-btn--text" to={`/admin/orders?date=${order.order_date}`}>
               View all orders for {prettyDate(order.order_date)} →
             </Link>
+            <button type="button" className="p-btn p-btn--danger" onClick={removeOrder} disabled={deleting}>
+              {deleting ? 'Deleting…' : 'Delete this order'}
+            </button>
+            {saved && !isAdmin && <small className="p-muted">{saved}</small>}
           </div>
         </div>
 
@@ -196,10 +218,12 @@ export default function OrderPage() {
       <div>
         <div className="p-preview-head no-print">
           <h3>Slip preview</h3>
-          <span className="p-pill p-pill--grey">A4 · {showPrices ? 'with prices' : 'no prices'}</span>
+          <span className="p-pill p-pill--grey">Landscape · {showPrices ? 'with prices' : 'no prices'}</span>
         </div>
         <div className="p-paper p-print-area">
-          <Slip order={order} showPrices={showPrices} />
+          <div className="slip-sheet">
+            <Slip order={order} showPrices={showPrices} />
+          </div>
         </div>
       </div>
     </div>

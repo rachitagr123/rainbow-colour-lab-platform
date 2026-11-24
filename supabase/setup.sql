@@ -336,8 +336,10 @@ with seed(name, category, sort, rate) as (
     ('Cover Sparkal', 'cover', 12, 300),
     ('2 Piece Box', 'box', 20, 1100),
     ('3 Piece Box', 'box', 21, 1300),
-    ('5 in 1 Combo', 'product', 30, 2500),
-    ('Piano Combo', 'product', 31, 3200)
+    ('5 in 1 combo(table calendar, mini book, 2 keyring)', 'product', 30, 2500),
+    ('Piano Combo (table calendar, mini book, 2 keyring)', 'product', 31, 3200),
+    ('Minibook', 'product', 40, 250),
+    ('Keyring', 'product', 41, 250)
 ),
 ins as (
   insert into public.items (name, category, sort)
@@ -346,7 +348,15 @@ ins as (
 ),
 sized as (
   insert into public.item_sizes (item_id, size, sort)
-  select id, '12x36', 1 from ins
+  select
+    id,
+    case
+      when name = 'Minibook' then '6x9'
+      when name = 'Keyring' then ''
+      else '12x36'
+    end,
+    1
+  from ins
   returning id, item_id
 )
 insert into public.item_size_prices (item_size_id, default_rate)

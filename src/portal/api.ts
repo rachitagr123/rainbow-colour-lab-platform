@@ -91,6 +91,12 @@ export function itemLabel(item: Pick<Item, 'name' | 'finishes'>) {
   return item.finishes?.length ? `${item.name} (${item.finishes.join(' / ')})` : item.name
 }
 
+/** Deletes the order and every related line / amount from the database. Staff and admin. */
+export async function deleteOrder(orderNo: number) {
+  const { error } = await supabase.rpc('delete_order', { p_order_no: orderNo })
+  if (error) throw error
+}
+
 export function totalSheets(order: Pick<FullOrder, 'lines'>) {
   return order.lines.filter((l) => l.category === 'sheet').reduce((sum, l) => sum + l.qty, 0)
 }

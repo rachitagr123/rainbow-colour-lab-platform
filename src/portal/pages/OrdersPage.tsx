@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { loadOrdersBetween, totalSheets } from '../api'
+import { deleteOrder, loadOrdersBetween, totalSheets } from '../api'
 import { useAuth } from '../auth'
 import { money, num, prettyDate, shiftDate, todayIST } from '../format'
 import { errorMessage } from '../supabase'
@@ -20,6 +20,12 @@ export default function OrdersPage() {
   const date = params.get('date') || todayIST()
   const [result, setResult] = useState<{ date: string; orders?: FullOrder[]; error?: string } | null>(null)
   const [q, setQ] = useState('')
+  const [busyNo, setBusyNo] = useState<number | null>(null)
+
+  const reload = () =>
+    loadOrdersBetween(date, date, isAdmin)
+      .then((list) => setResult({ date, orders: list }))
+      .catch((e) => setResult({ date, error: errorMessage(e) }))
 
   useEffect(() => {
     let alive = true
@@ -30,6 +36,23 @@ export default function OrdersPage() {
       alive = false
     }
   }, [date, isAdmin])
+
+  const remove = async (o: FullOrder, e: MouseEvent) => {
+    e.stopPropagation()
+    const ok = window.confirm(
+      `Delete order ${o.order_no} for ${o.customer_name}? This removes it from the database and cannot be undone.`,
+    )
+    if (!ok) return
+    setBusyNo(o.order_no)
+    try {
+      await deleteOrder(o.order_no)
+      await reload()
+    } catch (err) {
+      setResult({ date, orders: result?.orders, error: errorMessage(err) })
+    } finally {
+      setBusyNo(null)
+    }
+  }
 
   const current = result?.date === date ? result : null
   const orders = current?.orders ?? null
@@ -141,6 +164,7 @@ export default function OrdersPage() {
                   {isAdmin && <th className="r">Advance</th>}
                   {isAdmin && <th className="r">Balance</th>}
                   <th>Status</th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
@@ -169,6 +193,16 @@ export default function OrdersPage() {
                       <td>
                         <span className={`p-pill ${STATUS_PILL[o.status]}`}>{STATUS_LABEL[o.status]}</span>
                       </td>
+                      <td className="p-row-act">
+                        <button
+                          type="button"
+                          className="p-btn p-btn--sm p-btn--danger"
+                          disabled={busyNo === o.order_no}
+                          onClick={(e) => remove(o, e)}
+                        >
+                          {busyNo === o.order_no ? '…' : 'Delete'}
+                        </button>
+                      </td>
                     </tr>
                   )
                 })}
@@ -182,7 +216,7 @@ export default function OrdersPage() {
                     <td className="r">{money(totals.total)}</td>
                     <td className="r">{money(totals.advance)}</td>
                     <td className="r">{money(totals.balance)}</td>
-                    <td />
+                    <td colSpan={2} />
                   </tr>
                 </tfoot>
               )}

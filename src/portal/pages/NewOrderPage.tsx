@@ -267,7 +267,7 @@ function LineRows({
               <select
                 className="p-input p-select"
                 value={r.sizeId}
-                disabled={!r.itemId}
+                disabled={!r.itemId || sizes.filter((s) => s.item_id === r.itemId).length <= 1}
                 onChange={(e) => update(r.key, { sizeId: Number(e.target.value) || '' })}
               >
                 {!r.sizeId && <option value="">Size…</option>}
@@ -275,7 +275,7 @@ function LineRows({
                   .filter((s) => s.item_id === r.itemId)
                   .map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.size}
+                      {s.size || '—'}
                     </option>
                   ))}
               </select>
@@ -349,8 +349,20 @@ export default function NewOrderPage() {
       .catch((e) => setLoadError(errorMessage(e)))
   }, [])
 
+  /** Cover, box and combo/product — picking one clears the other two. */
+  const PACK: Category[] = ['cover', 'box', 'product']
+
   const byCat = (cat: Category) => items.filter((i) => i.category === cat)
-  const setCat = (cat: Category) => (next: Row[]) => setRows((r) => ({ ...r, [cat]: next }))
+  const setCat = (cat: Category) => (next: Row[]) =>
+    setRows((r) => {
+      const updated: Record<Category, Row[]> = { ...r, [cat]: next }
+      if (PACK.includes(cat) && next.length > 0) {
+        for (const other of PACK) {
+          if (other !== cat) updated[other] = []
+        }
+      }
+      return updated
+    })
 
   const selectCustomer = (c: Customer | null) => {
     setCustomer(c)
@@ -398,7 +410,7 @@ export default function NewOrderPage() {
       <div className="p-head">
         <div>
           <h1>New album order</h1>
-          <p>Pick the customer, then sheets, cover and box. Rates are added automatically and only admin can see them.</p>
+          <p>Pick the customer, then sheets, and one of cover, box or combo. Rates are added automatically and only admin can see them.</p>
         </div>
       </div>
 
@@ -469,6 +481,7 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">3</span>Cover
               </h2>
+              <small>Choosing a cover clears box and combo</small>
             </div>
             <LineRows rows={rows.cover} items={byCat('cover')} sizes={sizes} onChange={setCat('cover')} addLabel="Add cover" hintLabel="Covers available" single />
           </section>
@@ -478,6 +491,7 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">4</span>Box
               </h2>
+              <small>Choosing a box clears cover and combo</small>
             </div>
             <LineRows rows={rows.box} items={byCat('box')} sizes={sizes} onChange={setCat('box')} addLabel="Add box" hintLabel="Boxes available" single />
           </section>
@@ -487,7 +501,7 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">5</span>Combos &amp; other products
               </h2>
-              <small>Optional</small>
+              <small>Choosing a combo clears cover and box</small>
             </div>
             <LineRows rows={rows.product} items={byCat('product')} sizes={sizes} onChange={setCat('product')} addLabel="Add product" hintLabel="Combos & products available" />
           </section>
@@ -539,7 +553,7 @@ export default function NewOrderPage() {
               <input type="checkbox" checked={autoPrint} onChange={(e) => setAutoPrint(e.target.checked)} />
               <div>
                 <b>Print slip after saving</b>
-                <span>A4, without rates or amounts</span>
+                <span>Landscape slip, without rates or amounts</span>
               </div>
             </label>
             <div className="p-opt p-opt--static">

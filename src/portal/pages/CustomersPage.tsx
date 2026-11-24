@@ -444,7 +444,7 @@ function CustomerPanel({
                           return (
                             <tr key={s.id}>
                               <td>{idx === 0 ? itemLabel(it) : ''}</td>
-                              <td className="p-muted">{s.size}</td>
+                              <td className="p-muted">{s.size || '—'}</td>
                               <td className="r p-muted">{money(defaults.get(s.id))}</td>
                               <td className="r">
                                 <input

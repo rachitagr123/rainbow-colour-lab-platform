@@ -135,8 +135,10 @@ if (created) {
     `total ₹${amt?.total}, expected ₹${expected} (${specialRate}×30 + ${priceOf(coverSize.id)})`,
   )
 
-  const { error: delErr } = await admin.from('orders').delete().eq('order_no', created.order_no)
-  ok('admin can delete the test order', !delErr, delErr?.message)
+  const { error: delErr } = await staff.rpc('delete_order', { p_order_no: created.order_no })
+  ok('staff can delete an order', !delErr, delErr?.message)
+  const { data: gone } = await admin.from('orders').select('order_no').eq('order_no', created.order_no)
+  ok('deleted order is gone from the database', (gone ?? []).length === 0)
 }
 if (sheetFinish) {
   const { error: noFinish } = await staff.rpc('create_order', {
@@ -146,6 +148,15 @@ if (sheetFinish) {
   ok(`${sheetItem.name} without Gloss/Matt is refused`, Boolean(noFinish), noFinish?.message)
 }
 
+ok(
+  '5 in 1 combo name includes pack contents',
+  items.some((i) => i.name === '5 in 1 combo(table calendar, mini book, 2 keyring)'),
+)
+ok(
+  'Piano Combo name includes pack contents',
+  items.some((i) => i.name === 'Piano Combo (table calendar, mini book, 2 keyring)'),
+)
+
 // Customer type (collection / counter) and one cover / one box per album.
 const { data: counterCust, error: ctErr } = await staff
   .from('customers')
@@ -154,12 +165,37 @@ const { data: counterCust, error: ctErr } = await staff
   .single()
 ok('staff can add a counter customer', !ctErr && counterCust?.customer_type === 'counter', ctErr?.message)
 const coverSizes = sizes.filter((s) => items.find((i) => i.id === s.item_id)?.category === 'cover')
+const boxSize = sizes.find((s) => items.find((i) => i.id === s.item_id)?.category === 'box')
+const productSize = sizes.find((s) => items.find((i) => i.id === s.item_id)?.category === 'product')
 if (counterCust) {
   const { error: twoCovers } = await staff.rpc('create_order', {
     p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
     p_lines: [{ item_size_id: sheetSize.id, qty: 10, finish: sheetFinish }, { item_size_id: coverSizes[0].id, qty: 1 }, { item_size_id: coverSizes[1].id, qty: 1 }],
   })
   ok('an album cannot have two covers', Boolean(twoCovers), twoCovers?.message)
+
+  if (boxSize) {
+    const { error: coverAndBox } = await staff.rpc('create_order', {
+      p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
+      p_lines: [
+        { item_size_id: sheetSize.id, qty: 10, finish: sheetFinish },
+        { item_size_id: coverSizes[0].id, qty: 1 },
+        { item_size_id: boxSize.id, qty: 1 },
+      ],
+    })
+    ok('an album cannot have cover and box together', Boolean(coverAndBox), coverAndBox?.message)
+  }
+  if (productSize) {
+    const { error: coverAndCombo } = await staff.rpc('create_order', {
+      p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
+      p_lines: [
+        { item_size_id: sheetSize.id, qty: 10, finish: sheetFinish },
+        { item_size_id: coverSizes[0].id, qty: 1 },
+        { item_size_id: productSize.id, qty: 1 },
+      ],
+    })
+    ok('an album cannot have cover and combo together', Boolean(coverAndCombo), coverAndCombo?.message)
+  }
 
   const { data: co, error: coErr } = await staff.rpc('create_order', {
     p_customer_id: counterCust.id, p_album_name: 'CHECK', p_notes: '', p_phone: '', p_order_date: null,
@@ -171,9 +207,11 @@ if (counterCust) {
     ok('order is marked counter (slip says INDIGO ALBUM (COUNTER))', o?.customer_type === 'counter', o?.customer_type)
     const coverLine = o?.order_lines.find((l) => l.category === 'cover')
     ok('cover quantity is forced to 1', coverLine?.qty === 1, `qty ${coverLine?.qty}`)
-    await admin.from('orders').delete().eq('order_no', co.order_no)
+    const { error: adminDel } = await admin.rpc('delete_order', { p_order_no: co.order_no })
+    ok('admin can delete via delete_order', !adminDel, adminDel?.message)
   }
-  await admin.from('orders').delete().eq('customer_id', counterCust.id)
+  const leftover = (await admin.from('orders').select('order_no').eq('customer_id', counterCust.id)).data ?? []
+  for (const row of leftover) await admin.rpc('delete_order', { p_order_no: row.order_no })
   await admin.from('customers').delete().eq('id', counterCust.id)
 }
 const { data: oldCust } = await staff.from('customers').select('customer_type').eq('id', cust.id).single()
@@ -217,7 +255,8 @@ if (!signupErr) {
   }
 }
 
-await admin.from('orders').delete().eq('customer_id', cust.id)
+const leftoverCust = (await admin.from('orders').select('order_no').eq('customer_id', cust.id)).data ?? []
+for (const row of leftoverCust) await admin.rpc('delete_order', { p_order_no: row.order_no })
 const { error: tmpDelErr } = await admin.from('customers').delete().eq('id', cust.id)
 ok('temporary test customer removed', !tmpDelErr, tmpDelErr?.message)
 

@@ -179,7 +179,7 @@ export default function MonthlyPage() {
 
       {error && <div className="p-alert p-alert--error">{error}</div>}
 
-      <div className="p-print-area">
+      <div className="p-print-area p-monthly-print">
         <h2 className="p-print-only">Monthly summary · {monthLabel}</h2>
         <div className="p-stats p-stats--5">
           <div className="p-stat">
