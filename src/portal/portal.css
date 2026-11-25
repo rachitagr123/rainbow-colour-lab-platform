@@ -1596,58 +1596,96 @@
   }
 }
 
-/* ── Print (A4 portrait) ──
-   Day print: 2 A4 pages (copies) per order. */
+/* ── Print (A4 portrait, upright, full page) ──
+   Day print: 2 A4 pages (copies) per order.
+   Resets any leftover landscape/rotation rules and collapses the admin
+   sidebar / two-column order layout so the slip fills the sheet. */
 @media print {
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 0;
   }
-  .portal {
+
+  html,
+  body,
+  #root {
     background: #fff !important;
-    min-height: 0;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .portal,
+  .portal .p-app,
+  .portal .p-shell,
+  .portal .p-page,
+  .portal .p-order-view,
+  .portal .p-printday {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    background: #fff !important;
+    grid-template-columns: none !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+
   .portal .no-print {
     display: none !important;
   }
-  .portal .p-shell,
-  .portal .p-order-view {
-    display: block;
-    min-height: 0;
-  }
-  .portal .p-page {
-    padding: 0;
-  }
-  .portal .p-printday {
-    background: #fff;
-  }
+
   .portal .p-paper,
-  .portal .p-print-list {
-    background: none;
-    padding: 0;
-    display: block;
+  .portal .p-print-area,
+  .portal .p-print-list,
+  .portal .p-print-page {
+    display: block !important;
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
+
   .portal .slip {
-    max-width: none;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 12mm 14mm;
+    display: block !important;
+    position: static !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12mm 14mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     font-size: 11.5pt;
+    box-sizing: border-box;
   }
-  .portal .p-page > .p-print-area {
-    padding: 12mm 14mm;
-  }
+
   .portal .p-print-page {
     break-after: page;
+    page-break-after: always;
   }
   .portal .p-print-page:last-child {
     break-after: auto;
+    page-break-after: auto;
   }
+
   .portal .p-print-only {
-    display: block;
+    display: block !important;
   }
   .portal .p-card,
   .portal .p-stat {
