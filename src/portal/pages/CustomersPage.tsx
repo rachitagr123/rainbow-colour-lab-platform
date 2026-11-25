@@ -655,7 +655,7 @@ export default function CustomersPage() {
       <div className="p-head">
         <div>
           <h1>Customers &amp; rate list</h1>
-          <p>Every size has its own price. Gloss and Matt are priced separately (Matt defaults to Gloss + ₹{MATT_PLUS}).</p>
+          <p>Gloss / Matt are separate (Matt = Gloss + ₹{MATT_PLUS}). Bunch (₹50) is auto-added on albums without a cover.</p>
         </div>
         <button type="button" className="p-btn p-btn--grad" onClick={() => setSel({ kind: 'new' })}>
           + Add customer

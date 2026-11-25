@@ -423,7 +423,7 @@ export default function NewOrderPage() {
       <div className="p-head">
         <div>
           <h1>New album order</h1>
-          <p>Pick the customer, then sheets, and one of cover, box or combo. Rates are added automatically and only admin can see them.</p>
+          <p>Pick the customer, then sheets, and one of cover, box or combo. No cover → Bunch ₹50 is added on the bill automatically.</p>
         </div>
       </div>
 

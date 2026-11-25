@@ -98,7 +98,6 @@ export function Slip({ order, showPrices }: { order: FullOrder; showPrices: bool
 
       <footer className="slip__foot">
         <div className="slip__note">{order.notes ? <><b>Note:</b> {order.notes}</> : null}</div>
-        <div className="slip__sign">Auth. Signature</div>
       </footer>
     </article>
   )

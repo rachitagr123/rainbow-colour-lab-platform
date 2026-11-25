@@ -1,15 +1,16 @@
 export type Role = 'admin' | 'staff'
 
-export type Category = 'sheet' | 'cover' | 'box' | 'product'
+export type Category = 'sheet' | 'cover' | 'box' | 'product' | 'bunch'
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   sheet: 'Sheets',
   cover: 'Cover',
   box: 'Box',
   product: 'Combos & products',
+  bunch: 'Bunch',
 }
 
-export const CATEGORY_ORDER: Category[] = ['sheet', 'cover', 'box', 'product']
+export const CATEGORY_ORDER: Category[] = ['sheet', 'cover', 'box', 'product', 'bunch']
 
 export type OrderStatus = 'new' | 'printing' | 'ready' | 'delivered'
 

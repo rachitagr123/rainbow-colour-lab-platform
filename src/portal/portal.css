@@ -1317,15 +1317,6 @@
   color: #374151;
   max-width: 62%;
 }
-.portal .slip__sign {
-  font-size: 0.78rem;
-  color: #6b7280;
-  border-top: 1px solid #9ca3af;
-  padding-top: 0.3rem;
-  min-width: 150px;
-  text-align: center;
-}
-
 /* ── Print day ── */
 .portal .p-printday {
   min-height: 100vh;
