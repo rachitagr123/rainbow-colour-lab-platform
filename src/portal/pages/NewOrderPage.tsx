@@ -312,7 +312,7 @@ function LineRows({
             {hintLabel}
             {single ? ' (1 per album)' : ''}:
           </b>{' '}
-          {items.map(itemLabel).join(' · ')}
+          {items.map((i) => itemLabel(i)).join(' · ')}
         </p>
       )}
     </>
