@@ -332,6 +332,8 @@ export default function NewOrderPage() {
   const [albumName, setAlbumName] = useState('')
   const [notes, setNotes] = useState('')
   const [rows, setRows] = useState<Record<Category, Row[]>>({ sheet: [], cover: [], box: [], product: [] })
+  /** Target sheet count for this album; every sheet qty must add up to this before submit. */
+  const [sheetTotal, setSheetTotal] = useState('')
   const [autoPrint, setAutoPrint] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -380,12 +382,23 @@ export default function NewOrderPage() {
     return finish ? `${name} ${finish}` : name
   }
   const sizeName = (id: number | '') => sizes.find((s) => s.id === id)?.size ?? ''
-  const sheetCount = rows.sheet.filter((r) => r.sizeId).reduce((s, r) => s + (Number(r.qty) || 0), 0)
+  const sheetTarget = Number(sheetTotal) || 0
+  const sheetCount = rows.sheet.reduce((s, r) => s + (Number(r.qty) || 0), 0)
+  const sheetsLeft = sheetTarget - sheetCount
+  const sheetsAssigned = sheetTarget > 0 && sheetsLeft === 0
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!customer) return setError('Select or add a customer first.')
+    if (sheetTarget <= 0) return setError('Enter the total number of sheets first.')
+    if (sheetsLeft !== 0) {
+      return setError(
+        sheetsLeft > 0
+          ? `Assign the remaining ${sheetsLeft} sheets before submitting.`
+          : `Sheet quantities add up to ${sheetCount}, which is ${-sheetsLeft} over the total of ${sheetTarget}.`,
+      )
+    }
     if (filled.length === 0) return setError('Add at least one item with a quantity.')
 
     setSubmitting(true)
@@ -463,7 +476,28 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">2</span>Sheets
               </h2>
-              <small>One album can mix several sheet types</small>
+              <small>Enter the album total first, then split it across sheet types</small>
+            </div>
+            <div className="p-grid p-g2 p-sheet-quota">
+              <label className="p-field">
+                <span>Total number of sheets</span>
+                <input
+                  className="p-input"
+                  inputMode="numeric"
+                  value={sheetTotal}
+                  onChange={(e) => setSheetTotal(e.target.value.replace(/\D/g, ''))}
+                  placeholder="e.g. 50"
+                />
+              </label>
+              <label className="p-field">
+                <span>Sheets left to assign</span>
+                <input
+                  className={`p-input is-readonly${sheetTarget > 0 && sheetsLeft !== 0 ? ' p-quota-left' : ''}${sheetsAssigned ? ' p-quota-done' : ''}`}
+                  value={sheetTotal === '' ? '—' : String(sheetsLeft)}
+                  readOnly
+                  title="Goes down as you fill quantities below"
+                />
+              </label>
             </div>
             <LineRows
               rows={rows.sheet}
@@ -472,7 +506,15 @@ export default function NewOrderPage() {
               onChange={setCat('sheet')}
               addLabel="Add another sheet type"
               hintLabel="Sheet types available"
-              footer={<span className="p-total-pill">Total: {sheetCount} sheets</span>}
+              footer={
+                <span className={`p-total-pill${sheetsAssigned ? ' is-done' : ''}`}>
+                  {sheetTarget > 0
+                    ? sheetsAssigned
+                      ? `All ${sheetTarget} sheets assigned`
+                      : `Assigned ${sheetCount} of ${sheetTarget} · ${sheetsLeft} left`
+                    : `Assigned: ${sheetCount} sheets`}
+                </span>
+              }
             />
           </section>
 
@@ -501,9 +543,17 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">5</span>Combos &amp; other products
               </h2>
-              <small>Choosing a combo clears cover and box</small>
+              <small>Choosing a combo clears cover and box · qty always 1</small>
             </div>
-            <LineRows rows={rows.product} items={byCat('product')} sizes={sizes} onChange={setCat('product')} addLabel="Add product" hintLabel="Combos & products available" />
+            <LineRows
+              rows={rows.product}
+              items={byCat('product')}
+              sizes={sizes}
+              onChange={setCat('product')}
+              addLabel="Add product"
+              hintLabel="Combos & products available"
+              single
+            />
           </section>
 
           <section className="p-card">
@@ -525,7 +575,14 @@ export default function NewOrderPage() {
             </div>
             <div className="p-sum-big">
               <span>Total sheets</span>
-              <b>{sheetCount}</b>
+              <b>{sheetTarget > 0 ? sheetTarget : '—'}</b>
+            </div>
+            <div className="p-sum-row">
+              <span>Assigned</span>
+              <b>
+                {sheetCount}
+                {sheetTarget > 0 ? ` · ${sheetsLeft} left` : ''}
+              </b>
             </div>
             <div className="p-sum-row">
               <span>Customer</span>
@@ -566,8 +623,8 @@ export default function NewOrderPage() {
 
             {error && <div className="p-alert p-alert--error">{error}</div>}
 
-            <button className="p-btn p-btn--grad p-btn--lg p-btn--block" disabled={submitting}>
-              {submitting ? 'Saving…' : 'Submit order'}
+            <button className="p-btn p-btn--grad p-btn--lg p-btn--block" disabled={submitting || !sheetsAssigned}>
+              {submitting ? 'Saving…' : sheetsAssigned ? 'Submit order' : 'Assign all sheets to submit'}
             </button>
             <div className="p-lock">🔒 Rates &amp; totals are never shown to staff</div>
           </div>

@@ -34,7 +34,7 @@ export interface Item {
   category: Category
   sort: number
   active: boolean
-  /** e.g. ['Gloss', 'Matt']: chosen per order line, same price for each. */
+  /** e.g. ['Gloss', 'Matt']: chosen per order line; Matt defaults to Gloss + ₹5. */
   finishes: string[] | null
 }
 

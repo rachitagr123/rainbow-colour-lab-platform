@@ -23,11 +23,18 @@ export async function listItemSizes(includeInactive = false) {
   return (data ?? []) as ItemSize[]
 }
 
-/** Default rate per item size. Admin only — RLS returns nothing for staff. */
+/** Map key for a size + finish rate. Finish is '' when the item has no Gloss/Matt choice. */
+export function rateKey(itemSizeId: number, finish = '') {
+  return `${itemSizeId}::${finish || ''}`
+}
+
+/** Default rate per item size (+ finish). Admin only — RLS returns nothing for staff. */
 export async function listDefaultRates() {
-  const { data, error } = await supabase.from('item_size_prices').select('item_size_id, default_rate')
+  const { data, error } = await supabase.from('item_size_prices').select('item_size_id, finish, default_rate')
   if (error) throw error
-  return new Map((data ?? []).map((r) => [r.item_size_id as number, Number(r.default_rate)]))
+  return new Map(
+    (data ?? []).map((r) => [rateKey(r.item_size_id as number, (r.finish as string) ?? ''), Number(r.default_rate)]),
+  )
 }
 
 type OrderRow = Order & {
@@ -86,9 +93,10 @@ export async function loadCustomerOrders(customerId: number, limit = 10) {
   return ((data ?? []) as unknown as OrderRow[]).map((r) => toFullOrder(r, true))
 }
 
-/** "Normal High (Gloss / Matt)" for items with a finish choice, otherwise the plain name. */
-export function itemLabel(item: Pick<Item, 'name' | 'finishes'>) {
-  return item.finishes?.length ? `${item.name} (${item.finishes.join(' / ')})` : item.name
+/** Plain name, or "Normal High · Gloss" when a finish is shown. */
+export function itemLabel(item: Pick<Item, 'name' | 'finishes'>, finish?: string | null) {
+  if (finish) return `${item.name} · ${finish}`
+  return item.finishes?.length ? `${item.name} (Gloss / Matt)` : item.name
 }
 
 /** Deletes the order and every related line / amount from the database. Staff and admin. */

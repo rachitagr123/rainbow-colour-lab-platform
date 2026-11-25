@@ -688,6 +688,21 @@
   font-weight: 600;
   color: #475569;
 }
+.portal .p-sheet-quota {
+  margin-bottom: 0.85rem;
+}
+.portal .p-input.p-quota-left {
+  color: var(--orange);
+  font-weight: 700;
+}
+.portal .p-input.p-quota-done {
+  color: var(--green);
+  font-weight: 700;
+}
+.portal .p-total-pill.is-done {
+  color: var(--green);
+  background: #ecfdf5;
+}
 .portal .p-total-pill {
   font-weight: 700;
   color: var(--ink);

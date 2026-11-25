@@ -1,6 +1,14 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { itemLabel, listCustomers, listDefaultRates, listItems, listItemSizes, loadCustomerOrders, totalSheets } from '../api'
+import {
+  listCustomers,
+  listDefaultRates,
+  listItems,
+  listItemSizes,
+  loadCustomerOrders,
+  rateKey,
+  totalSheets,
+} from '../api'
 import { money, prettyDate } from '../format'
 import { errorMessage, supabase } from '../supabase'
 import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
@@ -18,6 +26,8 @@ import {
 type Selection = { kind: 'defaults' } | { kind: 'customer'; id: number } | { kind: 'new' }
 type Msg = { ok: boolean; text: string } | null
 
+/** Default Matt surcharge over Gloss when seeding a new size / customer rate. */
+const MATT_PLUS = 5
 const cleanRate = (v: string) => v.replace(/[^\d.]/g, '')
 const cleanSize = (v: string) => v.replace(/\s+/g, '').replace(/[X*×]/g, 'x')
 
@@ -29,20 +39,50 @@ function DefaultsPanel({
 }: {
   items: Item[]
   sizes: ItemSize[]
-  rates: Map<number, number>
+  rates: Map<string, number>
   onSaved: () => void
 }) {
   const [itemEdits, setItemEdits] = useState(() =>
     Object.fromEntries(items.map((i) => [i.id, { name: i.name, active: i.active }])),
   )
   const [sizeEdits, setSizeEdits] = useState(() =>
-    Object.fromEntries(sizes.map((s) => [s.id, { size: s.size, rate: String(rates.get(s.id) ?? 0), active: s.active }])),
+    Object.fromEntries(sizes.map((s) => [s.id, { size: s.size, active: s.active }])),
   )
+  const [rateEdits, setRateEdits] = useState(() => {
+    const map: Record<string, string> = {}
+    for (const s of sizes) {
+      const it = items.find((i) => i.id === s.item_id)
+      const finishes = it?.finishes?.length ? it.finishes : ['']
+      for (const f of finishes) {
+        const k = rateKey(s.id, f)
+        map[k] = String(rates.get(k) ?? (f === 'Matt' ? (rates.get(rateKey(s.id, 'Gloss')) ?? 0) + MATT_PLUS : 0))
+      }
+    }
+    return map
+  })
   const [addSizeFor, setAddSizeFor] = useState<number | null>(null)
   const [newSize, setNewSize] = useState({ size: '', rate: '' })
   const [newItem, setNewItem] = useState({ name: '', category: 'sheet' as Category, size: '12x36', rate: '' })
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<Msg>(null)
+
+  const setRate = (sizeId: number, finish: string, value: string) =>
+    setRateEdits((prev) => {
+      const cleaned = cleanRate(value)
+      const next = { ...prev, [rateKey(sizeId, finish)]: cleaned }
+      // Keep Matt = Gloss + ₹5 unless Matt was already customized.
+      if (finish === 'Gloss') {
+        const mattK = rateKey(sizeId, 'Matt')
+        if (mattK in prev) {
+          const oldGloss = Number(prev[rateKey(sizeId, 'Gloss')] ?? 0) || 0
+          const mattVal = prev[mattK] ?? ''
+          if (mattVal === '' || Number(mattVal) === oldGloss + MATT_PLUS) {
+            next[mattK] = String((Number(cleaned) || 0) + MATT_PLUS)
+          }
+        }
+      }
+      return next
+    })
 
   const run = async (work: () => Promise<void>, done: string) => {
     setBusy(true)
@@ -75,9 +115,17 @@ function DefaultsPanel({
           const { error } = await supabase.from('item_sizes').update({ size, active: e.active }).eq('id', s.id)
           if (error) throw error
         }
-        if (Number(e.rate) !== (rates.get(s.id) ?? 0)) {
-          const { error } = await supabase.from('item_size_prices').upsert({ item_size_id: s.id, default_rate: Number(e.rate) || 0 })
-          if (error) throw error
+        const it = items.find((i) => i.id === s.item_id)
+        const finishes = it?.finishes?.length ? it.finishes : ['']
+        for (const f of finishes) {
+          const k = rateKey(s.id, f)
+          const next = Number(rateEdits[k] ?? 0) || 0
+          if (next !== (rates.get(k) ?? 0)) {
+            const { error } = await supabase
+              .from('item_size_prices')
+              .upsert({ item_size_id: s.id, finish: f, default_rate: next }, { onConflict: 'item_size_id,finish' })
+            if (error) throw error
+          }
         }
       }
     }, 'Default prices saved')
@@ -86,11 +134,25 @@ function DefaultsPanel({
     run(async () => {
       const size = cleanSize(newSize.size)
       if (!size) throw new Error('Enter a size, e.g. 12x30')
+      const it = items.find((i) => i.id === itemId)
+      const gloss = Number(newSize.rate) || 0
       const sort = Math.max(0, ...sizes.filter((s) => s.item_id === itemId).map((s) => s.sort)) + 1
       const { data, error } = await supabase.from('item_sizes').insert({ item_id: itemId, size, sort }).select('id').single()
       if (error) throw error.code === '23505' ? new Error(`${size} already exists for this item`) : error
-      const { error: e2 } = await supabase.from('item_size_prices').insert({ item_size_id: data.id, default_rate: Number(newSize.rate) || 0 })
-      if (e2) throw e2
+      if (it?.finishes?.length) {
+        const rows = it.finishes.map((f) => ({
+          item_size_id: data.id,
+          finish: f,
+          default_rate: f === 'Matt' ? gloss + MATT_PLUS : gloss,
+        }))
+        const { error: e2 } = await supabase.from('item_size_prices').insert(rows)
+        if (e2) throw e2
+      } else {
+        const { error: e2 } = await supabase
+          .from('item_size_prices')
+          .insert({ item_size_id: data.id, finish: '', default_rate: gloss })
+        if (e2) throw e2
+      }
       setAddSizeFor(null)
       setNewSize({ size: '', rate: '' })
     }, 'Size added')
@@ -108,7 +170,9 @@ function DefaultsPanel({
       if (error) throw error
       const { data: sz, error: e2 } = await supabase.from('item_sizes').insert({ item_id: item.id, size, sort: 1 }).select('id').single()
       if (e2) throw e2
-      const { error: e3 } = await supabase.from('item_size_prices').insert({ item_size_id: sz.id, default_rate: Number(newItem.rate) || 0 })
+      const { error: e3 } = await supabase
+        .from('item_size_prices')
+        .insert({ item_size_id: sz.id, finish: '', default_rate: Number(newItem.rate) || 0 })
       if (e3) throw e3
       setNewItem({ name: '', category: newItem.category, size: newItem.size, rate: '' })
     }, 'Item added')
@@ -117,7 +181,7 @@ function DefaultsPanel({
     <div className="p-card">
       <div className="p-card__head">
         <h2>Default price list</h2>
-        <small>Price per size. Used for every customer without a special rate.</small>
+        <small>Price per size. Gloss / Matt are separate — Matt defaults to Gloss + ₹{MATT_PLUS}.</small>
       </div>
       <div className="p-table-wrap">
         <table className="p-table p-pricetable">
@@ -125,7 +189,8 @@ function DefaultsPanel({
             <tr>
               <th>Item</th>
               <th>Size</th>
-              <th className="r">Default rate (₹)</th>
+              <th className="r">Gloss / rate (₹)</th>
+              <th className="r">Matt (₹)</th>
               <th className="r">In use</th>
             </tr>
           </thead>
@@ -136,18 +201,21 @@ function DefaultsPanel({
               return (
                 <Fragment key={cat}>
                   <tr className="p-group-row">
-                    <td colSpan={4}>{CATEGORY_LABEL[cat]}</td>
+                    <td colSpan={5}>{CATEGORY_LABEL[cat]}</td>
                   </tr>
                   {list.map((it) => {
                     const ie = itemEdits[it.id]
                     if (!ie) return null
                     const itemSizes = sizes.filter((s) => s.item_id === it.id)
                     const span = itemSizes.length + 1
+                    const hasFinish = Boolean(it.finishes?.length)
                     return (
                       <Fragment key={it.id}>
                         {itemSizes.map((s, idx) => {
                           const se = sizeEdits[s.id]
                           if (!se) return null
+                          const glossKey = rateKey(s.id, hasFinish ? 'Gloss' : '')
+                          const mattKey = rateKey(s.id, 'Matt')
                           return (
                             <tr key={s.id} className={ie.active && se.active ? '' : 'p-faded'}>
                               {idx === 0 && (
@@ -165,8 +233,8 @@ function DefaultsPanel({
                                     />
                                     Item in use
                                   </label>
-                                  {it.finishes?.length ? (
-                                    <div className="p-finish-note">{it.finishes.join(' / ')} · same price</div>
+                                  {hasFinish ? (
+                                    <div className="p-finish-note">Gloss / Matt · separate prices · Matt default = Gloss + ₹{MATT_PLUS}</div>
                                   ) : null}
                                 </td>
                               )}
@@ -181,9 +249,21 @@ function DefaultsPanel({
                                 <input
                                   className="p-rate"
                                   inputMode="decimal"
-                                  value={se.rate}
-                                  onChange={(ev) => setSizeEdits({ ...sizeEdits, [s.id]: { ...se, rate: cleanRate(ev.target.value) } })}
+                                  value={rateEdits[glossKey] ?? ''}
+                                  onChange={(ev) => setRate(s.id, hasFinish ? 'Gloss' : '', ev.target.value)}
                                 />
+                              </td>
+                              <td className="r">
+                                {hasFinish ? (
+                                  <input
+                                    className="p-rate"
+                                    inputMode="decimal"
+                                    value={rateEdits[mattKey] ?? ''}
+                                    onChange={(ev) => setRate(s.id, 'Matt', ev.target.value)}
+                                  />
+                                ) : (
+                                  <span className="p-muted">—</span>
+                                )}
                               </td>
                               <td className="r">
                                 <input
@@ -216,11 +296,12 @@ function DefaultsPanel({
                                 <input
                                   className="p-rate"
                                   inputMode="decimal"
-                                  placeholder="₹"
+                                  placeholder={hasFinish ? 'Gloss ₹' : '₹'}
                                   value={newSize.rate}
                                   onChange={(e) => setNewSize({ ...newSize, rate: cleanRate(e.target.value) })}
                                 />
                               </td>
+                              <td className="r p-muted">{hasFinish ? `Matt = Gloss + ${MATT_PLUS}` : '—'}</td>
                               <td className="r p-nowrap">
                                 <button type="button" className="p-btn p-btn--sm p-btn--grad" disabled={busy} onClick={() => addSize(it.id)}>
                                   Add
@@ -231,7 +312,7 @@ function DefaultsPanel({
                               </td>
                             </>
                           ) : (
-                            <td colSpan={3}>
+                            <td colSpan={4}>
                               <button
                                 type="button"
                                 className="p-btn p-btn--text p-btn--sm"
@@ -293,7 +374,7 @@ function CustomerPanel({
   customer: Customer | null
   items: Item[]
   sizes: ItemSize[]
-  defaults: Map<number, number>
+  defaults: Map<string, number>
   onSaved: (c: Customer) => void
   onDeleted: () => void
 }) {
@@ -303,8 +384,8 @@ function CustomerPanel({
     city: customer?.city ?? '',
     type: customer?.customer_type ?? '',
   })
-  const [rates, setRates] = useState<Record<number, string>>({})
-  const [original, setOriginal] = useState<Record<number, string>>({})
+  const [rates, setRates] = useState<Record<string, string>>({})
+  const [original, setOriginal] = useState<Record<string, string>>({})
   const [orders, setOrders] = useState<FullOrder[]>([])
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<Msg>(null)
@@ -314,10 +395,12 @@ function CustomerPanel({
     if (!customerId) return
     supabase
       .from('customer_rates')
-      .select('item_size_id, rate')
+      .select('item_size_id, finish, rate')
       .eq('customer_id', customerId)
       .then(({ data }) => {
-        const map = Object.fromEntries((data ?? []).map((r) => [r.item_size_id, String(Number(r.rate))]))
+        const map = Object.fromEntries(
+          (data ?? []).map((r) => [rateKey(r.item_size_id as number, (r.finish as string) ?? ''), String(Number(r.rate))]),
+        )
         setRates(map)
         setOriginal(map)
       })
@@ -346,14 +429,25 @@ function CustomerPanel({
 
       const upserts = Object.entries(rates)
         .filter(([, v]) => v !== '')
-        .map(([sizeId, v]) => ({ customer_id: saved.id, item_size_id: Number(sizeId), rate: Number(v) }))
-      const cleared = Object.keys(original).filter((id) => (rates[Number(id)] ?? '') === '')
+        .map(([key, v]) => {
+          const [sizeId, finish = ''] = key.split('::')
+          return { customer_id: saved.id, item_size_id: Number(sizeId), finish, rate: Number(v) }
+        })
+      const cleared = Object.keys(original).filter((key) => (rates[key] ?? '') === '')
       if (upserts.length) {
-        const { error: e } = await supabase.from('customer_rates').upsert(upserts, { onConflict: 'customer_id,item_size_id' })
+        const { error: e } = await supabase
+          .from('customer_rates')
+          .upsert(upserts, { onConflict: 'customer_id,item_size_id,finish' })
         if (e) throw e
       }
-      if (cleared.length) {
-        const { error: e } = await supabase.from('customer_rates').delete().eq('customer_id', saved.id).in('item_size_id', cleared.map(Number))
+      for (const key of cleared) {
+        const [sizeId, finish = ''] = key.split('::')
+        const { error: e } = await supabase
+          .from('customer_rates')
+          .delete()
+          .eq('customer_id', saved.id)
+          .eq('item_size_id', Number(sizeId))
+          .eq('finish', finish)
         if (e) throw e
       }
       setOriginal({ ...rates })
@@ -376,7 +470,39 @@ function CustomerPanel({
     onDeleted()
   }
 
-  const changed = Object.entries(rates).filter(([id, v]) => v !== '' && Number(v) !== defaults.get(Number(id))).length
+  const changed = Object.entries(rates).filter(([key, v]) => v !== '' && Number(v) !== defaults.get(key)).length
+
+  const rateRows = (it: Item) => {
+    const itemSizes = sizes.filter((s) => s.item_id === it.id && s.active)
+    const finishes = it.finishes?.length ? it.finishes : ['']
+    return itemSizes.flatMap((s) =>
+      finishes.map((finish, fIdx) => {
+        const key = rateKey(s.id, finish)
+        const v = rates[key] ?? ''
+        const def = defaults.get(key) ?? 0
+        const special = v !== '' && Number(v) !== def
+        return (
+          <tr key={key}>
+            <td>{fIdx === 0 ? it.name : ''}</td>
+            <td className="p-muted">
+              {s.size || '—'}
+              {finish ? ` · ${finish}` : ''}
+            </td>
+            <td className="r p-muted">{money(def)}</td>
+            <td className="r">
+              <input
+                className={`p-rate${special ? ' is-changed' : ''}`}
+                inputMode="decimal"
+                placeholder={String(def)}
+                value={v}
+                onChange={(e) => setRates({ ...rates, [key]: cleanRate(e.target.value) })}
+              />
+            </td>
+          </tr>
+        )
+      }),
+    )
+  }
 
   return (
     <div className="p-stack">
@@ -414,14 +540,14 @@ function CustomerPanel({
       <div className="p-card">
         <div className="p-card__head">
           <h2>Rate list</h2>
-          <small>Leave blank to use the default rate for that size</small>
+          <small>Leave blank to use the default. Gloss and Matt have separate rates (Matt default = Gloss + ₹{MATT_PLUS}).</small>
         </div>
         <div className="p-table-wrap">
           <table className="p-table">
             <thead>
               <tr>
                 <th>Item</th>
-                <th>Size</th>
+                <th>Size / finish</th>
                 <th className="r">Default rate</th>
                 <th className="r">{form.name.trim() || 'Customer'} rate</th>
               </tr>
@@ -435,30 +561,7 @@ function CustomerPanel({
                     <tr className="p-group-row">
                       <td colSpan={4}>{CATEGORY_LABEL[cat]}</td>
                     </tr>
-                    {list.flatMap((it) =>
-                      sizes
-                        .filter((s) => s.item_id === it.id && s.active)
-                        .map((s, idx) => {
-                          const v = rates[s.id] ?? ''
-                          const special = v !== '' && Number(v) !== defaults.get(s.id)
-                          return (
-                            <tr key={s.id}>
-                              <td>{idx === 0 ? itemLabel(it) : ''}</td>
-                              <td className="p-muted">{s.size || '—'}</td>
-                              <td className="r p-muted">{money(defaults.get(s.id))}</td>
-                              <td className="r">
-                                <input
-                                  className={`p-rate${special ? ' is-changed' : ''}`}
-                                  inputMode="decimal"
-                                  placeholder={String(defaults.get(s.id) ?? 0)}
-                                  value={v}
-                                  onChange={(e) => setRates({ ...rates, [s.id]: cleanRate(e.target.value) })}
-                                />
-                              </td>
-                            </tr>
-                          )
-                        }),
-                    )}
+                    {list.flatMap((it) => rateRows(it))}
                   </Fragment>
                 )
               })}
@@ -522,7 +625,7 @@ export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [items, setItems] = useState<Item[]>([])
   const [sizes, setSizes] = useState<ItemSize[]>([])
-  const [defaults, setDefaults] = useState<Map<number, number>>(new Map())
+  const [defaults, setDefaults] = useState<Map<string, number>>(new Map())
   const [sel, setSel] = useState<Selection>({ kind: 'defaults' })
   const [q, setQ] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -552,7 +655,7 @@ export default function CustomersPage() {
       <div className="p-head">
         <div>
           <h1>Customers &amp; rate list</h1>
-          <p>Every size has its own price. Each customer can have special rates; blank means the default price.</p>
+          <p>Every size has its own price. Gloss and Matt are priced separately (Matt defaults to Gloss + ₹{MATT_PLUS}).</p>
         </div>
         <button type="button" className="p-btn p-btn--grad" onClick={() => setSel({ kind: 'new' })}>
           + Add customer
