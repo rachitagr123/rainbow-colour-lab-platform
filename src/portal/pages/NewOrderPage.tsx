@@ -331,7 +331,7 @@ export default function NewOrderPage() {
   const [date, setDate] = useState(todayIST())
   const [albumName, setAlbumName] = useState('')
   const [notes, setNotes] = useState('')
-  const [rows, setRows] = useState<Record<Category, Row[]>>({ sheet: [], cover: [], box: [], product: [] })
+  const [rows, setRows] = useState<Record<Category, Row[]>>({ sheet: [], cover: [], box: [], product: [], bunch: [] })
   /** Target sheet count for this album; every sheet qty must add up to this before submit. */
   const [sheetTotal, setSheetTotal] = useState('')
   const [autoPrint, setAutoPrint] = useState(true)
