@@ -553,7 +553,7 @@ export default function NewOrderPage() {
               <input type="checkbox" checked={autoPrint} onChange={(e) => setAutoPrint(e.target.checked)} />
               <div>
                 <b>Print slip after saving</b>
-                <span>Landscape slip, without rates or amounts</span>
+                <span>A4, without rates or amounts</span>
               </div>
             </label>
             <div className="p-opt p-opt--static">

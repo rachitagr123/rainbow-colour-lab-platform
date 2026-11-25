@@ -34,7 +34,7 @@ export default function PrintDayPage() {
             <h1>Print · {prettyDate(date, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</h1>
             <p>
               {orders
-                ? `${orders.length} albums · 2 copies each · landscape (rotated 90°)`
+                ? `${orders.length} albums · 2 copies each · A4 portrait`
                 : 'Loading…'}
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function PrintDayPage() {
       <div className="p-print-area p-print-list">
         {orders?.flatMap((o) =>
           [1, 2].map((copy) => (
-            <div className="p-print-page slip-sheet" key={`${o.order_no}-${copy}`}>
+            <div className="p-print-page" key={`${o.order_no}-${copy}`}>
               <Slip order={o} showPrices={withPrices} />
             </div>
           )),

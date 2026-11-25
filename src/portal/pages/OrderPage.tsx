@@ -127,7 +127,7 @@ export default function OrderPage() {
               <i>🖨</i>
               <div>
                 <b>Print slip</b>
-                <span>Landscape · {showPrices ? 'with prices (admin copy)' : 'no prices (customer copy)'}</span>
+                <span>A4 · {showPrices ? 'with prices (admin copy)' : 'no prices (customer copy)'}</span>
               </div>
             </div>
             <div className="p-step">
@@ -218,12 +218,10 @@ export default function OrderPage() {
       <div>
         <div className="p-preview-head no-print">
           <h3>Slip preview</h3>
-          <span className="p-pill p-pill--grey">Landscape · {showPrices ? 'with prices' : 'no prices'}</span>
+          <span className="p-pill p-pill--grey">A4 · {showPrices ? 'with prices' : 'no prices'}</span>
         </div>
         <div className="p-paper p-print-area">
-          <div className="slip-sheet">
-            <Slip order={order} showPrices={showPrices} />
-          </div>
+          <Slip order={order} showPrices={showPrices} />
         </div>
       </div>
     </div>
