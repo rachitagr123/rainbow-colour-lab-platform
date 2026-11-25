@@ -28,6 +28,13 @@ export function rateKey(itemSizeId: number, finish = '') {
   return `${itemSizeId}::${finish || ''}`
 }
 
+/** Sheet sizes that always bill at the same rate as 12x36 (display / print only). */
+export const RATE_ALIAS_OF_12x36 = new Set(['12x30', '12x24'])
+
+export function isRateAliasOf12x36(size: string) {
+  return RATE_ALIAS_OF_12x36.has(size)
+}
+
 /** Default rate per item size (+ finish). Admin only — RLS returns nothing for staff. */
 export async function listDefaultRates() {
   const { data, error } = await supabase.from('item_size_prices').select('item_size_id, finish, default_rate')

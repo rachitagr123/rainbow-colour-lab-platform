@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
+  isRateAliasOf12x36,
   listCustomers,
   listDefaultRates,
   listItems,
@@ -66,6 +67,8 @@ function DefaultsPanel({
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<Msg>(null)
 
+  const base12x36 = (itemId: number) => sizes.find((s) => s.item_id === itemId && s.size === '12x36')
+
   const setRate = (sizeId: number, finish: string, value: string) =>
     setRateEdits((prev) => {
       const cleaned = cleanRate(value)
@@ -78,6 +81,17 @@ function DefaultsPanel({
           const mattVal = prev[mattK] ?? ''
           if (mattVal === '' || Number(mattVal) === oldGloss + MATT_PLUS) {
             next[mattK] = String((Number(cleaned) || 0) + MATT_PLUS)
+          }
+        }
+      }
+      // Mirror 12x36 → 12x30 / 12x24 in the form (billing always uses 12x36).
+      const edited = sizes.find((s) => s.id === sizeId)
+      if (edited?.size === '12x36') {
+        const finishes = finish === 'Gloss' ? ['Gloss', 'Matt'] : [finish]
+        for (const alias of sizes.filter((s) => s.item_id === edited.item_id && isRateAliasOf12x36(s.size))) {
+          for (const f of finishes) {
+            const src = rateKey(sizeId, f)
+            if (src in next || f === finish) next[rateKey(alias.id, f)] = next[src] ?? cleaned
           }
         }
       }
@@ -111,6 +125,14 @@ function DefaultsPanel({
         const e = sizeEdits[s.id]
         if (!e) continue
         const size = cleanSize(e.size) || s.size
+        // Alias sizes keep their labels; only in-use can change here.
+        if (isRateAliasOf12x36(s.size)) {
+          if (e.active !== s.active) {
+            const { error } = await supabase.from('item_sizes').update({ active: e.active }).eq('id', s.id)
+            if (error) throw error
+          }
+          continue
+        }
         if (size !== s.size || e.active !== s.active) {
           const { error } = await supabase.from('item_sizes').update({ size, active: e.active }).eq('id', s.id)
           if (error) throw error
@@ -125,6 +147,18 @@ function DefaultsPanel({
               .from('item_size_prices')
               .upsert({ item_size_id: s.id, finish: f, default_rate: next }, { onConflict: 'item_size_id,finish' })
             if (error) throw error
+          }
+        }
+        // Keep 12x30 / 12x24 prices mirrored to 12x36
+        if (s.size === '12x36') {
+          for (const alias of sizes.filter((a) => a.item_id === s.item_id && isRateAliasOf12x36(a.size))) {
+            for (const f of finishes) {
+              const next = Number(rateEdits[rateKey(s.id, f)] ?? 0) || 0
+              const { error } = await supabase
+                .from('item_size_prices')
+                .upsert({ item_size_id: alias.id, finish: f, default_rate: next }, { onConflict: 'item_size_id,finish' })
+              if (error) throw error
+            }
           }
         }
       }
@@ -181,7 +215,7 @@ function DefaultsPanel({
     <div className="p-card">
       <div className="p-card__head">
         <h2>Default price list</h2>
-        <small>Price per size. Gloss / Matt are separate — Matt defaults to Gloss + ₹{MATT_PLUS}.</small>
+        <small>Gloss / Matt separate (Matt = Gloss + ₹{MATT_PLUS}). 12x30 / 12x24 always match 12x36.</small>
       </div>
       <div className="p-table-wrap">
         <table className="p-table p-pricetable">
@@ -214,8 +248,10 @@ function DefaultsPanel({
                         {itemSizes.map((s, idx) => {
                           const se = sizeEdits[s.id]
                           if (!se) return null
-                          const glossKey = rateKey(s.id, hasFinish ? 'Gloss' : '')
-                          const mattKey = rateKey(s.id, 'Matt')
+                          const alias = isRateAliasOf12x36(s.size)
+                          const rateSize = alias ? base12x36(it.id) ?? s : s
+                          const glossKey = rateKey(rateSize.id, hasFinish ? 'Gloss' : '')
+                          const mattKey = rateKey(rateSize.id, 'Matt')
                           return (
                             <tr key={s.id} className={ie.active && se.active ? '' : 'p-faded'}>
                               {idx === 0 && (
@@ -239,28 +275,42 @@ function DefaultsPanel({
                                 </td>
                               )}
                               <td>
-                                <input
-                                  className="p-input p-input--cell p-input--size"
-                                  value={se.size}
-                                  onChange={(ev) => setSizeEdits({ ...sizeEdits, [s.id]: { ...se, size: ev.target.value } })}
-                                />
+                                {alias ? (
+                                  <span className="p-muted">
+                                    {s.size} <small>· same as 12x36</small>
+                                  </span>
+                                ) : (
+                                  <input
+                                    className="p-input p-input--cell p-input--size"
+                                    value={se.size}
+                                    onChange={(ev) => setSizeEdits({ ...sizeEdits, [s.id]: { ...se, size: ev.target.value } })}
+                                  />
+                                )}
                               </td>
                               <td className="r">
-                                <input
-                                  className="p-rate"
-                                  inputMode="decimal"
-                                  value={rateEdits[glossKey] ?? ''}
-                                  onChange={(ev) => setRate(s.id, hasFinish ? 'Gloss' : '', ev.target.value)}
-                                />
-                              </td>
-                              <td className="r">
-                                {hasFinish ? (
+                                {alias ? (
+                                  <span className="p-muted">{rateEdits[glossKey] ?? '—'}</span>
+                                ) : (
                                   <input
                                     className="p-rate"
                                     inputMode="decimal"
-                                    value={rateEdits[mattKey] ?? ''}
-                                    onChange={(ev) => setRate(s.id, 'Matt', ev.target.value)}
+                                    value={rateEdits[glossKey] ?? ''}
+                                    onChange={(ev) => setRate(s.id, hasFinish ? 'Gloss' : '', ev.target.value)}
                                   />
+                                )}
+                              </td>
+                              <td className="r">
+                                {hasFinish ? (
+                                  alias ? (
+                                    <span className="p-muted">{rateEdits[mattKey] ?? '—'}</span>
+                                  ) : (
+                                    <input
+                                      className="p-rate"
+                                      inputMode="decimal"
+                                      value={rateEdits[mattKey] ?? ''}
+                                      onChange={(ev) => setRate(s.id, 'Matt', ev.target.value)}
+                                    />
+                                  )
                                 ) : (
                                   <span className="p-muted">—</span>
                                 )}
@@ -474,29 +524,38 @@ function CustomerPanel({
 
   const rateRows = (it: Item) => {
     const itemSizes = sizes.filter((s) => s.item_id === it.id && s.active)
+    const base = itemSizes.find((s) => s.size === '12x36')
     const finishes = it.finishes?.length ? it.finishes : ['']
     return itemSizes.flatMap((s) =>
       finishes.map((finish, fIdx) => {
-        const key = rateKey(s.id, finish)
+        const alias = isRateAliasOf12x36(s.size)
+        const rateSize = alias && base ? base : s
+        const key = rateKey(rateSize.id, finish)
+        const rowKey = `${s.id}::${finish}`
         const v = rates[key] ?? ''
         const def = defaults.get(key) ?? 0
         const special = v !== '' && Number(v) !== def
         return (
-          <tr key={key}>
+          <tr key={rowKey}>
             <td>{fIdx === 0 ? it.name : ''}</td>
             <td className="p-muted">
               {s.size || '—'}
               {finish ? ` · ${finish}` : ''}
+              {alias ? ' · same as 12x36' : ''}
             </td>
             <td className="r p-muted">{money(def)}</td>
             <td className="r">
-              <input
-                className={`p-rate${special ? ' is-changed' : ''}`}
-                inputMode="decimal"
-                placeholder={String(def)}
-                value={v}
-                onChange={(e) => setRates({ ...rates, [key]: cleanRate(e.target.value) })}
-              />
+              {alias ? (
+                <span className="p-muted">{v !== '' ? v : String(def)}</span>
+              ) : (
+                <input
+                  className={`p-rate${special ? ' is-changed' : ''}`}
+                  inputMode="decimal"
+                  placeholder={String(def)}
+                  value={v}
+                  onChange={(e) => setRates({ ...rates, [key]: cleanRate(e.target.value) })}
+                />
+              )}
             </td>
           </tr>
         )
