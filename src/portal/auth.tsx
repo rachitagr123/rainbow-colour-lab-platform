@@ -7,7 +7,10 @@ interface AuthState {
   loading: boolean
   session: Session | null
   profile: Profile | null
+  /** True admin only — users & passwords. */
   isAdmin: boolean
+  /** Admin or manager — rates, totals, day print, monthly, customers. */
+  isOffice: boolean
   signIn: (loginId: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
 }
@@ -66,10 +69,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut()
   }, [])
 
+  const approved = Boolean(profile?.approved)
+  const isAdmin = profile?.role === 'admin' && approved
+  const isOffice = approved && (profile?.role === 'admin' || profile?.role === 'manager')
+
   return (
-    <AuthContext.Provider
-      value={{ loading, session, profile, isAdmin: profile?.role === 'admin' && profile.approved, signIn, signOut }}
-    >
+    <AuthContext.Provider value={{ loading, session, profile, isAdmin, isOffice, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

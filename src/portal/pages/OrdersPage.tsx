@@ -14,7 +14,7 @@ const STATUS_PILL: Record<OrderStatus, string> = {
 }
 
 export default function OrdersPage() {
-  const { isAdmin } = useAuth()
+  const { isOffice: isAdmin } = useAuth()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const date = params.get('date') || todayIST()

@@ -15,21 +15,28 @@ interface UserRow {
   last_sign_in_at: string | null
 }
 
-const PERMISSIONS: [string, boolean][] = [
-  ['Enter new album orders', true],
-  ['Print slip & send on WhatsApp (no prices)', true],
-  ['Add a new customer (name + phone)', true],
-  ['See rates, amounts & totals', false],
-  ['Edit customer rate lists & default prices', false],
-  ['Print all albums for a date (with prices)', false],
-  ['Monthly summary', false],
-  ['Approve accounts, manage users & passwords', false],
+/** [label, staff, manager] — admin always has every permission. */
+const PERMISSIONS: [string, boolean, boolean][] = [
+  ['Enter new album orders', true, true],
+  ['Print slip & send on WhatsApp (no prices)', true, true],
+  ['Add a new customer (name + phone)', true, true],
+  ['See rates, amounts & totals', false, true],
+  ['Edit customer rate lists & default prices', false, true],
+  ['Print all albums for a date (with prices)', false, true],
+  ['Monthly summary', false, true],
+  ['Approve accounts, manage users & passwords', false, false],
 ]
+
+function roleBadge(role: Role) {
+  if (role === 'admin') return 'Admin'
+  if (role === 'manager') return 'Manager'
+  return 'Staff'
+}
 
 function Avatar({ u }: { u: UserRow }) {
   return (
     <div className="p-u">
-      <i className={u.role === 'staff' ? 'is-staff' : ''}>{u.username.slice(0, 2).toUpperCase()}</i>
+      <i className={u.role === 'staff' ? 'is-staff' : u.role === 'manager' ? 'is-manager' : ''}>{u.username.slice(0, 2).toUpperCase()}</i>
       <div>
         <b>{u.full_name || u.username}</b>
         <span>
@@ -110,7 +117,7 @@ export default function UsersPage() {
       <div className="p-head">
         <div>
           <h1>Users &amp; passwords</h1>
-          <p>Approve new staff accounts, remove access, and reset passwords. New sign-ups are always staff, never admin.</p>
+          <p>Approve new staff accounts, remove access, and reset passwords. Only admin can open this page — managers cannot.</p>
         </div>
       </div>
 
@@ -179,7 +186,11 @@ export default function UsersPage() {
                         <Avatar u={u} />
                       </td>
                       <td>
-                        <span className={`p-role${u.role === 'admin' ? ' p-role--admin' : ''}`}>{u.role === 'admin' ? 'Admin' : 'Staff'}</span>
+                        <span
+                          className={`p-role${u.role === 'admin' ? ' p-role--admin' : ''}${u.role === 'manager' ? ' p-role--manager' : ''}`}
+                        >
+                          {roleBadge(u.role)}
+                        </span>
                       </td>
                       <td className="p-muted">{prettyDateTime(u.last_sign_in_at)}</td>
                       <td className="r p-nowrap">
@@ -217,14 +228,16 @@ export default function UsersPage() {
                 <tr>
                   <th>Permission</th>
                   <th className="r">Staff</th>
+                  <th className="r">Manager</th>
                   <th className="r">Admin</th>
                 </tr>
               </thead>
               <tbody>
-                {PERMISSIONS.map(([label, staff]) => (
+                {PERMISSIONS.map(([label, staff, manager]) => (
                   <tr key={label}>
                     <td>{label}</td>
                     <td className={`r ${staff ? 'p-ok' : 'p-err'}`}>{staff ? '✓' : '✕'}</td>
+                    <td className={`r ${manager ? 'p-ok' : 'p-err'}`}>{manager ? '✓' : '✕'}</td>
                     <td className="r p-ok">✓</td>
                   </tr>
                 ))}

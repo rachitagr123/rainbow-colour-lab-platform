@@ -2,8 +2,14 @@ import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-route
 import { homeHeroLogo } from '../data/siteData'
 import { useAuth } from './auth'
 
-export function RequireAuth({ adminOnly = false }: { adminOnly?: boolean }) {
-  const { loading, session, profile, isAdmin } = useAuth()
+export function RequireAuth({
+  adminOnly = false,
+  officeOnly = false,
+}: {
+  adminOnly?: boolean
+  officeOnly?: boolean
+}) {
+  const { loading, session, profile, isAdmin, isOffice } = useAuth()
   const location = useLocation()
 
   if (loading) return <div className="p-loading">Loading…</div>
@@ -17,6 +23,7 @@ export function RequireAuth({ adminOnly = false }: { adminOnly?: boolean }) {
   }
   if (!profile.approved) return <PendingApproval />
   if (adminOnly && !isAdmin) return <Navigate to="/admin/new" replace />
+  if (officeOnly && !isOffice) return <Navigate to="/admin/new" replace />
   return <Outlet />
 }
 
@@ -54,8 +61,14 @@ function PendingApproval() {
   )
 }
 
+function roleLabel(role: string | undefined) {
+  if (role === 'admin') return 'Admin'
+  if (role === 'manager') return 'Manager'
+  return 'Staff'
+}
+
 export default function PortalLayout() {
-  const { profile, isAdmin, signOut } = useAuth()
+  const { profile, isAdmin, isOffice, signOut } = useAuth()
   const navigate = useNavigate()
 
   const logout = async () => {
@@ -64,6 +77,7 @@ export default function PortalLayout() {
   }
 
   const initials = (profile?.username ?? '?').slice(0, 2).toUpperCase()
+  const badge = roleLabel(profile?.role)
 
   return (
     <div className="p-app">
@@ -73,11 +87,11 @@ export default function PortalLayout() {
             <img src={homeHeroLogo} alt="" />
             <div>
               <b>Album Desk</b>
-              <span>{isAdmin ? 'Admin panel' : 'Indigo Album (Collection)'}</span>
+              <span>{isOffice ? (isAdmin ? 'Admin panel' : 'Manager panel') : 'Indigo Album (Collection)'}</span>
             </div>
           </NavLink>
           <div className="p-topbar__right">
-            {!isAdmin && (
+            {!isOffice && (
               <>
                 <NavLink className="p-btn p-btn--sm" to="/admin/new">
                   + New order
@@ -90,7 +104,9 @@ export default function PortalLayout() {
             <div className="p-user">
               <i>{initials}</i>
               {profile?.username}
-              <span className={`p-role${isAdmin ? ' p-role--admin' : ''}`}>{isAdmin ? 'Admin' : 'Staff'}</span>
+              <span className={`p-role${isAdmin ? ' p-role--admin' : ''}${profile?.role === 'manager' ? ' p-role--manager' : ''}`}>
+                {badge}
+              </span>
             </div>
             <button type="button" className="p-btn p-btn--sm" onClick={logout}>
               Log out
@@ -99,7 +115,7 @@ export default function PortalLayout() {
         </div>
       </header>
 
-      {isAdmin ? (
+      {isOffice ? (
         <div className="p-shell">
           <nav className="p-side no-print">
             <div className="p-side__label">Albums</div>
@@ -113,9 +129,11 @@ export default function PortalLayout() {
             <NavLink to="/admin/customers">
               <i>👥</i>Customers &amp; rates
             </NavLink>
-            <NavLink to="/admin/users">
-              <i>🔑</i>Users &amp; passwords
-            </NavLink>
+            {isAdmin && (
+              <NavLink to="/admin/users">
+                <i>🔑</i>Users &amp; passwords
+              </NavLink>
+            )}
             <div className="p-side__label">Reports</div>
             <NavLink to="/admin/monthly">
               <i>📈</i>Monthly summary

@@ -733,7 +733,7 @@ export default function CustomersPage() {
       <div className="p-head">
         <div>
           <h1>Customers &amp; rate list</h1>
-          <p>Gloss / Matt are separate (Matt = Gloss + ₹{MATT_PLUS}). Bunch (₹50) is auto-added on albums without a cover.</p>
+          <p>Gloss / Matt are separate (Matt = Gloss + ₹{MATT_PLUS}). Bunch (₹50) is auto-added only on sheets-only albums.</p>
         </div>
         <button type="button" className="p-btn p-btn--grad" onClick={() => setSel({ kind: 'new' })}>
           + Add customer

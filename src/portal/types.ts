@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'staff'
+export type Role = 'admin' | 'manager' | 'staff'
 
 export type Category = 'sheet' | 'cover' | 'box' | 'product' | 'bunch'
 

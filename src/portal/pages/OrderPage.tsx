@@ -11,7 +11,7 @@ import { STATUS_LABEL, type FullOrder, type OrderStatus } from '../types'
 export default function OrderPage() {
   const { orderNo } = useParams()
   const navigate = useNavigate()
-  const { isAdmin } = useAuth()
+  const { isOffice: isAdmin } = useAuth()
   const [params, setParams] = useSearchParams()
   const isNew = params.get('new') === '1'
   const [order, setOrder] = useState<FullOrder | null>(null)

@@ -15,8 +15,8 @@ import { supabaseConfigured } from './supabase'
 import './portal.css'
 
 function HomeRedirect() {
-  const { isAdmin } = useAuth()
-  return <Navigate to={isAdmin ? '/admin/orders' : '/admin/new'} replace />
+  const { isOffice } = useAuth()
+  return <Navigate to={isOffice ? '/admin/orders' : '/admin/new'} replace />
 }
 
 export default function PortalApp() {
@@ -55,13 +55,15 @@ export default function PortalApp() {
               <Route path="new" element={<NewOrderPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:orderNo" element={<OrderPage />} />
-              <Route element={<RequireAuth adminOnly />}>
+              <Route element={<RequireAuth officeOnly />}>
                 <Route path="customers" element={<CustomersPage />} />
-                <Route path="users" element={<UsersPage />} />
                 <Route path="monthly" element={<MonthlyPage />} />
               </Route>
+              <Route element={<RequireAuth adminOnly />}>
+                <Route path="users" element={<UsersPage />} />
+              </Route>
             </Route>
-            <Route element={<RequireAuth adminOnly />}>
+            <Route element={<RequireAuth officeOnly />}>
               <Route path="print/:date" element={<PrintDayPage />} />
             </Route>
           </Route>
