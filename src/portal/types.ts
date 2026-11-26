@@ -60,6 +60,8 @@ export interface Customer {
   phone: string | null
   city: string | null
   customer_type: CustomerType
+  /** When true, day print outputs 2 priced bills for this customer’s albums. Default false = 1. */
+  two_bill_prints: boolean
   created_at: string
 }
 
@@ -108,4 +110,6 @@ export interface FullOrder extends Order {
   lines: (OrderLine & { rate?: number; amount?: number })[]
   total?: number
   advance?: number
+  /** From the customer record — day print uses 2 copies when true. */
+  two_bill_prints?: boolean
 }

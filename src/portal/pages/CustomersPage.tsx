@@ -428,11 +428,18 @@ function CustomerPanel({
   onSaved: (c: Customer) => void
   onDeleted: () => void
 }) {
-  const [form, setForm] = useState<{ name: string; phone: string; city: string; type: CustomerType | '' }>({
+  const [form, setForm] = useState<{
+    name: string
+    phone: string
+    city: string
+    type: CustomerType | ''
+    twoBillPrints: boolean
+  }>({
     name: customer?.name ?? '',
     phone: customer?.phone ?? '',
     city: customer?.city ?? '',
     type: customer?.customer_type ?? '',
+    twoBillPrints: customer?.two_bill_prints ?? false,
   })
   const [rates, setRates] = useState<Record<string, string>>({})
   const [original, setOriginal] = useState<Record<string, string>>({})
@@ -470,6 +477,7 @@ function CustomerPanel({
         phone: form.phone.trim() || null,
         city: form.city.trim() || null,
         customer_type: form.type,
+        two_bill_prints: form.twoBillPrints,
       }
       const { data, error } = customer
         ? await supabase.from('customers').update(payload).eq('id', customer.id).select().single()
@@ -593,6 +601,17 @@ function CustomerPanel({
             </span>
             <CustomerTypeToggle value={form.type} onChange={(type) => setForm({ ...form, type })} />
           </div>
+          <label className="p-opt">
+            <input
+              type="checkbox"
+              checked={form.twoBillPrints}
+              onChange={(e) => setForm({ ...form, twoBillPrints: e.target.checked })}
+            />
+            <div>
+              <b>Print 2 bill copies</b>
+              <span>On end-of-day print (with totals). Off = 1 copy. Default is single print.</span>
+            </div>
+          </label>
         </div>
       </div>
 
@@ -748,7 +767,10 @@ export default function CustomersPage() {
             >
               <div>
                 <b>{c.name}</b>
-                <span>{c.phone || 'no phone'}</span>
+                <span>
+                  {c.phone || 'no phone'}
+                  {c.two_bill_prints ? ' · 2× bill print' : ''}
+                </span>
               </div>
               <CustomerTypeTag type={c.customer_type} />
             </button>

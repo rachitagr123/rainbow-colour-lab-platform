@@ -6,6 +6,10 @@ import { Slip } from '../Slip'
 import { errorMessage } from '../supabase'
 import type { FullOrder } from '../types'
 
+function slipCount(orders: FullOrder[]) {
+  return orders.reduce((n, o) => n + (o.two_bill_prints ? 2 : 1), 0)
+}
+
 export default function PrintDayPage() {
   const { date = '' } = useParams()
   const [orders, setOrders] = useState<FullOrder[] | null>(null)
@@ -34,7 +38,7 @@ export default function PrintDayPage() {
             <h1>Print · {prettyDate(date, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</h1>
             <p>
               {orders
-                ? `${orders.length} albums · 2 copies each · A4 portrait`
+                ? `${orders.length} albums · ${slipCount(orders)} slips (1 each, or 2 if customer is marked) · A4`
                 : 'Loading…'}
             </p>
           </div>
@@ -47,7 +51,7 @@ export default function PrintDayPage() {
               ← Back
             </Link>
             <button type="button" className="p-btn p-btn--grad" disabled={!orders?.length} onClick={() => window.print()}>
-              🖨 Print {orders ? orders.length * 2 : ''} slips
+              🖨 Print {orders ? slipCount(orders) : ''} slips
             </button>
           </div>
         </div>
@@ -58,8 +62,8 @@ export default function PrintDayPage() {
 
       <div className="p-print-area p-print-list">
         {orders?.flatMap((o) =>
-          [1, 2].map((copy) => (
-            <div className="p-print-page" key={`${o.order_no}-${copy}`}>
+          Array.from({ length: o.two_bill_prints ? 2 : 1 }, (_, i) => (
+            <div className="p-print-page" key={`${o.order_no}-${i + 1}`}>
               <Slip order={o} showPrices={withPrices} />
             </div>
           )),

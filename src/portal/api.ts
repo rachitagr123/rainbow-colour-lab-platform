@@ -47,10 +47,11 @@ export async function listDefaultRates() {
 type OrderRow = Order & {
   order_lines: (OrderLine & { order_line_amounts?: { rate: number; amount: number } | null })[]
   order_amounts?: { total: number; advance: number } | null
+  customers?: { two_bill_prints: boolean } | null
 }
 
 function toFullOrder(row: OrderRow, withPrices: boolean): FullOrder {
-  const { order_lines, order_amounts, ...order } = row
+  const { order_lines, order_amounts, customers, ...order } = row
   const lines = [...(order_lines ?? [])]
     .sort(
       (a, b) =>
@@ -61,15 +62,16 @@ function toFullOrder(row: OrderRow, withPrices: boolean): FullOrder {
         ? { ...line, rate: Number(order_line_amounts?.rate ?? 0), amount: Number(order_line_amounts?.amount ?? 0) }
         : line,
     )
+  const two_bill_prints = Boolean(customers?.two_bill_prints)
   return withPrices
-    ? { ...order, lines, total: Number(order_amounts?.total ?? 0), advance: Number(order_amounts?.advance ?? 0) }
-    : { ...order, lines }
+    ? { ...order, lines, total: Number(order_amounts?.total ?? 0), advance: Number(order_amounts?.advance ?? 0), two_bill_prints }
+    : { ...order, lines, two_bill_prints }
 }
 
 function orderSelect(withPrices: boolean) {
   return withPrices
-    ? '*, order_lines(*, order_line_amounts(rate, amount)), order_amounts(total, advance)'
-    : '*, order_lines(*)'
+    ? '*, customers(two_bill_prints), order_lines(*, order_line_amounts(rate, amount)), order_amounts(total, advance)'
+    : '*, customers(two_bill_prints), order_lines(*)'
 }
 
 export async function loadOrdersBetween(from: string, to: string, withPrices: boolean) {
