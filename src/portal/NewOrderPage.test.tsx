@@ -9,12 +9,12 @@ vi.mock('./auth', () => ({ useAuth: () => auth }))
 vi.mock('./supabase', () => ({ supabase: {}, errorMessage: (e: unknown) => String(e) }))
 
 const items: Item[] = [
-  { id: 2, name: 'Normal High', category: 'sheet', sort: 1, active: true, finishes: ['Gloss', 'Matt'], quota_exempt_for: null },
-  { id: 22, name: 'Crystal', category: 'sheet', sort: 10, active: true, finishes: null, quota_exempt_for: ['collection', 'counter'] },
-  { id: 23, name: 'Emboss Sheet', category: 'sheet', sort: 11, active: true, finishes: null, quota_exempt_for: ['counter'] },
-  { id: 3, name: 'Cover Normal', category: 'cover', sort: 20, active: true, finishes: null, quota_exempt_for: null },
-  { id: 8, name: '5 in 1 combo', category: 'box', sort: 40, active: true, finishes: null, quota_exempt_for: null },
-  { id: 40, name: 'QR Code', category: 'product', sort: 50, active: true, finishes: null, quota_exempt_for: null },
+  { id: 2, name: 'Normal High', category: 'sheet', sort: 1, active: true, finishes: ['Gloss', 'Matt'], quota_exempt_for: null, allows_fixed_billing: false },
+  { id: 22, name: 'Crystal', category: 'sheet', sort: 10, active: true, finishes: null, quota_exempt_for: ['collection', 'counter'], allows_fixed_billing: false },
+  { id: 23, name: 'Emboss Sheet', category: 'sheet', sort: 11, active: true, finishes: null, quota_exempt_for: ['counter'], allows_fixed_billing: false },
+  { id: 3, name: 'Cover Normal', category: 'cover', sort: 20, active: true, finishes: null, quota_exempt_for: null, allows_fixed_billing: false },
+  { id: 8, name: '5 in 1 combo', category: 'box', sort: 40, active: true, finishes: null, quota_exempt_for: null, allows_fixed_billing: false },
+  { id: 40, name: 'QR Code', category: 'product', sort: 50, active: true, finishes: null, quota_exempt_for: null, allows_fixed_billing: false },
 ]
 const sizes: ItemSize[] = [
   { id: 1, item_id: 2, size: '12x36', sort: 1, active: true },
@@ -78,8 +78,13 @@ describe('new order form', () => {
     ])
   })
 
-  it('cannot submit before the sheet total is entered', async () => {
+  it('cannot submit with neither sheets nor other products', async () => {
     await renderForm()
-    expect(screen.getByRole('button', { name: /Assign all sheets to submit/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Add sheets or a product/ })).toBeDisabled()
+  })
+
+  it('says other products can be ordered alone', async () => {
+    await renderForm()
+    expect(screen.getByText(/Can be ordered alone/)).toBeInTheDocument()
   })
 })

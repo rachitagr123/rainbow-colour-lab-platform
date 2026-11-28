@@ -34,6 +34,14 @@ export interface Profile {
   full_name: string | null
 }
 
+/** How a customer rate is billed. Fixed total is only offered for items with allows_fixed_billing (Minibook). */
+export type RateBilling = 'per_unit' | 'fixed'
+
+export const RATE_BILLING_LABEL: Record<RateBilling, string> = {
+  per_unit: 'Per sheet',
+  fixed: 'Fixed total',
+}
+
 export interface Item {
   id: number
   name: string
@@ -44,6 +52,8 @@ export interface Item {
   finishes: string[] | null
   /** Customer types for which this sheet is billed separately and not counted in the sheet total. */
   quota_exempt_for: CustomerType[] | null
+  /** When true, customer rate can be per-sheet or a fixed total (Minibook). */
+  allows_fixed_billing: boolean
 }
 
 export interface ItemSize {
@@ -83,6 +93,8 @@ export interface Order {
   album_name: string | null
   notes: string | null
   status: OrderStatus
+  /** Login user who saved the order (auth uid). Admin-only in the UI. */
+  created_by: string | null
   created_at: string
 }
 
@@ -121,4 +133,6 @@ export interface FullOrder extends Order {
   advance?: number
   /** From the customer record — day print uses 2 copies when true. */
   two_bill_prints?: boolean
+  /** Login username of created_by — filled only for admin views. */
+  created_by_username?: string | null
 }

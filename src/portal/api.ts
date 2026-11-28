@@ -4,13 +4,16 @@ import { CATEGORY_ORDER, type Customer, type FullOrder, type Item, type ItemSize
 export async function listItems(includeInactive = false) {
   let query = supabase
     .from('items')
-    .select('id, name, category, sort, active, finishes, quota_exempt_for')
+    .select('id, name, category, sort, active, finishes, quota_exempt_for, allows_fixed_billing')
     .order('sort')
     .order('name')
   if (!includeInactive) query = query.eq('active', true)
   const { data, error } = await query
   if (error) throw error
-  return (data ?? []) as Item[]
+  return (data ?? []).map((row) => ({
+    ...(row as Item),
+    allows_fixed_billing: Boolean((row as Item).allows_fixed_billing),
+  }))
 }
 
 export async function listCustomers() {
@@ -116,6 +119,15 @@ export function itemLabel(item: Pick<Item, 'name' | 'finishes'>, finish?: string
 export async function deleteOrder(orderNo: number) {
   const { error } = await supabase.rpc('delete_order', { p_order_no: orderNo })
   if (error) throw error
+}
+
+/** Admin-only: map auth user ids → login usernames (profiles RLS blocks non-admins from reading others). */
+export async function listUsernamesById(ids: (string | null | undefined)[]) {
+  const unique = [...new Set(ids.filter((id): id is string => Boolean(id)))]
+  if (!unique.length) return new Map<string, string>()
+  const { data, error } = await supabase.from('profiles').select('id, username').in('id', unique)
+  if (error) throw error
+  return new Map((data ?? []).map((p) => [p.id as string, p.username as string]))
 }
 
 /** Album + loose sheets, excluding Crystal / Emboss lines billed outside the sheet total. */

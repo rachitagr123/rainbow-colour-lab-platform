@@ -914,6 +914,11 @@
   font-weight: 800;
   color: var(--pink);
 }
+.portal .p-userid {
+  font-weight: 700;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
 .portal .p-cust b {
   display: block;
 }
@@ -947,6 +952,26 @@
 .portal .p-rate.is-changed {
   border-color: #a78bfa;
   background: var(--soft);
+}
+.portal .p-rate-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+.portal .p-rate-hint {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.portal .p-toggle--sm {
+  padding: 0.15rem;
+  gap: 0.15rem;
+}
+.portal .p-toggle--sm button {
+  padding: 0.28rem 0.55rem;
+  font-size: 0.7rem;
 }
 .portal .p-toolbar {
   display: flex;

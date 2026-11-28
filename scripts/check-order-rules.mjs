@@ -48,7 +48,7 @@ ok('manager cannot reset passwords through the admin function', Boolean(pwErr), 
 
 // ── Catalogue ──
 section('Catalogue after migration 016')
-const items = (await sb.from('items').select('id, name, category, finishes, quota_exempt_for, active')).data ?? []
+const items = (await sb.from('items').select('id, name, category, finishes, quota_exempt_for, allows_fixed_billing, active')).data ?? []
 const sizes = (await sb.from('item_sizes').select('id, item_id, size, active')).data ?? []
 const prices = (await sb.from('item_size_prices').select('item_size_id, finish, default_rate')).data ?? []
 const item = (name) => items.find((i) => i.name === name)
@@ -205,6 +205,42 @@ try {
       ok('combo qty forced to 1', lineOf(o, '5 in 1').qty === 1)
       ok('no Bunch with a combo', !hasBunch(o))
     }
+  }
+
+  section('Minibook: per-sheet vs fixed total')
+  {
+    const mbItem = items.find((i) => i.name === 'Minibook')
+    ok('Minibook allows fixed billing', mbItem?.allows_fixed_billing === true, JSON.stringify(mbItem))
+    const { error: perRateErr } = await sb.from('customer_rates').upsert({
+      customer_id: collection.id, item_size_id: minibook.id, finish: '', rate: 10, billing: 'per_unit',
+    }, { onConflict: 'customer_id,item_size_id,finish' })
+    ok('per-sheet Minibook rate saved', !perRateErr, perRateErr?.message)
+    {
+      const { order: o, error } = await order(collection, [{ item_size_id: minibook.id, qty: 20 }])
+      ok('per-sheet Minibook order saves', !error, error?.message)
+      if (o) {
+        const l = lineOf(o, 'Minibook')
+        const amt = Number(l.order_line_amounts?.amount ?? l.order_line_amounts?.[0]?.amount)
+        ok('per-sheet amount = 10 × 20', amt === 200, `₹${amt}`)
+      }
+    }
+    const { error: fixedRateErr } = await sb.from('customer_rates').upsert({
+      customer_id: collection.id, item_size_id: minibook.id, finish: '', rate: 350, billing: 'fixed',
+    }, { onConflict: 'customer_id,item_size_id,finish' })
+    ok('fixed Minibook rate saved', !fixedRateErr, fixedRateErr?.message)
+    {
+      const { order: o, error } = await order(collection, [{ item_size_id: minibook.id, qty: 20 }])
+      ok('fixed Minibook order saves', !error, error?.message)
+      if (o) {
+        const l = lineOf(o, 'Minibook')
+        const amt = Number(l.order_line_amounts?.amount ?? l.order_line_amounts?.[0]?.amount)
+        const rate = Number(l.order_line_amounts?.rate ?? l.order_line_amounts?.[0]?.rate)
+        ok('fixed amount = 350 (not × qty)', amt === 350, `₹${amt}`)
+        ok('fixed rate stored as 350', rate === 350, `₹${rate}`)
+        ok('qty 20 still recorded', l.qty === 20)
+      }
+    }
+    await sb.from('customer_rates').delete().eq('customer_id', collection.id).eq('item_size_id', minibook.id)
   }
 
   section('Collection: sheets + cover + Keyring')

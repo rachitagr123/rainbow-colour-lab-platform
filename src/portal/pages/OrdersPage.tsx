@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteOrder, loadOrdersBetween, totalSheets } from '../api'
+import { deleteOrder, listUsernamesById, loadOrdersBetween, totalSheets } from '../api'
 import { useAuth } from '../auth'
 import { money, num, prettyDate, shiftDate, todayIST } from '../format'
 import { errorMessage } from '../supabase'
@@ -13,8 +13,17 @@ const STATUS_PILL: Record<OrderStatus, string> = {
   delivered: 'p-pill--green',
 }
 
+async function withCreators(list: FullOrder[], asAdmin: boolean) {
+  if (!asAdmin) return list
+  const names = await listUsernamesById(list.map((o) => o.created_by))
+  return list.map((o) => ({
+    ...o,
+    created_by_username: o.created_by ? (names.get(o.created_by) ?? '—') : '—',
+  }))
+}
+
 export default function OrdersPage() {
-  const { isOffice: isAdmin } = useAuth()
+  const { isAdmin, isOffice } = useAuth()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const date = params.get('date') || todayIST()
@@ -23,19 +32,21 @@ export default function OrdersPage() {
   const [busyNo, setBusyNo] = useState<number | null>(null)
 
   const reload = () =>
-    loadOrdersBetween(date, date, isAdmin)
+    loadOrdersBetween(date, date, isOffice)
+      .then((list) => withCreators(list, isAdmin))
       .then((list) => setResult({ date, orders: list }))
       .catch((e) => setResult({ date, error: errorMessage(e) }))
 
   useEffect(() => {
     let alive = true
-    loadOrdersBetween(date, date, isAdmin)
+    loadOrdersBetween(date, date, isOffice)
+      .then((list) => withCreators(list, isAdmin))
       .then((list) => alive && setResult({ date, orders: list }))
       .catch((e) => alive && setResult({ date, error: errorMessage(e) }))
     return () => {
       alive = false
     }
-  }, [date, isAdmin])
+  }, [date, isOffice, isAdmin])
 
   const remove = async (o: FullOrder, e: MouseEvent) => {
     e.stopPropagation()
@@ -67,9 +78,10 @@ export default function OrdersPage() {
       (o) =>
         o.customer_name.toLowerCase().includes(s) ||
         String(o.order_no).includes(s) ||
-        (o.album_name ?? '').toLowerCase().includes(s),
+        (o.album_name ?? '').toLowerCase().includes(s) ||
+        (isAdmin && (o.created_by_username ?? '').toLowerCase().includes(s)),
     )
-  }, [orders, q])
+  }, [orders, q, isAdmin])
 
   const totals = useMemo(() => {
     const all = orders ?? []
@@ -89,10 +101,14 @@ export default function OrdersPage() {
     <>
       <div className="p-head">
         <div>
-          <h1>{isAdmin ? 'Orders by date' : 'Orders'}</h1>
-          <p>{isAdmin ? 'Every album entered on the selected day, with customer rates and totals.' : 'Albums entered on the selected day.'}</p>
+          <h1>{isOffice ? 'Orders by date' : 'Orders'}</h1>
+          <p>
+            {isOffice
+              ? 'Every album entered on the selected day, with customer rates and totals.'
+              : 'Albums entered on the selected day.'}
+          </p>
         </div>
-        {isAdmin ? (
+        {isOffice ? (
           <Link className={`p-btn p-btn--grad p-btn--lg${orders?.length ? '' : ' is-disabled'}`} to={`/admin/print/${date}`}>
             🖨 Print all albums for {prettyDate(date, { day: '2-digit', month: 'short' })}
           </Link>
@@ -103,7 +119,7 @@ export default function OrdersPage() {
         )}
       </div>
 
-      {isAdmin && (
+      {isOffice && (
         <div className="p-stats">
           <div className="p-stat">
             <span>Albums</span>
@@ -142,7 +158,12 @@ export default function OrdersPage() {
                 Today
               </button>
             )}
-            <input className="p-input p-search" placeholder="Search customer, album or order no." value={q} onChange={(e) => setQ(e.target.value)} />
+            <input
+              className="p-input p-search"
+              placeholder={isAdmin ? 'Search customer, album, order no. or user id' : 'Search customer, album or order no.'}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
           </div>
         </div>
 
@@ -157,12 +178,13 @@ export default function OrdersPage() {
                 <tr>
                   <th>Order</th>
                   <th>Customer</th>
+                  {isAdmin && <th>User ID</th>}
                   <th>Album</th>
                   <th>Sheets</th>
                   <th>Cover / Box / Other</th>
-                  {isAdmin && <th className="r">Total</th>}
-                  {isAdmin && <th className="r">Advance</th>}
-                  {isAdmin && <th className="r">Balance</th>}
+                  {isOffice && <th className="r">Total</th>}
+                  {isOffice && <th className="r">Advance</th>}
+                  {isOffice && <th className="r">Balance</th>}
                   <th>Status</th>
                   <th />
                 </tr>
@@ -179,14 +201,15 @@ export default function OrdersPage() {
                         <b>{o.customer_name}</b>
                         <span>{o.phone || '—'}</span>
                       </td>
+                      {isAdmin && <td className="p-userid">{o.created_by_username ?? '—'}</td>}
                       <td>{o.album_name || '—'}</td>
                       <td>
                         <b>{totalSheets(o)}</b> <span className="p-muted">· {[...new Set(sheetTypes)].join(', ') || '—'}</span>
                       </td>
                       <td className="p-muted">{extras.join(' · ') || '—'}</td>
-                      {isAdmin && <td className="r p-money">{money(o.total)}</td>}
-                      {isAdmin && <td className="r p-money">{money(o.advance)}</td>}
-                      {isAdmin && (
+                      {isOffice && <td className="r p-money">{money(o.total)}</td>}
+                      {isOffice && <td className="r p-money">{money(o.advance)}</td>}
+                      {isOffice && (
                         <td className={`r p-money${(o.total ?? 0) - (o.advance ?? 0) > 0 ? ' p-due' : ''}`}>
                           {money((o.total ?? 0) - (o.advance ?? 0))}
                         </td>
@@ -208,10 +231,10 @@ export default function OrdersPage() {
                   )
                 })}
               </tbody>
-              {isAdmin && shown.length === orders?.length && (
+              {isOffice && shown.length === orders?.length && (
                 <tfoot>
                   <tr>
-                    <td colSpan={3}>{totals.albums} albums</td>
+                    <td colSpan={isAdmin ? 4 : 3}>{totals.albums} albums</td>
                     <td>{num(totals.sheets)}</td>
                     <td />
                     <td className="r">{money(totals.total)}</td>

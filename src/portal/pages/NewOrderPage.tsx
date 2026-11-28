@@ -5,7 +5,7 @@ import { useAuth } from '../auth'
 import { todayIST } from '../format'
 import { errorMessage, supabase } from '../supabase'
 import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
-import { quotaError, quotaFor, type Quota } from '../sheetQuota'
+import { orderFormReady, quotaError, quotaFor, type Quota } from '../sheetQuota'
 import type { Category, Customer, CustomerType, Item, ItemSize } from '../types'
 
 interface Row {
@@ -476,16 +476,22 @@ export default function NewOrderPage() {
   const sheetQ = quotaFor(sheetTotal, rows.sheet, isExempt)
   const looseQ = quotaFor(looseTotal, rows.loose, isExempt)
   const anyTotal = sheetQ.target > 0 || looseQ.target > 0
-  const ready = anyTotal && sheetQ.ok && looseQ.ok
+  const usingSheets = anyTotal || sheetQ.count > 0 || looseQ.count > 0
+  const hasProducts = rows.product.some((r) => r.sizeId && Number(r.qty) > 0)
+  const ready = orderFormReady(sheetQ, looseQ, hasProducts)
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!customer) return setError('Select or add a customer first.')
-    if (!anyTotal) return setError('Enter the total number of sheets (or loose sheets) first.')
-    const quotaMsg = quotaError('sheets', sheetQ) ?? quotaError('loose sheets', looseQ)
-    if (quotaMsg) return setError(quotaMsg)
     if (filled.length === 0) return setError('Add at least one item with a quantity.')
+    if (usingSheets) {
+      if (!anyTotal) return setError('Enter the total number of sheets (or loose sheets) first.')
+      const quotaMsg = quotaError('sheets', sheetQ) ?? quotaError('loose sheets', looseQ)
+      if (quotaMsg) return setError(quotaMsg)
+    } else if (!hasProducts) {
+      return setError('Add sheets, or an other product such as Minibook.')
+    }
 
     setSubmitting(true)
     const { data, error: err } = await supabase.rpc('create_order', {
@@ -510,7 +516,8 @@ export default function NewOrderPage() {
         <div>
           <h1>New album order</h1>
           <p>
-            Pick the customer, then sheets, then a cover or a box/combo. Albums with sheets but no cover or box/combo get Bunch
+            Pick the customer, then sheets and a cover or box/combo — or order other products alone (Minibook, Keyring, QR,
+            calendars). Albums with sheets but no cover or box/combo get Bunch
             {isOffice ? ' ₹50' : ''} added automatically (not loose sheets).
           </p>
         </div>
@@ -615,7 +622,7 @@ export default function NewOrderPage() {
               <h2>
                 <span className="p-num">6</span>Other products
               </h2>
-              <small>Add any number, on top of a cover or box</small>
+              <small>Can be ordered alone — no album sheets needed</small>
             </div>
             <LineRows
               rows={rows.product}
@@ -705,7 +712,13 @@ export default function NewOrderPage() {
             {error && <div className="p-alert p-alert--error">{error}</div>}
 
             <button className="p-btn p-btn--grad p-btn--lg p-btn--block" disabled={submitting || !ready}>
-              {submitting ? 'Saving…' : ready ? 'Submit order' : 'Assign all sheets to submit'}
+              {submitting
+                ? 'Saving…'
+                : ready
+                  ? 'Submit order'
+                  : usingSheets
+                    ? 'Assign all sheets to submit'
+                    : 'Add sheets or a product'}
             </button>
             <div className="p-lock">🔒 Rates &amp; totals are never shown to staff</div>
           </div>

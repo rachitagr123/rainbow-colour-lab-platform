@@ -22,3 +22,11 @@ export function quotaError(label: string, q: Quota) {
   }
   return q.count > 0 ? `Enter the total number of ${label} first.` : null
 }
+
+/** Album orders need sheet totals assigned; other-products-only orders can submit without sheets. */
+export function orderFormReady(sheetQ: Quota, looseQ: Quota, hasProducts: boolean) {
+  const anyTotal = sheetQ.target > 0 || looseQ.target > 0
+  const usingSheets = anyTotal || sheetQ.count > 0 || looseQ.count > 0
+  if (usingSheets) return anyTotal && sheetQ.ok && looseQ.ok
+  return hasProducts && sheetQ.ok && looseQ.ok
+}

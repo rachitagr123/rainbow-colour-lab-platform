@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { isRateAliasOf12x36, totalSheets } from './api'
-import { quotaError, quotaFor } from './sheetQuota'
+import { orderFormReady, quotaError, quotaFor } from './sheetQuota'
 import type { FullOrder } from './types'
 
 type Line = FullOrder['lines'][number]
@@ -69,6 +69,25 @@ describe('sheet total on the order form', () => {
 
   it('allows a section with only Crystal and no total', () => {
     expect(quotaFor('', rows([CRYSTAL, '2']), crystalExempt).ok).toBe(true)
+  })
+})
+
+describe('order form ready state', () => {
+  const empty = quotaFor('', [], () => false)
+  const albumOk = quotaFor('50', rows([2, '50']), () => false)
+  const albumShort = quotaFor('50', rows([2, '40']), () => false)
+
+  it('allows other products with no sheets', () => {
+    expect(orderFormReady(empty, empty, true)).toBe(true)
+  })
+
+  it('blocks an empty form', () => {
+    expect(orderFormReady(empty, empty, false)).toBe(false)
+  })
+
+  it('still requires a full sheet assignment for album orders', () => {
+    expect(orderFormReady(albumOk, empty, false)).toBe(true)
+    expect(orderFormReady(albumShort, empty, true)).toBe(false)
   })
 })
 

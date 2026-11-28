@@ -17,12 +17,14 @@ import {
   CATEGORY_LABEL,
   CATEGORY_ORDER,
   ITEM_CATEGORIES,
+  RATE_BILLING_LABEL,
   type Category,
   type Customer,
   type CustomerType,
   type FullOrder,
   type Item,
   type ItemSize,
+  type RateBilling,
 } from '../types'
 
 type Selection = { kind: 'defaults' } | { kind: 'customer'; id: number } | { kind: 'new' }
@@ -443,7 +445,9 @@ function CustomerPanel({
     twoBillPrints: customer?.two_bill_prints ?? false,
   })
   const [rates, setRates] = useState<Record<string, string>>({})
+  const [billings, setBillings] = useState<Record<string, RateBilling>>({})
   const [original, setOriginal] = useState<Record<string, string>>({})
+  const [originalBillings, setOriginalBillings] = useState<Record<string, RateBilling>>({})
   const [orders, setOrders] = useState<FullOrder[]>([])
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<Msg>(null)
@@ -453,14 +457,20 @@ function CustomerPanel({
     if (!customerId) return
     supabase
       .from('customer_rates')
-      .select('item_size_id, finish, rate')
+      .select('item_size_id, finish, rate, billing')
       .eq('customer_id', customerId)
       .then(({ data }) => {
-        const map = Object.fromEntries(
-          (data ?? []).map((r) => [rateKey(r.item_size_id as number, (r.finish as string) ?? ''), String(Number(r.rate))]),
-        )
+        const map: Record<string, string> = {}
+        const modes: Record<string, RateBilling> = {}
+        for (const r of data ?? []) {
+          const key = rateKey(r.item_size_id as number, (r.finish as string) ?? '')
+          map[key] = String(Number(r.rate))
+          modes[key] = r.billing === 'fixed' ? 'fixed' : 'per_unit'
+        }
         setRates(map)
         setOriginal(map)
+        setBillings(modes)
+        setOriginalBillings(modes)
       })
     loadCustomerOrders(customerId, 8)
       .then(setOrders)
@@ -486,13 +496,27 @@ function CustomerPanel({
       if (error) throw error
       const saved = data as Customer
 
-      const upserts = Object.entries(rates)
-        .filter(([, v]) => v !== '')
-        .map(([key, v]) => {
-          const [sizeId, finish = ''] = key.split('::')
-          return { customer_id: saved.id, item_size_id: Number(sizeId), finish, rate: Number(v) }
+      const allKeys = new Set([...Object.keys(rates), ...Object.keys(billings), ...Object.keys(original)])
+      const upserts: { customer_id: number; item_size_id: number; finish: string; rate: number; billing: RateBilling }[] = []
+      const cleared: string[] = []
+      for (const key of allKeys) {
+        const [sizeId, finish = ''] = key.split('::')
+        const v = rates[key] ?? ''
+        const billing: RateBilling = billings[key] ?? 'per_unit'
+        const keep = v !== '' || billing === 'fixed'
+        if (!keep) {
+          if (key in original) cleared.push(key)
+          continue
+        }
+        const rate = v !== '' ? Number(v) : (defaults.get(key) ?? 0)
+        upserts.push({
+          customer_id: saved.id,
+          item_size_id: Number(sizeId),
+          finish,
+          rate,
+          billing,
         })
-      const cleared = Object.keys(original).filter((key) => (rates[key] ?? '') === '')
+      }
       if (upserts.length) {
         const { error: e } = await supabase
           .from('customer_rates')
@@ -509,7 +533,12 @@ function CustomerPanel({
           .eq('finish', finish)
         if (e) throw e
       }
-      setOriginal({ ...rates })
+      const savedRates = Object.fromEntries(upserts.map((u) => [rateKey(u.item_size_id, u.finish), String(u.rate)]))
+      const savedBillings = Object.fromEntries(upserts.map((u) => [rateKey(u.item_size_id, u.finish), u.billing]))
+      setRates(savedRates)
+      setBillings(savedBillings)
+      setOriginal(savedRates)
+      setOriginalBillings(savedBillings)
       setMsg({ ok: true, text: customer ? 'Saved' : 'Customer added' })
       onSaved(saved)
     } catch (e) {
@@ -529,12 +558,29 @@ function CustomerPanel({
     onDeleted()
   }
 
-  const changed = Object.entries(rates).filter(([key, v]) => v !== '' && Number(v) !== defaults.get(key)).length
+  const changed =
+    Object.entries(rates).filter(([key, v]) => v !== '' && Number(v) !== defaults.get(key)).length +
+    Object.keys({ ...billings, ...originalBillings }).filter(
+      (key) => (billings[key] ?? 'per_unit') !== (originalBillings[key] ?? 'per_unit'),
+    ).length
+
+  const setBilling = (key: string, billing: RateBilling) => {
+    setBillings((prev) => ({ ...prev, [key]: billing }))
+    if (billing === 'fixed') {
+      setRates((prev) => {
+        if ((prev[key] ?? '') !== '') return prev
+        const def = defaults.get(key)
+        return def == null ? prev : { ...prev, [key]: String(def) }
+      })
+    }
+  }
 
   const rateRows = (it: Item) => {
     const itemSizes = sizes.filter((s) => s.item_id === it.id && s.active)
     const base = itemSizes.find((s) => s.size === '12x36')
     const finishes = it.finishes?.length ? it.finishes : ['']
+    // Minibook (and any item marked allows_fixed_billing): per-sheet vs fixed total
+    const fixedOk = Boolean(it.allows_fixed_billing) || it.name === 'Minibook'
     return itemSizes.flatMap((s) =>
       finishes.map((finish, fIdx) => {
         const alias = isRateAliasOf12x36(s.size)
@@ -543,7 +589,8 @@ function CustomerPanel({
         const rowKey = `${s.id}::${finish}`
         const v = rates[key] ?? ''
         const def = defaults.get(key) ?? 0
-        const special = v !== '' && Number(v) !== def
+        const billing: RateBilling = billings[key] ?? 'per_unit'
+        const special = (v !== '' && Number(v) !== def) || (fixedOk && billing === 'fixed')
         return (
           <tr key={rowKey}>
             <td>{fIdx === 0 ? it.name : ''}</td>
@@ -552,18 +599,44 @@ function CustomerPanel({
               {finish ? ` · ${finish}` : ''}
               {alias ? ' · same as 12x36' : ''}
             </td>
-            <td className="r p-muted">{money(def)}</td>
+            <td className="r p-muted">
+              {money(def)}
+              {fixedOk ? <div className="p-rate-hint">default is per sheet</div> : null}
+            </td>
             <td className="r">
               {alias ? (
                 <span className="p-muted">{v !== '' ? v : String(def)}</span>
               ) : (
-                <input
-                  className={`p-rate${special ? ' is-changed' : ''}`}
-                  inputMode="decimal"
-                  placeholder={String(def)}
-                  value={v}
-                  onChange={(e) => setRates({ ...rates, [key]: cleanRate(e.target.value) })}
-                />
+                <div className="p-rate-cell">
+                  <input
+                    className={`p-rate${special ? ' is-changed' : ''}`}
+                    inputMode="decimal"
+                    placeholder={billing === 'fixed' ? 'Fixed total' : String(def)}
+                    value={v}
+                    onChange={(e) => setRates({ ...rates, [key]: cleanRate(e.target.value) })}
+                  />
+                  {fixedOk ? (
+                    <>
+                      <div className="p-toggle p-toggle--sm" role="radiogroup" aria-label={`${it.name} billing`}>
+                        {(Object.keys(RATE_BILLING_LABEL) as RateBilling[]).map((mode) => (
+                          <button
+                            type="button"
+                            key={mode}
+                            role="radio"
+                            aria-checked={billing === mode}
+                            className={billing === mode ? 'is-active' : ''}
+                            onClick={() => setBilling(key, mode)}
+                          >
+                            {RATE_BILLING_LABEL[mode]}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="p-rate-hint">
+                        {billing === 'fixed' ? 'Bills this amount once' : 'Bills rate × sheets'}
+                      </div>
+                    </>
+                  ) : null}
+                </div>
               )}
             </td>
           </tr>
@@ -619,7 +692,10 @@ function CustomerPanel({
       <div className="p-card">
         <div className="p-card__head">
           <h2>Rate list</h2>
-          <small>Leave blank to use the default. Gloss and Matt have separate rates (Matt default = Gloss + ₹{MATT_PLUS}).</small>
+          <small>
+            Leave blank to use the default. Gloss and Matt have separate rates (Matt default = Gloss + ₹{MATT_PLUS}).
+            Minibook can be per sheet or a fixed total — pick per customer.
+          </small>
         </div>
         <div className="p-table-wrap">
           <table className="p-table">
