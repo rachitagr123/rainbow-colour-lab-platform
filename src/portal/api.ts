@@ -2,7 +2,11 @@ import { supabase } from './supabase'
 import { CATEGORY_ORDER, type Customer, type FullOrder, type Item, type ItemSize, type Order, type OrderLine } from './types'
 
 export async function listItems(includeInactive = false) {
-  let query = supabase.from('items').select('id, name, category, sort, active, finishes').order('sort').order('name')
+  let query = supabase
+    .from('items')
+    .select('id, name, category, sort, active, finishes, quota_exempt_for')
+    .order('sort')
+    .order('name')
   if (!includeInactive) query = query.eq('active', true)
   const { data, error } = await query
   if (error) throw error
@@ -114,8 +118,11 @@ export async function deleteOrder(orderNo: number) {
   if (error) throw error
 }
 
+/** Album + loose sheets, excluding Crystal / Emboss lines billed outside the sheet total. */
 export function totalSheets(order: Pick<FullOrder, 'lines'>) {
-  return order.lines.filter((l) => l.category === 'sheet').reduce((sum, l) => sum + l.qty, 0)
+  return order.lines
+    .filter((l) => (l.category === 'sheet' || l.category === 'loose') && l.counts_in_total !== false)
+    .reduce((sum, l) => sum + l.qty, 0)
 }
 
 export function lineLabel(line: Pick<OrderLine, 'item_name' | 'size' | 'qty'>) {

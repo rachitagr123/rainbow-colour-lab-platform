@@ -23,7 +23,7 @@ const PERMISSIONS: [string, boolean, boolean][] = [
   ['See rates, amounts & totals', false, true],
   ['Edit customer rate lists & default prices', false, true],
   ['Print all albums for a date (with prices)', false, true],
-  ['Monthly summary', false, true],
+  ['Monthly summary', false, false],
   ['Approve accounts, manage users & passwords', false, false],
 ]
 

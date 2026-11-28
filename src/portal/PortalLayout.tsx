@@ -134,10 +134,14 @@ export default function PortalLayout() {
                 <i>🔑</i>Users &amp; passwords
               </NavLink>
             )}
-            <div className="p-side__label">Reports</div>
-            <NavLink to="/admin/monthly">
-              <i>📈</i>Monthly summary
-            </NavLink>
+            {isAdmin && (
+              <>
+                <div className="p-side__label">Reports</div>
+                <NavLink to="/admin/monthly">
+                  <i>📈</i>Monthly summary
+                </NavLink>
+              </>
+            )}
           </nav>
           <main className="p-page">
             <Outlet />

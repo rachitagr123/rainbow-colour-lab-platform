@@ -16,6 +16,7 @@ import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
 import {
   CATEGORY_LABEL,
   CATEGORY_ORDER,
+  ITEM_CATEGORIES,
   type Category,
   type Customer,
   type CustomerType,
@@ -390,7 +391,7 @@ function DefaultsPanel({
       <div className="p-additem">
         <input className="p-input" placeholder="Item name (e.g. Pearl Sheet)" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} />
         <select className="p-input p-select" value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value as Category })}>
-          {CATEGORY_ORDER.map((c) => (
+          {ITEM_CATEGORIES.filter((c) => c !== 'bunch').map((c) => (
             <option key={c} value={c}>
               {CATEGORY_LABEL[c]}
             </option>
@@ -733,7 +734,7 @@ export default function CustomersPage() {
       <div className="p-head">
         <div>
           <h1>Customers &amp; rate list</h1>
-          <p>Gloss / Matt are separate (Matt = Gloss + ₹{MATT_PLUS}). Bunch (₹50) is auto-added only on sheets-only albums.</p>
+          <p>Gloss / Matt are separate (Matt = Gloss + ₹{MATT_PLUS}). Bunch (₹50) is added when an album has sheets but no cover and no box/combo (not for loose sheets).</p>
         </div>
         <button type="button" className="p-btn p-btn--grad" onClick={() => setSel({ kind: 'new' })}>
           + Add customer

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { itemLabel, listCustomers, listItems, listItemSizes } from '../api'
+import { useAuth } from '../auth'
 import { todayIST } from '../format'
 import { errorMessage, supabase } from '../supabase'
 import { CustomerTypeTag, CustomerTypeToggle } from '../CustomerTypeToggle'
+import { quotaError, quotaFor, type Quota } from '../sheetQuota'
 import type { Category, Customer, CustomerType, Item, ItemSize } from '../types'
 
 interface Row {
@@ -201,6 +203,7 @@ function LineRows({
   addLabel,
   hintLabel,
   single = false,
+  defaultQty,
   footer,
 }: {
   rows: Row[]
@@ -211,13 +214,15 @@ function LineRows({
   hintLabel: string
   /** One row only, with quantity fixed at 1 (cover, box). */
   single?: boolean
+  /** Quantity pre-filled on new rows. */
+  defaultQty?: string
   footer?: ReactNode
 }) {
   const update = (key: number, patch: Partial<Row>) => onChange(rows.map((r) => (r.key === key ? { ...r, ...patch } : r)))
   const sizeText = (id: number | '') => sizes.find((s) => s.id === id)?.size
   const addRow = () => {
     const row = newRow(sizes, items[0]?.id ?? '', sizeText(rows.at(-1)?.sizeId ?? ''))
-    onChange([...rows, single ? { ...row, qty: '1' } : row])
+    onChange([...rows, { ...row, qty: single ? '1' : (defaultQty ?? '') }])
   }
 
   const changeItem = (r: Row, itemId: number | '') => {
@@ -319,8 +324,87 @@ function LineRows({
   )
 }
 
+function SheetSection({
+  num,
+  title,
+  subtitle,
+  total,
+  onTotal,
+  quota,
+  rows,
+  items,
+  sizes,
+  onChange,
+  addLabel,
+  exemptNames,
+}: {
+  num: number
+  title: string
+  subtitle: string
+  total: string
+  onTotal: (v: string) => void
+  quota: Quota
+  rows: Row[]
+  items: Item[]
+  sizes: ItemSize[]
+  onChange: (rows: Row[]) => void
+  addLabel: string
+  exemptNames: string[]
+}) {
+  const done = quota.target > 0 && quota.left === 0
+  return (
+    <section className="p-card">
+      <div className="p-card__head">
+        <h2>
+          <span className="p-num">{num}</span>
+          {title}
+        </h2>
+        <small>{subtitle}</small>
+      </div>
+      <div className="p-grid p-g2 p-sheet-quota">
+        <label className="p-field">
+          <span>Total number of sheets</span>
+          <input className="p-input" inputMode="numeric" value={total} onChange={(e) => onTotal(e.target.value.replace(/\D/g, ''))} placeholder="e.g. 50" />
+        </label>
+        <label className="p-field">
+          <span>Sheets left to assign</span>
+          <input
+            className={`p-input is-readonly${quota.target > 0 && quota.left !== 0 ? ' p-quota-left' : ''}${done ? ' p-quota-done' : ''}`}
+            value={total === '' ? '—' : String(quota.left)}
+            readOnly
+            title="Goes down as you fill quantities below"
+          />
+        </label>
+      </div>
+      <LineRows
+        rows={rows}
+        items={items}
+        sizes={sizes}
+        onChange={onChange}
+        addLabel={addLabel}
+        hintLabel="Sheet types available"
+        footer={
+          <span className={`p-total-pill${done ? ' is-done' : ''}`}>
+            {quota.target > 0
+              ? done
+                ? `All ${quota.target} sheets assigned`
+                : `Assigned ${quota.count} of ${quota.target} · ${quota.left} left`
+              : `Assigned: ${quota.count} sheets`}
+          </span>
+        }
+      />
+      {exemptNames.length > 0 && (
+        <p className="p-hints">
+          <b>{exemptNames.join(' & ')}</b> {exemptNames.length > 1 ? 'are' : 'is'} billed separately and not counted in the total.
+        </p>
+      )}
+    </section>
+  )
+}
+
 export default function NewOrderPage() {
   const navigate = useNavigate()
+  const { isOffice } = useAuth()
   const [items, setItems] = useState<Item[]>([])
   const [sizes, setSizes] = useState<ItemSize[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -331,9 +415,10 @@ export default function NewOrderPage() {
   const [date, setDate] = useState(todayIST())
   const [albumName, setAlbumName] = useState('')
   const [notes, setNotes] = useState('')
-  const [rows, setRows] = useState<Record<Category, Row[]>>({ sheet: [], cover: [], box: [], product: [], bunch: [] })
-  /** Target sheet count for this album; every sheet qty must add up to this before submit. */
+  const [rows, setRows] = useState<Record<Category, Row[]>>({ sheet: [], loose: [], cover: [], box: [], product: [], bunch: [] })
+  /** Target sheet counts; counted sheet quantities must add up to these before submit. */
   const [sheetTotal, setSheetTotal] = useState('')
+  const [looseTotal, setLooseTotal] = useState('')
   const [autoPrint, setAutoPrint] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -351,8 +436,8 @@ export default function NewOrderPage() {
       .catch((e) => setLoadError(errorMessage(e)))
   }, [])
 
-  /** Cover, box and combo/product — picking one clears the other two. */
-  const PACK: Category[] = ['cover', 'box', 'product']
+  /** Cover and box/combo — picking one clears the other. Other products are independent. */
+  const PACK: Category[] = ['cover', 'box']
 
   const byCat = (cat: Category) => items.filter((i) => i.category === cat)
   const setCat = (cat: Category) => (next: Row[]) =>
@@ -371,34 +456,35 @@ export default function NewOrderPage() {
     setPhone(c?.phone ?? '')
   }
 
-  const filled = (Object.values(rows).flat() as Row[]).filter((r) => r.sizeId && Number(r.qty) > 0)
+  const filled = (Object.entries(rows) as [Category, Row[]][]).flatMap(([cat, list]) =>
+    list.filter((r) => r.sizeId && Number(r.qty) > 0).map((r) => ({ ...r, loose: cat === 'loose' })),
+  )
   const finishOf = (r: Row) => {
     const finishes = items.find((i) => i.id === r.itemId)?.finishes ?? []
     return finishes.length ? r.finish || finishes[0] : null
   }
-  const rowName = (r: Row) => {
+  const rowName = (r: Row & { loose: boolean }) => {
     const name = items.find((i) => i.id === r.itemId)?.name ?? ''
     const finish = finishOf(r)
-    return finish ? `${name} ${finish}` : name
+    return `${finish ? `${name} ${finish}` : name}${r.loose ? ' (loose)' : ''}`
   }
   const sizeName = (id: number | '') => sizes.find((s) => s.id === id)?.size ?? ''
-  const sheetTarget = Number(sheetTotal) || 0
-  const sheetCount = rows.sheet.reduce((s, r) => s + (Number(r.qty) || 0), 0)
-  const sheetsLeft = sheetTarget - sheetCount
-  const sheetsAssigned = sheetTarget > 0 && sheetsLeft === 0
+
+  const customerType = customer?.customer_type ?? 'collection'
+  const exemptItems = byCat('sheet').filter((i) => i.quota_exempt_for?.includes(customerType))
+  const isExempt = (r: Row) => exemptItems.some((i) => i.id === r.itemId)
+  const sheetQ = quotaFor(sheetTotal, rows.sheet, isExempt)
+  const looseQ = quotaFor(looseTotal, rows.loose, isExempt)
+  const anyTotal = sheetQ.target > 0 || looseQ.target > 0
+  const ready = anyTotal && sheetQ.ok && looseQ.ok
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!customer) return setError('Select or add a customer first.')
-    if (sheetTarget <= 0) return setError('Enter the total number of sheets first.')
-    if (sheetsLeft !== 0) {
-      return setError(
-        sheetsLeft > 0
-          ? `Assign the remaining ${sheetsLeft} sheets before submitting.`
-          : `Sheet quantities add up to ${sheetCount}, which is ${-sheetsLeft} over the total of ${sheetTarget}.`,
-      )
-    }
+    if (!anyTotal) return setError('Enter the total number of sheets (or loose sheets) first.')
+    const quotaMsg = quotaError('sheets', sheetQ) ?? quotaError('loose sheets', looseQ)
+    if (quotaMsg) return setError(quotaMsg)
     if (filled.length === 0) return setError('Add at least one item with a quantity.')
 
     setSubmitting(true)
@@ -408,7 +494,7 @@ export default function NewOrderPage() {
       p_notes: notes,
       p_phone: phone,
       p_order_date: date,
-      p_lines: filled.map((r) => ({ item_size_id: r.sizeId, qty: Number(r.qty), finish: finishOf(r) })),
+      p_lines: filled.map((r) => ({ item_size_id: r.sizeId, qty: Number(r.qty), finish: finishOf(r), loose: r.loose })),
     })
     setSubmitting(false)
     if (err) return setError(errorMessage(err))
@@ -423,7 +509,10 @@ export default function NewOrderPage() {
       <div className="p-head">
         <div>
           <h1>New album order</h1>
-          <p>Pick the customer, then sheets, and one of cover, box or combo. Sheets-only albums get Bunch ₹50 on the bill automatically.</p>
+          <p>
+            Pick the customer, then sheets, then a cover or a box/combo. Albums with sheets but no cover or box/combo get Bunch
+            {isOffice ? ' ₹50' : ''} added automatically (not loose sheets).
+          </p>
         </div>
       </div>
 
@@ -471,59 +560,42 @@ export default function NewOrderPage() {
             </div>
           </section>
 
-          <section className="p-card">
-            <div className="p-card__head">
-              <h2>
-                <span className="p-num">2</span>Sheets
-              </h2>
-              <small>Enter the album total first, then split it across sheet types</small>
-            </div>
-            <div className="p-grid p-g2 p-sheet-quota">
-              <label className="p-field">
-                <span>Total number of sheets</span>
-                <input
-                  className="p-input"
-                  inputMode="numeric"
-                  value={sheetTotal}
-                  onChange={(e) => setSheetTotal(e.target.value.replace(/\D/g, ''))}
-                  placeholder="e.g. 50"
-                />
-              </label>
-              <label className="p-field">
-                <span>Sheets left to assign</span>
-                <input
-                  className={`p-input is-readonly${sheetTarget > 0 && sheetsLeft !== 0 ? ' p-quota-left' : ''}${sheetsAssigned ? ' p-quota-done' : ''}`}
-                  value={sheetTotal === '' ? '—' : String(sheetsLeft)}
-                  readOnly
-                  title="Goes down as you fill quantities below"
-                />
-              </label>
-            </div>
-            <LineRows
-              rows={rows.sheet}
-              items={byCat('sheet')}
-              sizes={sizes}
-              onChange={setCat('sheet')}
-              addLabel="Add another sheet type"
-              hintLabel="Sheet types available"
-              footer={
-                <span className={`p-total-pill${sheetsAssigned ? ' is-done' : ''}`}>
-                  {sheetTarget > 0
-                    ? sheetsAssigned
-                      ? `All ${sheetTarget} sheets assigned`
-                      : `Assigned ${sheetCount} of ${sheetTarget} · ${sheetsLeft} left`
-                    : `Assigned: ${sheetCount} sheets`}
-                </span>
-              }
-            />
-          </section>
+          <SheetSection
+            num={2}
+            title="Sheets"
+            subtitle="Enter the album total first, then split it across sheet types"
+            total={sheetTotal}
+            onTotal={setSheetTotal}
+            quota={sheetQ}
+            rows={rows.sheet}
+            items={byCat('sheet')}
+            sizes={sizes}
+            onChange={setCat('sheet')}
+            addLabel="Add another sheet type"
+            exemptNames={exemptItems.map((i) => i.name)}
+          />
+
+          <SheetSection
+            num={3}
+            title="Loose sheets"
+            subtitle="Same as sheets, but no Bunch charge is added for these"
+            total={looseTotal}
+            onTotal={setLooseTotal}
+            quota={looseQ}
+            rows={rows.loose}
+            items={byCat('sheet')}
+            sizes={sizes}
+            onChange={setCat('loose')}
+            addLabel="Add loose sheet type"
+            exemptNames={exemptItems.map((i) => i.name)}
+          />
 
           <section className="p-card">
             <div className="p-card__head">
               <h2>
-                <span className="p-num">3</span>Cover
+                <span className="p-num">4</span>Cover
               </h2>
-              <small>Choosing a cover clears box and combo</small>
+              <small>Choosing a cover clears box/combo</small>
             </div>
             <LineRows rows={rows.cover} items={byCat('cover')} sizes={sizes} onChange={setCat('cover')} addLabel="Add cover" hintLabel="Covers available" single />
           </section>
@@ -531,19 +603,19 @@ export default function NewOrderPage() {
           <section className="p-card">
             <div className="p-card__head">
               <h2>
-                <span className="p-num">4</span>Box
+                <span className="p-num">5</span>Box &amp; combos
               </h2>
-              <small>Choosing a box clears cover and combo</small>
+              <small>Choosing a box or combo clears cover · qty always 1</small>
             </div>
-            <LineRows rows={rows.box} items={byCat('box')} sizes={sizes} onChange={setCat('box')} addLabel="Add box" hintLabel="Boxes available" single />
+            <LineRows rows={rows.box} items={byCat('box')} sizes={sizes} onChange={setCat('box')} addLabel="Add box or combo" hintLabel="Boxes & combos available" single />
           </section>
 
           <section className="p-card">
             <div className="p-card__head">
               <h2>
-                <span className="p-num">5</span>Combos &amp; other products
+                <span className="p-num">6</span>Other products
               </h2>
-              <small>Choosing a combo clears cover and box · qty always 1</small>
+              <small>Add any number, on top of a cover or box</small>
             </div>
             <LineRows
               rows={rows.product}
@@ -551,15 +623,15 @@ export default function NewOrderPage() {
               sizes={sizes}
               onChange={setCat('product')}
               addLabel="Add product"
-              hintLabel="Combos & products available"
-              single
+              hintLabel="Other products available"
+              defaultQty="1"
             />
           </section>
 
           <section className="p-card">
             <div className="p-card__head">
               <h2>
-                <span className="p-num">6</span>Notes
+                <span className="p-num">7</span>Notes
               </h2>
               <small>Printed on the slip</small>
             </div>
@@ -575,15 +647,24 @@ export default function NewOrderPage() {
             </div>
             <div className="p-sum-big">
               <span>Total sheets</span>
-              <b>{sheetTarget > 0 ? sheetTarget : '—'}</b>
+              <b>{anyTotal ? sheetQ.target + looseQ.target : '—'}</b>
             </div>
             <div className="p-sum-row">
-              <span>Assigned</span>
+              <span>Sheets assigned</span>
               <b>
-                {sheetCount}
-                {sheetTarget > 0 ? ` · ${sheetsLeft} left` : ''}
+                {sheetQ.count}
+                {sheetQ.target > 0 ? ` · ${sheetQ.left} left` : ''}
               </b>
             </div>
+            {(looseQ.target > 0 || looseQ.count > 0) && (
+              <div className="p-sum-row">
+                <span>Loose sheets assigned</span>
+                <b>
+                  {looseQ.count}
+                  {looseQ.target > 0 ? ` · ${looseQ.left} left` : ''}
+                </b>
+              </div>
+            )}
             <div className="p-sum-row">
               <span>Customer</span>
               <b>{customer?.name ?? '—'}</b>
@@ -623,8 +704,8 @@ export default function NewOrderPage() {
 
             {error && <div className="p-alert p-alert--error">{error}</div>}
 
-            <button className="p-btn p-btn--grad p-btn--lg p-btn--block" disabled={submitting || !sheetsAssigned}>
-              {submitting ? 'Saving…' : sheetsAssigned ? 'Submit order' : 'Assign all sheets to submit'}
+            <button className="p-btn p-btn--grad p-btn--lg p-btn--block" disabled={submitting || !ready}>
+              {submitting ? 'Saving…' : ready ? 'Submit order' : 'Assign all sheets to submit'}
             </button>
             <div className="p-lock">🔒 Rates &amp; totals are never shown to staff</div>
           </div>

@@ -1,16 +1,21 @@
 export type Role = 'admin' | 'manager' | 'staff'
 
-export type Category = 'sheet' | 'cover' | 'box' | 'product' | 'bunch'
+/** 'loose' exists only on order lines: a sheet item entered in the Loose sheets section. */
+export type Category = 'sheet' | 'loose' | 'cover' | 'box' | 'product' | 'bunch'
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   sheet: 'Sheets',
+  loose: 'Loose sheets',
   cover: 'Cover',
-  box: 'Box',
-  product: 'Combos & products',
+  box: 'Box & combos',
+  product: 'Other products',
   bunch: 'Bunch',
 }
 
-export const CATEGORY_ORDER: Category[] = ['sheet', 'cover', 'box', 'product', 'bunch']
+export const CATEGORY_ORDER: Category[] = ['sheet', 'loose', 'cover', 'box', 'product', 'bunch']
+
+/** Categories an item itself can belong to (no 'loose'). */
+export const ITEM_CATEGORIES: Category[] = ['sheet', 'cover', 'box', 'product', 'bunch']
 
 export type OrderStatus = 'new' | 'printing' | 'ready' | 'delivered'
 
@@ -37,6 +42,8 @@ export interface Item {
   active: boolean
   /** e.g. ['Gloss', 'Matt']: chosen per order line; Matt defaults to Gloss + ₹5. */
   finishes: string[] | null
+  /** Customer types for which this sheet is billed separately and not counted in the sheet total. */
+  quota_exempt_for: CustomerType[] | null
 }
 
 export interface ItemSize {
@@ -91,6 +98,8 @@ export interface OrderLine {
   size: string | null
   qty: number
   sort: number
+  /** False for Crystal / Emboss lines that are billed but not counted in the sheet total. */
+  counts_in_total: boolean
 }
 
 export interface LineAmount {

@@ -57,10 +57,10 @@ export default function PortalApp() {
               <Route path="orders/:orderNo" element={<OrderPage />} />
               <Route element={<RequireAuth officeOnly />}>
                 <Route path="customers" element={<CustomersPage />} />
-                <Route path="monthly" element={<MonthlyPage />} />
               </Route>
               <Route element={<RequireAuth adminOnly />}>
                 <Route path="users" element={<UsersPage />} />
+                <Route path="monthly" element={<MonthlyPage />} />
               </Route>
             </Route>
             <Route element={<RequireAuth officeOnly />}>

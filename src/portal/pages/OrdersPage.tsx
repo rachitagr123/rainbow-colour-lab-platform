@@ -169,8 +169,9 @@ export default function OrdersPage() {
               </thead>
               <tbody>
                 {shown.map((o) => {
-                  const sheetTypes = o.lines.filter((l) => l.category === 'sheet').map((l) => l.item_name)
-                  const extras = o.lines.filter((l) => l.category !== 'sheet').map((l) => l.item_name)
+                  const isSheet = (c: string) => c === 'sheet' || c === 'loose'
+                  const sheetTypes = o.lines.filter((l) => isSheet(l.category)).map((l) => l.item_name)
+                  const extras = o.lines.filter((l) => !isSheet(l.category)).map((l) => l.item_name)
                   return (
                     <tr key={o.order_no} className="p-click" onClick={() => navigate(`/admin/orders/${o.order_no}`)}>
                       <td className="p-ono">{o.order_no}</td>
